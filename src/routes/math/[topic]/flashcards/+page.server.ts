@@ -21,6 +21,7 @@ export const load: PageServerLoad = async ({ params }) => {
     l.flashcards.map((c) => ({
       id: c.id,
       objective: c.objective,
+      objectiveKey: c.objectiveKey,
       front: renderInline(c.front),
       back: renderMarkdown(c.back),
       hint: c.hint ? renderInline(c.hint) : null,

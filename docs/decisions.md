@@ -113,3 +113,46 @@ has to recede. The rules being followed:
   `prefers-reduced-motion` drops travel and overshoot but keeps opacity;
   `prefers-reduced-transparency` frosts the materials solid;
   `prefers-contrast: more` firms the separators and drops translucency.
+
+## Why auth is client-side, and the whole site is static
+
+Every page of content is public and prerenders to static HTML, so no page ever
+needs a session to render. Auth only decides *whose progress* to load, which is
+client-side data regardless. Keeping auth in the browser means no server, no
+cookie plumbing, and the site deploys as plain static files — which answers the
+open adapter question: `adapter-static`, on GitHub Pages, exactly like Roost.
+
+## Why progress keys on text paths, not database ids
+
+`objective_mastery.objective_key` holds `math/sets/3.1`, not a foreign key into
+`objectives`. Migration 004 was rewritten before it ever ran, for two reasons.
+
+First, content lives in markdown and prerenders; the database holds only
+student data. Keying on content ids would force content into the database
+purely to have ids to point at, and would break every student's progress on a
+re-import.
+
+Second — and this was a live bug — objective codes restart at 1.1 inside every
+topic, and every module has a topic 1, 2, 3. So a bare `3.1` names Sets,
+Relations Functions and Graphs 1 **and** Geometry and Trigonometry 2. Progress
+keyed on the code alone silently merged three unrelated topics into one mastery
+score. It was invisible while only Sets had content and would have corrupted
+data the moment a second topic shipped. `src/lib/keys.ts` is now the only place
+these keys are built.
+
+Nothing validates the paths, by design: the database must not need to know the
+syllabus. The cost is that a typo writes an orphan row rather than failing,
+which is why the keys are built by one module and never by hand.
+
+## Why signing in does not merge progress
+
+If an account is empty, whatever this browser has is pushed up — a student who
+studied anonymously for a week must not lose it at the exact moment they commit
+to an account. If the account has progress, it is pulled down and replaces
+local.
+
+The second case is deliberately "remote wins" rather than a merge. Merging two
+spaced-repetition schedules has no correct answer, and quietly picking one
+produces review dates neither device asked for. Last-signed-in-device-wins is
+the honest behaviour, and the account page says so in plain words rather than
+leaving a student to discover it.

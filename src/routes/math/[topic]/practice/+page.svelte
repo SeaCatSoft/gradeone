@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { load as loadProgress, save, recordAnswer, type Progress } from '$lib/progress';
+  import { load as loadProgress, recordAnswer, type Progress } from '$lib/progress';
+  import { saveAndSync } from '$lib/sync';
+  import { session } from '$lib/session.svelte';
 
   let { data } = $props();
 
@@ -66,8 +68,8 @@
     if (q.kind !== 'structured') {
       answered += 1;
       if (wasCorrect) score += 1;
-      recordAnswer(progress, q.objective, wasCorrect);
-      save(progress);
+      recordAnswer(progress, q.objectiveKey, wasCorrect);
+      saveAndSync(progress, session.user?.id ?? null);
     }
   }
 
@@ -77,8 +79,8 @@
     wasCorrect = got;
     answered += 1;
     if (got) score += 1;
-    recordAnswer(progress, q.objective, got);
-    save(progress);
+    recordAnswer(progress, q.objectiveKey, got);
+    saveAndSync(progress, session.user?.id ?? null);
     next();
   }
 

@@ -11,7 +11,11 @@
  */
 import { browser } from '$app/environment';
 
-const KEY = 'gradeone.progress.v1';
+// v2: v1 keyed mastery on the bare objective code, which collided across
+// modules ("3.1" is Sets, Relations Functions and Graphs 1, and Geometry and
+// Trigonometry 2). Bumping abandons the mis-keyed data rather than silently
+// carrying three merged topics forward. See $lib/keys.
+const KEY = 'gradeone.progress.v2';
 
 export type Mastery = { mastery: number; attempts: number; correct: number; lastSeen: string | null };
 export type Review = { ease: number; intervalDays: number; reps: number; lapses: number; dueAt: string };

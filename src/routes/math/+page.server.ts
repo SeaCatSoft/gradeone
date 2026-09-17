@@ -22,7 +22,9 @@ export const load: PageServerLoad = async () => {
         number: t.number,
         title: t.title,
         mcqCount: t.mcqCount,
-        objectiveCodes: t.objectives.map((o) => o.code),
+        // Fully-qualified keys, not bare codes: "3.1" names three different
+        // topics across the three modules. See $lib/keys.
+        objectiveKeys: t.objectives.map((o) => o.key),
         objectiveCount: t.objectives.length,
         needsReview: t.objectives.filter((o) => o.needsReview).length,
         lessonCount: t.lessons.length,

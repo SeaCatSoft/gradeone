@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { load as loadProgress, save, gradeCard, isDue, type Progress } from '$lib/progress';
+  import { load as loadProgress, gradeCard, isDue, type Progress } from '$lib/progress';
+  import { saveAndSync } from '$lib/sync';
+  import { session } from '$lib/session.svelte';
 
   let { data } = $props();
 
@@ -52,7 +54,9 @@
   function answer(grade: number) {
     if (!progress || !card) return;
     gradeCard(progress, card.id, grade);
-    save(progress);
+    // Local write is immediate; the push to Supabase is debounced, so a run of
+    // cards is one round trip rather than one per card.
+    saveAndSync(progress, session.user?.id ?? null);
     done += 1;
 
     // A card marked "Again" comes back later in this same session, because

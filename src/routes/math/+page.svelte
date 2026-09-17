@@ -7,8 +7,8 @@
   let progress = $state<Progress | null>(null);
   onMount(() => { progress = loadProgress(); });
 
-  function mastery(codes: string[]): number {
-    return progress ? topicMastery(progress, codes) : 0;
+  function mastery(keys: string[]): number {
+    return progress ? topicMastery(progress, keys) : 0;
   }
 
   const topicCount = $derived(data.modules.reduce((a, m) => a + m.topics.length, 0));
@@ -47,7 +47,7 @@
 
       <div class="grid">
         {#each mod.topics as topic}
-          {@const pct = mastery(topic.objectiveCodes)}
+          {@const pct = mastery(topic.objectiveKeys)}
           {@const ready = topic.lessonCount > 0}
           <a class="topic" class:empty={!ready} href="/math/{topic.slug}">
             <div class="top">

@@ -15,18 +15,24 @@ import path from 'node:path';
 // The authoring CLI and the app must agree on what a content file means, so
 // both use the same parser rather than each having its own idea.
 import { parseFile } from '../../../backend/tools/parse_content.mjs';
+import { objectiveKey, cardKey, questionKey } from '$lib/keys';
 
 const ROOT = 'content';
 
 export type Objective = {
   code: string;
+  /** Fully-qualified, e.g. "math/sets/3.1". See $lib/keys. */
+  key: string;
   statement: string;
   needsReview: boolean;
 };
 
 export type Flashcard = {
   id: string;
+  /** Printed code, e.g. "3.1" — for display only. */
   objective: string;
+  /** Fully-qualified key, e.g. "math/sets/3.1" — what progress is stored against. */
+  objectiveKey: string;
   front: string;
   back: string;
   hint: string | null;
@@ -35,6 +41,7 @@ export type Flashcard = {
 export type Question = {
   id: string;
   objective: string;
+  objectiveKey: string;
   kind: 'mcq' | 'numeric' | 'structured';
   marks: number;
   difficulty: number;
@@ -87,7 +94,9 @@ const OBJ_LINE = /^(\d{1,2}\.\d{1,2})\s+(\[\?\]\s*)?(\S.*)$/;
 
 let cache: Subject | null = null;
 
-function readObjectives(dir: string, moduleNo: number, slug: string): Objective[] {
+function readObjectives(
+  dir: string, subject: string, moduleNo: number, slug: string
+): Objective[] {
   const file = path.join(dir, 'm' + moduleNo + '-' + slug + '.md');
   if (!fs.existsSync(file)) return [];
   const raw = fs.readFileSync(file, 'utf8');
@@ -96,12 +105,19 @@ function readObjectives(dir: string, moduleNo: number, slug: string): Objective[
   for (const ln of body.split(/\r?\n/)) {
     const m = ln.match(OBJ_LINE);
     if (!m) continue;
-    out.push({ code: m[1], statement: m[3].trim(), needsReview: Boolean(m[2]) });
+    out.push({
+      code: m[1],
+      key: objectiveKey(subject, slug, m[1]),
+      statement: m[3].trim(),
+      needsReview: Boolean(m[2])
+    });
   }
   return out;
 }
 
-function readLessons(subjectDir: string, moduleNo: number, slug: string): Lesson[] {
+function readLessons(
+  subjectDir: string, subject: string, moduleNo: number, slug: string
+): Lesson[] {
   const dir = path.join(subjectDir, 'm' + moduleNo + '-' + slug);
   if (!fs.existsSync(dir)) return [];
   const lessons: Lesson[] = [];
@@ -111,11 +127,6 @@ function readLessons(subjectDir: string, moduleNo: number, slug: string): Lesson
     if (res.errors.length || !res.lesson) continue;
     const lesson = res.lesson;
 
-    // Ids are stable only once content has been imported. Until then, fall
-    // back to a deterministic key so review scheduling and exam sessions have
-    // something consistent to hold on to between page loads.
-    const key = (kind: string, i: number) => lesson.slug + ':' + kind + ':' + i;
-
     lessons.push({
       slug: lesson.slug,
       title: lesson.title,
@@ -124,15 +135,19 @@ function readLessons(subjectDir: string, moduleNo: number, slug: string): Lesson
       status: lesson.status,
       body: lesson.body_md,
       flashcards: res.flashcards.map((c, i: number) => ({
-        id: c.id ?? key('c', i),
+        // Deliberately NOT the database id even once content is imported:
+        // progress keys must not change when content is re-imported.
+        id: cardKey(subject, slug, lesson.slug, i),
         objective: c.objective,
+        objectiveKey: objectiveKey(subject, slug, c.objective),
         front: c.front,
         back: c.back,
         hint: c.hint
       })),
       questions: res.questions.map((q, i: number) => ({
-        id: q.id ?? key('q', i),
+        id: questionKey(subject, slug, lesson.slug, i),
         objective: q.objective,
+        objectiveKey: objectiveKey(subject, slug, q.objective),
         kind: q.kind,
         marks: q.marks,
         difficulty: q.difficulty,
@@ -170,8 +185,8 @@ export function loadSubject(code = 'math'): Subject {
         mcqCount: t.mcqCount,
         p2Marks: t.p2Marks,
         p2Group: t.p2Group,
-        objectives: readObjectives(objDir, m.number, t.slug),
-        lessons: readLessons(subjectDir, m.number, t.slug)
+        objectives: readObjectives(objDir, code, m.number, t.slug),
+        lessons: readLessons(subjectDir, code, m.number, t.slug)
       }))
     }))
   };

@@ -17,7 +17,7 @@
     </p>
     <div class="cta">
       <a class="btn" href="/math">Start with Mathematics</a>
-      <span class="note small">Free · no account needed to start</span>
+      <a class="btn ghost" href="/signup">Create an account</a>
     </div>
   </div>
 </section>
@@ -115,7 +115,12 @@
   }
   .btn:hover { background: var(--brand-hover); color: var(--on-brand); }
   .btn:active { transform: scale(.97); }
-  .note { color: var(--text-tertiary); }
+  .ghost {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow-sm);
+  }
+  .ghost:hover { background: var(--surface-2); color: var(--text); }
 
   .points {
     display: grid;

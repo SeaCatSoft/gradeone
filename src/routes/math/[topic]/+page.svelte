@@ -9,9 +9,9 @@
 
   const allCardIds = $derived(data.lessons.flatMap((l) => l.cardIds));
   const totalQuestions = $derived(data.lessons.reduce((a, l) => a + l.questionCount, 0));
-  const objectiveCodes = $derived(data.objectives.map((o) => o.code));
+  const objectiveKeys = $derived(data.objectives.map((o) => o.key));
 
-  const mastery = $derived(progress ? topicMastery(progress, objectiveCodes) : 0);
+  const mastery = $derived(progress ? topicMastery(progress, objectiveKeys) : 0);
   const due = $derived(progress ? dueCount(progress, allCardIds) : allCardIds.length);
 
   const hasContent = $derived(data.lessons.length > 0);

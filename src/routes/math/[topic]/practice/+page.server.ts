@@ -23,6 +23,7 @@ export const load: PageServerLoad = async ({ params }) => {
     l.questions.map((q) => ({
       id: q.id,
       objective: q.objective,
+      objectiveKey: q.objectiveKey,
       kind: q.kind,
       marks: q.marks,
       difficulty: q.difficulty,

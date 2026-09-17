@@ -4,6 +4,7 @@
   import favicon from '$lib/assets/favicon.svg';
   import { onMount } from 'svelte';
   import { load as loadProgress, totalXp, level } from '$lib/progress';
+  import { session } from '$lib/session.svelte';
 
   let { children } = $props();
 
@@ -11,11 +12,19 @@
   let streak = $state(0);
   let theme = $state<'light' | 'dark' | null>(null);
   let scrolled = $state(false);
+  let menuOpen = $state(false);
 
-  onMount(() => {
+  function readProgress() {
     const p = loadProgress();
     xp = totalXp(p);
     streak = p.streak.current;
+  }
+
+  onMount(() => {
+    readProgress();
+    // Signing in or out replaces this browser's progress, so the header has to
+    // re-read rather than keep showing the previous account's numbers.
+    void session.start(() => readProgress());
 
     try {
       const saved = localStorage.getItem('gradeone.theme') as 'light' | 'dark' | null;
@@ -54,6 +63,10 @@
 
   const lvl = $derived(level(xp));
   const isDark = $derived(theme === 'dark');
+
+  function closeMenu(e: MouseEvent) {
+    if (!(e.target as HTMLElement)?.closest?.('.account')) menuOpen = false;
+  }
 </script>
 
 <svelte:head>
@@ -94,6 +107,30 @@
           {streak}
         </span>
       {/if}
+      <div class="account">
+        {#if session.ready && session.user}
+          <button
+            class="avatar"
+            onclick={() => (menuOpen = !menuOpen)}
+            aria-haspopup="menu"
+            aria-expanded={menuOpen}
+            aria-label="Account menu for {session.displayName}"
+          >{session.displayName.slice(0, 1).toUpperCase()}</button>
+
+          {#if menuOpen}
+            <div class="menu" role="menu">
+              <p class="who small">
+                <strong>{session.displayName}</strong>
+                <span class="muted">{session.user.email}</span>
+              </p>
+              <a href="/account" role="menuitem" onclick={() => (menuOpen = false)}>Your account</a>
+            </div>
+          {/if}
+        {:else if session.ready}
+          <a class="signin" href="/login">Sign in</a>
+        {/if}
+      </div>
+
       <button class="icon" onclick={toggleTheme} aria-label="Switch to {isDark ? 'light' : 'dark'} appearance">
         {#if isDark}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
@@ -109,6 +146,8 @@
     </div>
   </div>
 </header>
+
+<svelte:window onclick={closeMenu} />
 
 <main>
   {@render children()}
@@ -212,6 +251,67 @@
     transition: width var(--dur-slow) var(--ease);
   }
   .streak svg { width: 13px; height: 13px; }
+
+  /* Account */
+  .account { position: relative; display: flex; align-items: center; }
+  .signin {
+    font-size: .88rem;
+    font-weight: 550;
+    color: var(--brand);
+    padding: .25rem .6rem;
+    border-radius: var(--r-pill);
+    background: var(--brand-soft);
+  }
+  .avatar {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border-color: transparent;
+    background: var(--brand);
+    color: var(--on-brand);
+    font-size: .8rem;
+    font-weight: 650;
+  }
+  .avatar:hover:not(:disabled) { background: var(--brand-hover); }
+
+  .menu {
+    position: absolute;
+    top: calc(100% + .5rem);
+    right: 0;
+    min-width: 210px;
+    padding: .4rem;
+    border-radius: var(--r);
+    background: var(--surface);
+    box-shadow: var(--shadow-lg);
+    /* Anchored to the button it came from, so the relationship is obvious. */
+    transform-origin: top right;
+    animation: menu-in var(--dur-fast) var(--ease) both;
+    z-index: 30;
+  }
+  @keyframes menu-in {
+    from { transform: scale(.94) translateY(-4px); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+  .who {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: .5rem .6rem .6rem;
+    border-bottom: .5px solid var(--separator);
+  }
+  .who span { font-size: .8rem; }
+  .menu a {
+    display: block;
+    padding: .5rem .6rem;
+    margin-top: .3rem;
+    border-radius: var(--r-sm);
+    color: var(--text);
+    font-size: .92rem;
+  }
+  .menu a:hover { background: var(--surface-2); color: var(--text); }
 
   .icon {
     padding: 0;
