@@ -1,0 +1,1115 @@
+[
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.1",
+  "statement": "distinguish among sets of numbers; Sets of numbers: natural numbers = {1, 2, 3, ... }; whole numbers = {0, 1, 2, 3, ... }; integers = {... - 2, -1, 0, 1, 2, ... }; rational numbers = { and are integers, }; irrational numbers (numbers that cannot be expressed as terminating or recurring decimals, for example, numbers such as p and 2); real numbers = {the union of rational and irrational numbers}; inclusion relations, for example, ; and,",
+  "needs_review": true
+ },
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.2",
+  "statement": "compute powers of real numbers of the form , where",
+  "needs_review": true
+ },
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.3",
+  "statement": "evaluate numerical expressions using any of the four basic operations on real numbers",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.4",
+  "statement": "convert among fractions, percents and decimals",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.5",
+  "statement": "list the set of factors and multiples of a given integer",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.6",
+  "statement": "compute the H.C.F. or L.C.M. of two or more positive integers",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.7",
+  "statement": "state the value of a digit of a numeral in a given base",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.8",
+  "statement": "convert from one set of units to another",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.9",
+  "statement": "express a value to a given number of: (a) significant figures; and, (b) decimal places.",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.10",
+  "statement": "use properties of numbers and operations in computational tasks",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.11",
+  "statement": "calculate any fraction or percentage of a given quantity",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.12",
+  "statement": "write any rational number in scientific notation",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.13",
+  "statement": "express one quantity as a fraction o percentage of another",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.14",
+  "statement": "compare quantities",
+  "needs_review": true
+ },
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.15",
+  "statement": "order a set of real numbers",
+  "needs_review": true
+ },
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.16",
+  "statement": "compute terms of a sequence given a rule",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.17",
+  "statement": "derive an appropriate rule given the terms of a sequence",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.18",
+  "statement": "divide a quantity in a given ratio; and,",
+  "needs_review": true
+ },
+ {
+  "module": 1,
+  "topic": "Number Theory and Computation",
+  "code": "1.19",
+  "statement": "solve problems involving concepts in number theory and computation.",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Consumer Arithmetic",
+  "code": "2.1",
+  "statement": "calculate: (a) discount; (b) sales tax; (c) profit; and, (d) loss.",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Consumer Arithmetic",
+  "code": "2.2",
+  "statement": "calculate: (a) percentage profit; and, (b) percentage loss.",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Consumer Arithmetic",
+  "code": "2.3",
+  "statement": "express a profit, loss, discount, markup and purchase tax, as a percentage of some value",
+  "needs_review": true
+ },
+ {
+  "module": 1,
+  "topic": "Consumer Arithmetic",
+  "code": "2.4",
+  "statement": "solve problems involving marked price, selling price, cost price, profit, loss or discount",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Consumer Arithmetic",
+  "code": "2.5",
+  "statement": "solve problems involving payments by instalments as in the case of hire purchase and mortgages",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Consumer Arithmetic",
+  "code": "2.6",
+  "statement": "solve problems involving simple interest",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Consumer Arithmetic",
+  "code": "2.7",
+  "statement": "solve problems involving compound interest",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Consumer Arithmetic",
+  "code": "2.8",
+  "statement": "solve problems involving appreciation and depreciation",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Consumer Arithmetic",
+  "code": "2.9",
+  "statement": "solve problems involving measures and money; and,",
+  "needs_review": true
+ },
+ {
+  "module": 1,
+  "topic": "Consumer Arithmetic",
+  "code": "2.10",
+  "statement": "solve problems involving: (a) rates and taxes; (b) utilities; (c) invoices and shopping bills; (d) salaries and wages; and, (e) insurance and investments.",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Sets",
+  "code": "3.1",
+  "statement": "explain concepts relating to sets",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Sets",
+  "code": "3.2",
+  "statement": "represent a set in various forms",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Sets",
+  "code": "3.3",
+  "statement": "list subsets of a given set",
+  "needs_review": true
+ },
+ {
+  "module": 1,
+  "topic": "Sets",
+  "code": "3.4",
+  "statement": "determine elements in",
+  "needs_review": true
+ },
+ {
+  "module": 1,
+  "topic": "Sets",
+  "code": "3.5",
+  "statement": "describe relationships among sets using set notation and symbols",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Sets",
+  "code": "3.6",
+  "statement": "draw Venn diagrams to represent relationships among sets",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Sets",
+  "code": "3.7",
+  "statement": "use Venn diagrams to represent the relationships among sets; and,",
+  "needs_review": true
+ },
+ {
+  "module": 1,
+  "topic": "Sets",
+  "code": "3.8",
+  "statement": "solve problems in Number Theory, Algebra and Geometry using concepts in set theory.",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Measurement",
+  "code": "4.1",
+  "statement": "convert units of length, mass, area, volume, capacity",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Measurement",
+  "code": "4.2",
+  "statement": "use the appropriate SI unit of measure for area, volume, capacity, mass, temperature and time (24-hour clock) and other derived quantities",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Measurement",
+  "code": "4.3",
+  "statement": "determine the perimeter of a plane shape",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Measurement",
+  "code": "4.4",
+  "statement": "calculate the length of an arc of a circle",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Measurement",
+  "code": "4.5",
+  "statement": "estimate the area of plane shapes",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Measurement",
+  "code": "4.6",
+  "statement": "calculate the area of polygons and circles",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Measurement",
+  "code": "4.7",
+  "statement": "calculate the area of a sector of a circle",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Measurement",
+  "code": "4.8",
+  "statement": "calculate the surface area of solids",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Measurement",
+  "code": "4.9",
+  "statement": "calculate the volume of solids",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Measurement",
+  "code": "4.10",
+  "statement": "solve the problems involving the relations among time, distance and speed",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Measurement",
+  "code": "4.11",
+  "statement": "estimate the margin of error for a given measurement",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Measurement",
+  "code": "4.12",
+  "statement": "use scales and scale drawings to determine distances and areas; and,",
+  "needs_review": true
+ },
+ {
+  "module": 1,
+  "topic": "Measurement",
+  "code": "4.13",
+  "statement": "solve problems involving",
+  "needs_review": true
+ },
+ {
+  "module": 1,
+  "topic": "Algebra 1",
+  "code": "5.1",
+  "statement": "use symbols to represent numbers, operations, variables and relations",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Algebra 1",
+  "code": "5.2",
+  "statement": "translate between algebraic symbols and worded expressions",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Algebra 1",
+  "code": "5.3",
+  "statement": "evaluate arithmetic operations involving directed numbers",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Algebra 1",
+  "code": "5.4",
+  "statement": "simplify algebraic expressions using the four basic operations",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Algebra 1",
+  "code": "5.5",
+  "statement": "evaluate expressions involving binary operations (other than the four basic operations)",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Algebra 1",
+  "code": "5.6",
+  "statement": "substitute numbers for variables in algebraic expressions",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Algebra 1",
+  "code": "5.7",
+  "statement": "apply the distributive law to factorise or expand algebraic expressions",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Algebra 1",
+  "code": "5.8",
+  "statement": "simplify algebraic fractions",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Algebra 1",
+  "code": "5.9",
+  "statement": "use the laws of indices to manipulate expressions with integral indices",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Algebra 1",
+  "code": "5.10",
+  "statement": "solve linear equations in one unknown",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Algebra 1",
+  "code": "5.11",
+  "statement": "Solve a simple linear inequality in one unknown",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Algebra 1",
+  "code": "5.12",
+  "statement": "change the subject of formulae",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Algebra 1",
+  "code": "5.13",
+  "statement": "factorise simple algebraic",
+  "needs_review": true
+ },
+ {
+  "module": 1,
+  "topic": "Algebra 1",
+  "code": "5.14",
+  "statement": "solve worded problems; and, Equations versus identities.",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Algebra 1",
+  "code": "5.15",
+  "statement": "prove two algebraic expressions to Concept of linear function, types of linear be identical. function",
+  "needs_review": true
+ },
+ {
+  "module": 1,
+  "topic": "Introduction to Graphs",
+  "code": "6.1",
+  "statement": "draw graphs of linear functions; where , and are real numbers). For example,",
+  "needs_review": false
+ },
+ {
+  "module": 1,
+  "topic": "Introduction to Graphs",
+  "code": "6.2",
+  "statement": "determine the intercepts of the graph of linear functions; and, = 0 ( - ); = 0 ( - ) -intercepts and -intercepts, graphically and",
+  "needs_review": true
+ },
+ {
+  "module": 1,
+  "topic": "Introduction to Graphs",
+  "code": "6.3",
+  "statement": "solve problems involving graphs of algebraically. linear functions. (a) calculators; (b) games and quizzes; (for example, to investigate whether a given number is rational or irrational); (c) appropriate software; (d) examples of computation drawn from current affairs; (e) the use of recipes in teaching ratio and proportion; and, (f) online demonstrative videos.",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Statistics 1",
+  "code": "1.1",
+  "statement": "differentiate between sample and Discrete variables. Ungrouped data. population attributes; Pie charts and bar charts. Ungrouped data: mean, median and mode.",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Statistics 1",
+  "code": "1.2",
+  "statement": "construct a frequency table for a given set of data; Levels of measurement (measurement scales): nominal, ordinal, interval and ratio.",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Statistics 1",
+  "code": "1.3",
+  "statement": "construct statistical diagrams; Sets with extreme values or recurring values. Range, interquartile range and semi-interquartile",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Statistics 1",
+  "code": "1.4",
+  "statement": "determine measures of central range; tendency for raw ungrouped data; Finding the mean, mode, median, range, quartiles,",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Statistics 1",
+  "code": "1.5",
+  "statement": "determine when it is most interquartile range, semi-interquartile range; appropriate to use the mean, trends and patterns. median and mode as the average No calculation of the standard deviation will be for a set of data; required.",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Statistics 1",
+  "code": "1.6",
+  "statement": "determine the measures of Including the use of coins, dice and playing card dispersion (spread) for raw, Simple probabilities. ungrouped data; Raw data, tables, diagrams, summary statistics.",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Statistics 1",
+  "code": "1.7",
+  "statement": "analyse statistical diagrams",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Statistics 1",
+  "code": "1.8",
+  "statement": "use standard deviation to compare sets of ungrouped data",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Statistics 1",
+  "code": "1.9",
+  "statement": "determine the proportion or percentage of the sample above or below a given value from raw ungrouped data or frequency table",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Statistics 1",
+  "code": "1.10",
+  "statement": "identify the sample space for simple experiment; and,",
+  "needs_review": true
+ },
+ {
+  "module": 2,
+  "topic": "Statistics 1",
+  "code": "1.11",
+  "statement": "make inference(s) from statistics.",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Algebra 2",
+  "code": "2.1",
+  "statement": "factorise algebraic expressions",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Algebra 2",
+  "code": "2.2",
+  "statement": "change the subject of formulae",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Algebra 2",
+  "code": "2.3",
+  "statement": "solve simultaneous linear equations, in two unknowns, algebraically",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Algebra 2",
+  "code": "2.4",
+  "statement": "rewrite a quadratic expression in the form a(x + h)2 + k",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Algebra 2",
+  "code": "2.5",
+  "statement": "solve quadratic equations algebraically",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Algebra 2",
+  "code": "2.6",
+  "statement": "solve worded problems",
+  "needs_review": true
+ },
+ {
+  "module": 2,
+  "topic": "Algebra 2",
+  "code": "2.7",
+  "statement": "solve a pair of equations in two variables when one equation is quadratic or non-linear and the other linear",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Algebra 2",
+  "code": "2.8",
+  "statement": "represent direct and inverse variation symbolically; and,",
+  "needs_review": true
+ },
+ {
+  "module": 2,
+  "topic": "Algebra 2",
+  "code": "2.9",
+  "statement": "solve problems involving direct variation and inverse variation.",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.1",
+  "statement": "explain basic concepts associated with relations",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.2",
+  "statement": "represent a relation in various ways",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.3",
+  "statement": "state the characteristics that define a function",
+  "needs_review": true
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.4",
+  "statement": "use functional notation",
+  "needs_review": true
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.5",
+  "statement": "distinguish between a relation and a function",
+  "needs_review": true
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.6",
+  "statement": "determine the gradient of a straight line",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.7",
+  "statement": "determine the equation of a straight line",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.8",
+  "statement": "solve problems involving the gradient of parallel and perpendicular lines",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.9",
+  "statement": "determine from co-ordinates on a line segment: (a) the length; and, (b) the co-ordinates of the midpoint.",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.10",
+  "statement": "solve a pair of simultaneous linear equations in two unknowns graphically",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.11",
+  "statement": "derive the composition of functions",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.12",
+  "statement": "state the relationship between a function and its inverse",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.13",
+  "statement": "derive the inverse of a function",
+  "needs_review": true
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.14",
+  "statement": "evaluate a function () at a given value of",
+  "needs_review": true
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.15",
+  "statement": "draw the graph of a quadratic function",
+  "needs_review": true
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.16",
+  "statement": "use the graph of a quadratic function to identify its features",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.17",
+  "statement": "interpret the graph of a quadratic function",
+  "needs_review": true
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.18",
+  "statement": "determine the equation of the axis of symmetry and the maximum or minimum value of a quadratic function expressed in the form ( + )2 +",
+  "needs_review": true
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.19",
+  "statement": "sketch the graph of a quadratic function expressed in the form = ( + )2 + and determine the number of roots; and,",
+  "needs_review": true
+ },
+ {
+  "module": 2,
+  "topic": "Relations, Functions and Graphs 1",
+  "code": "3.20",
+  "statement": "solve problems involving graphs of linear and non-linear functions.",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Geometry and Trigonometry 1",
+  "code": "4.1",
+  "statement": "explain concepts relating to geometry",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Geometry and Trigonometry 1",
+  "code": "4.2",
+  "statement": "draw angles and line segments accurately using appropriate instruments",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Geometry and Trigonometry 1",
+  "code": "4.3",
+  "statement": "measure angles and line segments accurately using appropriate instruments",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Geometry and Trigonometry 1",
+  "code": "4.4",
+  "statement": "construct lines, angles, and polygons using appropriate instruments",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Geometry and Trigonometry 1",
+  "code": "4.5",
+  "statement": "identify the type(s) of symmetry possessed by a given plane figure",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Geometry and Trigonometry 1",
+  "code": "4.6",
+  "statement": "solve geometric problems using properties of: (a) lines, angles, and polygons; (b) congruent triangles; (c) similar figures; (d) faces, edges and vertices of solids; and, (e) classes of solids.",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Geometry and Trigonometry 1",
+  "code": "4.7",
+  "statement": "use Pythagoras' theorem to solve problems",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Geometry and Trigonometry 1",
+  "code": "4.8",
+  "statement": "define the trigonometric ratios of acute angles in a right triangle",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Geometry and Trigonometry 1",
+  "code": "4.9",
+  "statement": "relate objects in the physical world to geometric objects; and,",
+  "needs_review": true
+ },
+ {
+  "module": 2,
+  "topic": "Geometry and Trigonometry 1",
+  "code": "4.10",
+  "statement": "apply the trigonometric ratios to solve problems.",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Vectors and Matrices 1",
+  "code": "5.1",
+  "statement": "explain concepts associated with vectors",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Vectors and Matrices 1",
+  "code": "5.2",
+  "statement": "simplify expressions involving vectors",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Vectors and Matrices 1",
+  "code": "5.3",
+  "statement": "explain basic concepts associated with matrices",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Vectors and Matrices 1",
+  "code": "5.4",
+  "statement": "solve problems involving matrix operations",
+  "needs_review": false
+ },
+ {
+  "module": 2,
+  "topic": "Vectors and Matrices 1",
+  "code": "5.5",
+  "statement": "use matrices to solve simple problems in Arithmetic and Algebra.",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Statistics 2",
+  "code": "1.1",
+  "statement": "construct a frequency table for a Line graphs, histograms with bars of equal width given set of data; and frequency polygons. Grouped data: modal class, median class and the",
+  "needs_review": true
+ },
+ {
+  "module": 3,
+  "topic": "Statistics 2",
+  "code": "1.2",
+  "statement": "determine class features for a given estimate of the mean. set of data; Estimating range, interquartile range and semi- interquartile range.",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Statistics 2",
+  "code": "1.3",
+  "statement": "construct statistical diagrams; No calculation of the standard deviation will be required.",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Statistics 2",
+  "code": "1.4",
+  "statement": "determine measures of central Appropriate scales for axes. tendency for raw grouped data; Class boundaries as domain. Finding the mean, mode, median, range, quartiles,",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Statistics 2",
+  "code": "1.5",
+  "statement": "determine the measures of interquartile range, semi-interquartile range; dispersion (spread) for grouped data; trends and patterns.",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Statistics 2",
+  "code": "1.6",
+  "statement": "use standard deviation to compare The use of contingency tables. sets of data; Addition for exclusive events; multiplication for independent events.",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Statistics 2",
+  "code": "1.7",
+  "statement": "draw cumulative frequency curve (Ogive)",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Statistics 2",
+  "code": "1.8",
+  "statement": "analyse statistical diagrams",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Statistics 2",
+  "code": "1.9",
+  "statement": "determine the proportion or percentage of the sample above or below a given value from raw grouped data, frequency table or cumulative frequency curve",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Statistics 2",
+  "code": "1.10",
+  "statement": "determine experimental and theoretical probabilities of simple events; and,",
+  "needs_review": true
+ },
+ {
+  "module": 3,
+  "topic": "Statistics 2",
+  "code": "1.11",
+  "statement": "make inference(s) from statistics. Raw data, tables, diagrams, summary statistics.",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Relations, Functions and Graphs 2",
+  "code": "2.1",
+  "statement": "draw a graph to represent a linear inequality in two variables",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Relations, Functions and Graphs 2",
+  "code": "2.2",
+  "statement": "represent the solution of linear inequalities in one variable",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Relations, Functions and Graphs 2",
+  "code": "2.3",
+  "statement": "use linear programming techniques to graphically solve problems involving two variables",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Relations, Functions and Graphs 2",
+  "code": "2.4",
+  "statement": "draw graphs of non-linear functions",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Relations, Functions and Graphs 2",
+  "code": "2.5",
+  "statement": "interpret graphs of functions; and,",
+  "needs_review": true
+ },
+ {
+  "module": 3,
+  "topic": "Relations, Functions and Graphs 2",
+  "code": "2.6",
+  "statement": "solve problems involving graphs of linear and non-linear functions.",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Geometry and Trigonometry 2",
+  "code": "3.1",
+  "statement": "solve geometric problems using properties of circles and circle theorems",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Geometry and Trigonometry 2",
+  "code": "3.2",
+  "statement": "represent translations in a plane using vectors",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Geometry and Trigonometry 2",
+  "code": "3.3",
+  "statement": "determine and represent the location of: (a) the image of an object under a transformation; and, (b) an object given the image under a transformation.",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Geometry and Trigonometry 2",
+  "code": "3.4",
+  "statement": "state the relationship between an object and its image in the plane under geometric transformations",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Geometry and Trigonometry 2",
+  "code": "3.5",
+  "statement": "describe a transformation given an object and its image",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Geometry and Trigonometry 2",
+  "code": "3.6",
+  "statement": "locate the image of an object under a combination of transformations",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Geometry and Trigonometry 2",
+  "code": "3.7",
+  "statement": "use the sine and cosine rules to solve problems involving triangles",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Geometry and Trigonometry 2",
+  "code": "3.8",
+  "statement": "calculate the area of a triangle given two sides and the angle they form",
+  "needs_review": true
+ },
+ {
+  "module": 3,
+  "topic": "Geometry and Trigonometry 2",
+  "code": "3.9",
+  "statement": "calculate the area of a segment of a circle; and,",
+  "needs_review": true
+ },
+ {
+  "module": 3,
+  "topic": "Geometry and Trigonometry 2",
+  "code": "3.10",
+  "statement": "solve problems involving bearings.",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Vectors and Matrices 2",
+  "code": "4.1",
+  "statement": "write the position vector of a point (, ) as = () where is the origin (0,0)",
+  "needs_review": true
+ },
+ {
+  "module": 3,
+  "topic": "Vectors and Matrices 2",
+  "code": "4.2",
+  "statement": "determine the magnitude of a vector",
+  "needs_review": true
+ },
+ {
+  "module": 3,
+  "topic": "Vectors and Matrices 2",
+  "code": "4.3",
+  "statement": "determine the direction of a vector",
+  "needs_review": true
+ },
+ {
+  "module": 3,
+  "topic": "Vectors and Matrices 2",
+  "code": "4.4",
+  "statement": "use vectors to solve problems in geometry",
+  "needs_review": false
+ },
+ {
+  "module": 3,
+  "topic": "Vectors and Matrices 2",
+  "code": "4.5",
+  "statement": "evaluate the determinant of a `2 x 2' matrix",
+  "needs_review": true
+ },
+ {
+  "module": 3,
+  "topic": "Vectors and Matrices 2",
+  "code": "4.6",
+  "statement": "define the multiplicative inverse of a non-singular square matrix",
+  "needs_review": true
+ },
+ {
+  "module": 3,
+  "topic": "Vectors and Matrices 2",
+  "code": "4.7",
+  "statement": "obtain the inverse of a non-singular `2 x 2' matrix",
+  "needs_review": true
+ },
+ {
+  "module": 3,
+  "topic": "Vectors and Matrices 2",
+  "code": "4.8",
+  "statement": "determine a `2 x 2' matrix associated with a specified transformation; and,",
+  "needs_review": true
+ },
+ {
+  "module": 3,
+  "topic": "Vectors and Matrices 2",
+  "code": "4.9",
+  "statement": "use matrices to solve simple problems in Arithmetic, Algebra and Geometry.",
+  "needs_review": false
+ }
+]

@@ -56,6 +56,9 @@ create table if not exists objectives (
   topic_id      bigint not null references topics(id) on delete cascade,
   code          text not null,        -- '1.1', '1.2' as printed in the syllabus
   statement     text not null,        -- 'distinguish among sets of numbers'
+  -- Set where the syllabus text was machine-extracted and still needs a human
+  -- to check it against the printed page. Nothing flagged is shown publicly.
+  needs_review  boolean not null default false,
   content_notes text,                 -- the syllabus CONTENT/EXPLANATORY NOTES column
   position      int not null,
   unique (topic_id, code)
