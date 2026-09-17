@@ -13,7 +13,8 @@
     "content:check": "node backend/tools/validate.mjs content",
     "content:import": "node --env-file=.env backend/tools/import_content.mjs content",
     "content:test": "node backend/tools/test_parser.mjs",
-    "objectives:import": "node --env-file=.env backend/tools/import_objectives.mjs"
+    "objectives:import": "node --env-file=.env backend/tools/import_objectives.mjs",
+    "content:coverage": "node backend/tools/coverage.mjs content"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^7.0.1",

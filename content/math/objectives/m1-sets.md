@@ -6,7 +6,11 @@ topic: sets
 
 # Sets
 
-Module 1 - Sets. 8 specific objectives, 3 needing review.
+Module 1 - Sets. 8 specific objectives, 0 needing review.
+
+All three flagged objectives were resolved from the syllabus's own
+CONTENT/EXPLANATORY NOTES column: 3.4's text had wrapped onto a continuation
+line the extractor cut, and 3.3 and 3.7 were complete already.
 
 <!--
 HOW TO REVIEW THIS FILE
@@ -30,15 +34,15 @@ but stays hidden from students until the marker is gone.
 
 3.2  represent a set in various forms
 
-3.3  [?] list subsets of a given set
+3.3  list subsets of a given set
 
-3.4  [?] determine elements in
+3.4  determine elements in intersections, unions and complements of sets
 
 3.5  describe relationships among sets using set notation and symbols
 
 3.6  draw Venn diagrams to represent relationships among sets
 
-3.7  [?] use Venn diagrams to represent the relationships among sets; and,
+3.7  use Venn diagrams to represent the relationships among sets
 
 3.8  solve problems in Number Theory, Algebra and Geometry using concepts in set theory.
 
