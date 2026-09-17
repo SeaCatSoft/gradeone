@@ -3,7 +3,11 @@
 	"compilerOptions": {
 		"rewriteRelativeImportExtensions": true,
 		"allowJs": true,
-		"checkJs": true,
+		// The app is TypeScript throughout. The one JS file it imports
+		// (backend/tools/parse_content.mjs) is a CLI tool that runs under plain
+		// Node with no build step; it carries a .d.ts so the app still gets real
+		// types for it. Checking its internals here only produced noise.
+		"checkJs": false,
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"resolveJsonModule": true,

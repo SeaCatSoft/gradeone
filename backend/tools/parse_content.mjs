@@ -20,6 +20,9 @@ const CODE = /^\d{1,2}\.\d{1,2}$/;
 
 const KINDS = new Set(['mcq', 'numeric', 'structured']);
 
+/** Sections where a ### heading starts a new item rather than a subheading. */
+const ITEM_SECTIONS = new Set(['flashcards', 'questions']);
+
 export function parseFile(file) {
   const raw = fs.readFileSync(file, 'utf8');
   const errors = [];
@@ -68,7 +71,13 @@ export function parseFile(file) {
   const lines = raw.split(/\r?\n/);
   const fmLines = fmMatch[0].split(/\r?\n/).length - 1;
 
-  // Walk the body, slicing it into ## sections and their ### entries.
+  // Walk the body, slicing it into ## sections.
+  //
+  // A ### heading means different things depending on the section it is in.
+  // Under Flashcards and Questions it delimits one item. Under Lesson it is an
+  // ordinary subheading and belongs in the prose. Treating every ### as an item
+  // truncated every lesson at its first subheading -- the text simply vanished,
+  // with no error, because the dropped lines went into entries nothing read.
   const sections = {};
   let current = null;
   for (let i = fmLines; i < lines.length; i++) {
@@ -79,6 +88,12 @@ export function parseFile(file) {
       continue;
     }
     if (!current) continue;
+
+    if (!ITEM_SECTIONS.has(current)) {
+      sections[current].body.push(lines[i]);
+      continue;
+    }
+
     const h3 = lines[i].match(HEAD3);
     if (h3) {
       sections[current].entries.push({ heading: h3[1], line: i + 1, body: [] });

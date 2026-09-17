@@ -38,5 +38,34 @@ for (const [name, re] of [
   if (!ok) failed++;
 }
 
+// A ### inside "## Lesson" is a subheading, not an item delimiter. Treating it
+// as one truncated every lesson at its first subheading -- silently, with no
+// error, because the dropped lines went into entries nothing ever read. These
+// assert the prose after a subheading actually survives.
+const sub = parseFile(
+  new URL('fixtures/subheadings.md', import.meta.url).pathname.replace(/^\//, '')
+);
+const body = (sub.lesson && sub.lesson.body_md) || '';
+
+for (const [name, needle] of [
+  ['keeps prose after a lesson subheading', 'SENTINEL_AFTER_SUBHEADING'],
+  ['keeps prose after a second subheading', 'SENTINEL_SECOND_SUBHEADING'],
+  ['keeps the subheading itself', '### A subheading'],
+  ['keeps inline svg in a lesson', '<svg'],
+  ['keeps tables in a lesson', '| a | b |']
+]) {
+  const ok = body.includes(needle);
+  console.log((ok ? '  ok   ' : '  FAIL ') + name);
+  if (!ok) failed++;
+}
+
+const clean = sub.errors.length === 0;
+console.log((clean ? '  ok   ' : '  FAIL ') + 'subheadings fixture parses without errors');
+if (!clean) failed++;
+
+const items = sub.flashcards.length === 1 && sub.questions.length === 1;
+console.log((items ? '  ok   ' : '  FAIL ') + 'still splits flashcards and questions on ###');
+if (!items) failed++;
+
 console.log('\n' + (failed ? failed + ' check(s) FAILED' : 'all parser checks passed'));
 process.exit(failed ? 1 : 0);

@@ -53,3 +53,29 @@ may be set on any combination of its objectives — not yet modelled.
   this platform already does.
 - **Teacher/class accounts.** No teacher role exists. Adding one means a new
   join table, not loosening an RLS policy.
+
+## Why the app reads markdown, not the database (for now)
+
+`src/lib/content/loader.server.ts` is the only module that knows where content
+comes from. Today it reads the markdown at build time, which means the whole
+platform runs before Supabase exists — and it turns out to be the better
+arrangement for public pages anyway: lessons prerender to complete static HTML,
+maths and diagrams included, so they can rank in search with no database round
+trip. Progress and auth are a different matter and belong in Supabase; they
+live behind `$lib/progress`, which localStorage backs for now.
+
+## Why `###` means two different things
+
+Inside `## Flashcards` and `## Questions` a `###` heading starts a new item.
+Inside `## Lesson` it is an ordinary subheading. The parser originally treated
+every `###` as an item, which silently truncated every lesson at its first
+subheading — the prose went into entries nothing read, and no error was raised
+because the remaining opening paragraph passed the length check. There is now a
+fixture (`backend/tools/fixtures/subheadings.md`) asserting prose, SVG and
+tables survive after a subheading.
+
+## Still to decide: the deploy adapter
+
+The build runs on `adapter-auto`, which reports "could not detect a supported
+production environment" locally. A real target — `adapter-cloudflare` or
+`adapter-vercel` — has to be chosen before anything deploys.
