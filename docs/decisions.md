@@ -79,3 +79,37 @@ tables survive after a subheading.
 The build runs on `adapter-auto`, which reports "could not detect a supported
 production environment" locally. A real target — `adapter-cloudflare` or
 `adapter-vercel` — has to be chosen before anything deploys.
+
+## The visual system
+
+Built on Apple's interface conventions, which suit this app for a reason
+beyond taste: a study platform is read for hours at a time, so the design
+has to recede. The rules being followed:
+
+- **Type changes shape with size.** Tracking is size-specific — large display
+  text goes to `-0.028em` because letters read too loose as they grow, body
+  sits near zero, small captions get a touch of positive tracking. Leading
+  tightens as size grows. One `letter-spacing` for everything is wrong
+  somewhere.
+- **Body is 17px**, Apple's reading size, not the web default 16.
+- **Inter, with `-apple-system` first.** SF Pro is not licensable for the web,
+  and most of these students are not on an Apple device. An iPhone gets the
+  real thing; everyone else gets the closest free equivalent; the system font
+  renders while it loads.
+- **The header is a translucent material**, not an opaque bar — content scrolls
+  underneath it. Its hairline appears only once something is actually behind
+  it, because a permanent divider under floating chrome reads as a seam.
+- **Colour means something.** Teal is the brand, amber is reward (XP, streaks,
+  mastery) and is never used for chrome, green and red are verdicts. Nothing
+  else is coloured, so when something does go amber the student notices.
+- **Feedback is on the press, not the release.** Every button scales to 0.97 on
+  `:active` in 140ms. This is the single cheapest thing that makes an interface
+  feel direct rather than dead.
+- **Motion is critically damped by default** (`cubic-bezier(.32,.72,0,1)`, no
+  overshoot). The one spring with overshoot is reserved for moments that follow
+  a completed effort — the session-complete tick, the score reveal. Bounce on a
+  panel that merely appeared would feel wrong.
+- **Three accessibility preferences are honoured**, not just one:
+  `prefers-reduced-motion` drops travel and overshoot but keeps opacity;
+  `prefers-reduced-transparency` frosts the materials solid;
+  `prefers-contrast: more` firms the separators and drops translucency.

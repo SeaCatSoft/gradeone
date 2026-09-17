@@ -10,6 +10,8 @@
   function mastery(codes: string[]): number {
     return progress ? topicMastery(progress, codes) : 0;
   }
+
+  const topicCount = $derived(data.modules.reduce((a, m) => a + m.topics.length, 0));
 </script>
 
 <svelte:head>
@@ -22,53 +24,54 @@
 
 <div class="wrap">
   <header class="page-head">
-    <h1>CSEC Mathematics</h1>
-    <p class="muted">
-      Three modules, {data.modules.reduce((a, m) => a + m.topics.length, 0)} topics.
-      Each module is sat separately and is worth one stackable credit.
+    <p class="eyebrow">Mathematics</p>
+    <h1>Three modules,<br />{topicCount} topics.</h1>
+    <p class="lede">
+      Each module is sat separately and carries one stackable credit, so the syllabus
+      is already broken into three things you can finish.
     </p>
-    <p class="small muted">
-      Syllabus {data.syllabusCode} · effective for examinations from {data.effectiveFrom}
+    <p class="small ref">
+      {data.syllabusCode} · effective for examinations from {data.effectiveFrom}
     </p>
   </header>
 
   {#each data.modules as mod}
     <section class="module">
       <div class="module-head">
-        <div>
-          <h2>Module {mod.number} — {mod.title}</h2>
-          <p class="small muted">
-            {mod.mcqCount} of the 60 Paper 01 questions · minimum {mod.minHours} hours
-          </p>
-        </div>
+        <h2>Module {mod.number}</h2>
+        <p class="title">{mod.title}</p>
+        <p class="small muted">
+          {mod.mcqCount} of 60 Paper 01 questions · minimum {mod.minHours} hours
+        </p>
       </div>
 
       <div class="grid">
         {#each mod.topics as topic}
           {@const pct = mastery(topic.objectiveCodes)}
           {@const ready = topic.lessonCount > 0}
-          <a class="card topic" class:empty={!ready} href="/math/{topic.slug}">
-            <div class="topic-head">
+          <a class="topic" class:empty={!ready} href="/math/{topic.slug}">
+            <div class="top">
               <h3>{topic.title}</h3>
-              <span class="weight small" title="Questions on Paper 01">{topic.mcqCount}q</span>
+              <span class="weight" title="{topic.mcqCount} questions on Paper 01">
+                {topic.mcqCount}
+              </span>
             </div>
 
-            <p class="small muted objectives">
-              {topic.objectiveCount} objectives
-              {#if topic.needsReview > 0}
-                · <span class="flag">{topic.needsReview} unreviewed</span>
-              {/if}
+            <p class="small muted line">
+              {topic.objectiveCount} objectives{#if topic.needsReview > 0}<span class="flag"
+                  >· {topic.needsReview} unreviewed</span
+                >{/if}
             </p>
 
             {#if ready}
-              <div class="meter" aria-label="Mastery {pct} percent">
+              <div class="meter" role="img" aria-label="{pct}% mastery">
                 <span style="width:{pct}%"></span>
               </div>
-              <p class="small muted counts">
+              <p class="small counts">
                 {topic.lessonCount} lessons · {topic.cardCount} cards · {topic.questionCount} questions
               </p>
             {:else}
-              <p class="small muted counts">No content yet</p>
+              <p class="small counts pending">Content not written yet</p>
             {/if}
           </a>
         {/each}
@@ -78,59 +81,117 @@
 </div>
 
 <style>
-  .page-head { margin-bottom: 2rem; }
-  .page-head p { margin: .25rem 0; }
+  .page-head { max-width: 40ch; margin-bottom: clamp(2.5rem, 6vw, 4rem); }
+  .page-head h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.06;
+    letter-spacing: -.026em;
+    font-weight: 620;
+    margin: .45rem 0 .9rem;
+  }
+  .lede {
+    color: var(--text-secondary);
+    font-size: 1.06rem;
+    line-height: 1.5;
+    letter-spacing: -.008em;
+    margin: 0 0 1rem;
+    max-width: 48ch;
+    text-wrap: pretty;
+  }
+  .ref { color: var(--text-tertiary); margin: 0; }
 
-  .module { margin-bottom: 2.5rem; }
-  .module-head { margin-bottom: .9rem; }
-  .module-head h2 { margin-bottom: .15rem; }
+  .module { margin-bottom: clamp(2.5rem, 5vw, 3.75rem); }
+  .module-head { margin-bottom: 1.1rem; }
+  .module-head h2 {
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin: 0 0 .2rem;
+  }
+  .module-head .title {
+    margin: 0 0 .15rem;
+    font-size: 1.22rem;
+    font-weight: 590;
+    letter-spacing: var(--track-title);
+    line-height: 1.25;
+  }
+  .module-head .small { margin: 0; }
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(238px, 1fr));
+    gap: .85rem;
   }
 
   .topic {
-    padding: 1rem 1.1rem 1.1rem;
-    text-decoration: none;
-    color: inherit;
     display: flex;
     flex-direction: column;
-    gap: .35rem;
-    transition: border-color .15s ease, transform .1s ease;
+    gap: .3rem;
+    padding: 1.05rem 1.15rem 1.15rem;
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    color: inherit;
+    /* Lift rather than recolour on hover: the card comes toward you. */
+    transition:
+      transform var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease);
   }
-  .topic:hover { border-color: var(--brand); transform: translateY(-2px); }
-  .topic.empty { opacity: .62; }
-  .topic.empty:hover { transform: none; }
+  @media (hover: hover) {
+    .topic:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  }
+  .topic:active { transform: scale(.985); transition-duration: var(--dur-fast); }
+  .topic.empty { box-shadow: none; background: transparent; outline: .5px solid var(--separator); }
+  .topic.empty:hover { transform: none; box-shadow: none; }
 
-  .topic-head { display: flex; align-items: baseline; gap: .6rem; }
-  .topic-head h3 { margin: 0; flex: 1; font-size: 1rem; }
+  .top { display: flex; align-items: flex-start; gap: .75rem; }
+  .top h3 {
+    flex: 1;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 590;
+    line-height: 1.28;
+    letter-spacing: var(--track-heading);
+  }
 
+  /* The Paper 01 weighting. A quiet number, but it tells a student where the
+     marks actually are, which is the most useful fact on the card. */
   .weight {
-    color: var(--text-muted);
+    flex: none;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 .35rem;
+    display: grid;
+    place-items: center;
+    border-radius: var(--r-sm);
     background: var(--surface-2);
-    border-radius: 999px;
-    padding: .1rem .45rem;
-    white-space: nowrap;
+    color: var(--text-secondary);
+    font-size: .76rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
   }
+  .empty .weight { background: var(--separator); }
 
-  .objectives { margin: 0; }
-  .flag { color: var(--reward); font-weight: 600; }
+  .line { margin: 0; }
+  .flag { color: var(--reward); font-weight: 550; margin-left: .3rem; }
 
   .meter {
-    height: 6px;
-    border-radius: 999px;
+    height: 5px;
+    border-radius: var(--r-pill);
     background: var(--surface-2);
     overflow: hidden;
-    margin-top: .3rem;
+    margin: .45rem 0 .1rem;
   }
   .meter > span {
     display: block;
     height: 100%;
+    border-radius: inherit;
     background: var(--reward);
-    transition: width .4s ease;
+    transition: width var(--dur-slow) var(--ease);
   }
 
-  .counts { margin: .1rem 0 0; }
+  .counts { margin: 0; color: var(--text-tertiary); }
+  .pending { margin-top: .45rem; }
 </style>

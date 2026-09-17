@@ -43,10 +43,10 @@
   // SM-2 takes 0-5. Four buttons is as much judgement as anyone makes
   // reliably, so the scale is collapsed to the four that matter.
   const GRADES = [
-    { label: 'Again', grade: 1, key: '1' },
-    { label: 'Hard', grade: 3, key: '2' },
-    { label: 'Good', grade: 4, key: '3' },
-    { label: 'Easy', grade: 5, key: '4' }
+    { label: 'Again', grade: 1, key: '1', tone: 'again' },
+    { label: 'Hard', grade: 3, key: '2', tone: 'hard' },
+    { label: 'Good', grade: 4, key: '3', tone: 'good' },
+    { label: 'Easy', grade: 5, key: '4', tone: 'easy' }
   ];
 
   function answer(grade: number) {
@@ -76,6 +76,9 @@
       if (g) { e.preventDefault(); answer(g.grade); }
     }
   }
+
+  const remaining = $derived(queue.length - position);
+  const pct = $derived(queue.length ? (position / queue.length) * 100 : 0);
 </script>
 
 <svelte:window onkeydown={onKey} />
@@ -85,52 +88,62 @@
 </svelte:head>
 
 <div class="wrap narrow">
-  <p class="crumbs small">
+  <nav class="crumbs small">
     <a href="/math/{data.topic.slug}">{data.topic.title}</a>
-    <span class="muted">/ Flashcards</span>
-  </p>
+    <span aria-hidden="true">›</span>
+    <span class="muted">Flashcards</span>
+  </nav>
 
   {#if !progress}
-    <div class="card pad"><p class="muted">Loading your cards…</p></div>
+    <div class="panel"><p class="muted">Loading your cards…</p></div>
 
   {:else if finished}
-    <div class="card pad done">
+    <div class="panel done">
+      <span class="tick" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12.5l4.5 4.5L19 7.5" />
+        </svg>
+      </span>
       <h1>Session complete</h1>
       <p class="muted">
-        You reviewed <strong>{done}</strong>
-        {done === 1 ? 'card' : 'cards'}. Cards you found hard will come back sooner
-        than the ones you found easy.
+        You reviewed <strong>{done}</strong> {done === 1 ? 'card' : 'cards'}. The ones you
+        found hard will come back sooner than the ones you found easy.
       </p>
       <div class="row">
-        <button class="primary" onclick={() => progress && startSession(progress)}>
-          Go again
-        </button>
-        <a class="link" href="/math/{data.topic.slug}/practice">Try practice questions</a>
+        <button class="primary" onclick={() => progress && startSession(progress)}>Go again</button>
+        <a class="quiet" href="/math/{data.topic.slug}/practice">Try practice questions ›</a>
       </div>
     </div>
 
   {:else if card}
-    <div class="meta small muted">
-      <span>{done} done · {queue.length - position} to go</span>
-      <span>Objective {card.objective}</span>
+    <div class="status small">
+      <span class="muted">{done} done <span aria-hidden="true">·</span> {remaining} to go</span>
+      <span class="obj">{card.objective}</span>
     </div>
+    <div class="track" aria-hidden="true"><span style="width:{pct}%"></span></div>
 
-    <div class="card flashcard">
-      <div class="face front">{@html card.front}</div>
+    <!-- Keyed on the card alone. Keying on `revealed` too would remount the
+         whole card on reveal, re-animating the front the student is reading. -->
+    {#key card.id}
+      <div class="flashcard" class:open={revealed}>
+        <div class="face front">{@html card.front}</div>
 
-      {#if revealed}
-        <hr />
-        <div class="face back">{@html card.back}</div>
-      {:else if showHint && card.hint}
-        <p class="hint small">{@html card.hint}</p>
-      {/if}
-    </div>
+        {#if revealed}
+          <div class="rule" aria-hidden="true"></div>
+          <div class="face back">{@html card.back}</div>
+        {:else if showHint && card.hint}
+          <p class="hint small">{@html card.hint}</p>
+        {/if}
+      </div>
+    {/key}
 
     {#if revealed}
       <div class="grades">
         {#each GRADES as g}
-          <button onclick={() => answer(g.grade)}>
-            {g.label}<span class="kbd">{g.key}</span>
+          <button class={g.tone} onclick={() => answer(g.grade)}>
+            <span>{g.label}</span>
+            <kbd>{g.key}</kbd>
           </button>
         {/each}
       </div>
@@ -138,7 +151,8 @@
     {:else}
       <div class="row">
         <button class="primary wide" onclick={() => (revealed = true)}>
-          Show answer<span class="kbd">space</span>
+          <span>Show answer</span>
+          <kbd class="on-brand">space</kbd>
         </button>
         {#if card.hint}
           <button onclick={() => (showHint = true)} disabled={showHint}>Hint</button>
@@ -149,59 +163,152 @@
 </div>
 
 <style>
-  .narrow { max-width: 620px; }
-  .crumbs { margin: 0 0 1rem; }
-  .crumbs a { text-decoration: none; }
+  .narrow { max-width: 600px; }
+  .crumbs { display: flex; align-items: center; gap: .45rem; margin-bottom: 1.4rem; }
+  .crumbs span[aria-hidden] { color: var(--text-tertiary); }
 
-  .pad { padding: 1.5rem; }
-  .done h1 { font-size: 1.4rem; }
+  .panel {
+    background: var(--surface);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow-sm);
+    padding: 2rem 1.75rem;
+  }
+  .done { text-align: center; }
+  .done h1 { font-size: 1.5rem; letter-spacing: -.022em; margin: .2rem 0 .5rem; }
+  .done p { margin: 0 auto 1.5rem; max-width: 42ch; }
+  .tick {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    background: var(--correct-soft);
+    color: var(--correct);
+    /* Materialises with a slight overshoot: this follows a completed effort. */
+    animation: pop var(--dur-slow) var(--ease-spring) both;
+  }
+  .tick svg { width: 22px; height: 22px; }
+  @keyframes pop {
+    from { transform: scale(.6); opacity: 0; }
+    to   { transform: scale(1);  opacity: 1; }
+  }
 
-  .meta { display: flex; justify-content: space-between; margin-bottom: .5rem; }
+  .status { display: flex; justify-content: space-between; align-items: center; margin-bottom: .5rem; }
+  .obj {
+    color: var(--brand);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    background: var(--brand-soft);
+    border-radius: var(--r-pill);
+    padding: .1rem .5rem;
+  }
+
+  .track {
+    height: 3px;
+    border-radius: var(--r-pill);
+    background: var(--surface-2);
+    overflow: hidden;
+    margin-bottom: 1.1rem;
+  }
+  .track > span {
+    display: block;
+    height: 100%;
+    background: var(--brand);
+    border-radius: inherit;
+    transition: width var(--dur) var(--ease);
+  }
 
   .flashcard {
-    padding: 2rem 1.5rem;
-    min-height: 210px;
+    background: var(--surface);
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow);
+    padding: 2.25rem 1.75rem;
+    min-height: 208px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: center;
+    /* Arrives as a material rather than a fade: scale and opacity together. */
+    animation: card-in var(--dur) var(--ease) both;
   }
-  .face :global(p) { margin: 0 0 .7em; }
-  .face :global(p:last-child) { margin-bottom: 0; }
-  .front { font-size: 1.18rem; font-weight: 550; }
-  .back { font-size: 1rem; text-align: left; }
-  .back :global(.katex-display) { overflow-x: auto; }
+  @keyframes card-in {
+    from { transform: scale(.985) translateY(4px); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
 
-  hr { border: 0; border-top: 1px solid var(--border); width: 100%; margin: 1.25rem 0; }
+  .face :global(p) { margin: 0 0 .75em; }
+  .face :global(p:last-child) { margin-bottom: 0; }
+  .front {
+    font-size: 1.24rem;
+    font-weight: 560;
+    line-height: 1.38;
+    letter-spacing: -.016em;
+    text-wrap: balance;
+  }
+  .back {
+    font-size: 1rem;
+    line-height: 1.6;
+    text-align: left;
+    animation: reveal var(--dur-slow) var(--ease-spring) both;
+  }
+  .back :global(.katex-display) { overflow-x: auto; }
+  @keyframes reveal {
+    from { transform: translateY(-6px); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+  }
+
+  .rule { height: .5px; background: var(--separator); margin: 1.3rem 0; }
 
   .hint {
-    margin: 1rem 0 0;
+    margin: 1.1rem 0 0;
     color: var(--reward);
     background: var(--reward-soft);
-    border-radius: var(--radius);
-    padding: .5rem .75rem;
+    border-radius: var(--r);
+    padding: .55rem .8rem;
+    animation: reveal var(--dur) var(--ease) both;
   }
 
-  .row { display: flex; gap: .6rem; margin-top: 1rem; align-items: center; }
+  .row { display: flex; gap: .6rem; margin-top: 1.1rem; align-items: stretch; }
   .wide { flex: 1; }
-  .link { align-self: center; font-size: .9rem; }
+  .quiet { align-self: center; font-size: .92rem; color: var(--text-secondary); }
+  .quiet:hover { color: var(--brand); }
 
-  .grades { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; margin-top: 1rem; }
-  .grades button { display: flex; flex-direction: column; align-items: center; gap: .2rem; padding: .6rem .3rem; }
-
-  .kbd {
-    font-size: .68rem;
-    color: var(--text-muted);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 0 .3rem;
-    margin-left: .4rem;
+  .grades { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; margin-top: 1.1rem; }
+  .grades button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .25rem;
+    padding: .6rem .3rem .5rem;
+    font-size: .92rem;
+    font-weight: 550;
   }
-  .grades .kbd { margin-left: 0; }
+  /* Tone only on the extremes. Colouring all four would make none of them
+     mean anything. */
+  .grades .again { color: var(--wrong); }
+  .grades .easy  { color: var(--correct); }
 
-  .tip { text-align: center; margin-top: .6rem; }
+  kbd {
+    font-family: inherit;
+    font-size: .68rem;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    background: var(--surface-2);
+    border-radius: 5px;
+    padding: .05rem .34rem;
+    line-height: 1.5;
+  }
+  .primary { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; }
+  kbd.on-brand {
+    color: var(--on-brand);
+    background: color-mix(in srgb, var(--on-brand) 20%, transparent);
+  }
 
-  @media (max-width: 480px) {
+  .tip { text-align: center; margin-top: .7rem; }
+
+  @media (max-width: 460px) {
     .grades { grid-template-columns: repeat(2, 1fr); }
+    .flashcard { padding: 1.75rem 1.25rem; }
   }
 </style>
