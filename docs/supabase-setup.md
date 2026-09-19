@@ -51,16 +51,33 @@ start-cycle for days.
 007 ends in a self-test. If the assessment grid does not total 60 questions
 split 20/20/20, it raises rather than seeding something wrong.
 
-## 4. Turn off email confirmation while testing (optional)
+## 4. Tell Supabase where the site lives
+
+Authentication → URL Configuration. Confirmation emails and password-reset
+links will only ever send people to an address on this list — leave one off
+and those links break silently on the day it matters.
+
+**Site URL:** `http://localhost:5175` while testing locally. Switch it to
+`https://seacatsoft.github.io/gradeone/` once the site is deployed and people
+are signing up there.
+
+**Redirect URLs** — add all three now, so nothing needs revisiting later:
+
+```
+http://localhost:5175/**
+http://localhost:5176/gradeone/**
+https://seacatsoft.github.io/gradeone/**
+```
+
+(5176 is `npm run preview:pages`, the local copy of how Pages serves the site.)
+When the custom domain arrives, add it here too.
+
+### Email confirmation (optional while testing)
 
 Authentication → Providers → Email. With "Confirm email" on, signing up sends a
-link and the app shows a "check your email" screen. That is the right setting
-for real students. While you are testing it is faster to turn it off so signup
-logs you straight in.
-
-If you leave it on, set Authentication → URL Configuration → Site URL to
-`http://localhost:5175` for now, or the confirmation link will point at the
-wrong host.
+link and the app shows a "check your email" screen — the right setting for real
+students. While you are testing it is faster to turn it off so signup logs you
+straight in.
 
 ## 5. Try it
 
@@ -71,6 +88,24 @@ npm run dev
 Study a few flashcards while signed out, then create an account. The progress
 you just made should follow you in — that path is `syncOnSignIn` in
 `src/lib/sync.ts`, and it is the bit most worth checking.
+
+## 6. Give the deploy the keys
+
+The site is built by GitHub Actions, which has no `.env`. In the repository:
+Settings → Secrets and variables → Actions → **Variables** tab (not Secrets):
+
+```
+PUBLIC_SUPABASE_URL       https://xxxxxxxxxxxx.supabase.co
+PUBLIC_SUPABASE_ANON_KEY  eyJhbGci...
+```
+
+Variables rather than secrets because the anon key is designed to be public —
+it ends up in every visitor's browser regardless, and RLS is what protects the
+data. **Never put the service role key here.** Until these are set, the
+deployed site still builds and works, just signed-out.
+
+Variables are read at build time, so after adding them, re-run the deploy:
+Actions → Deploy to GitHub Pages → Run workflow.
 
 ## What is NOT needed yet
 

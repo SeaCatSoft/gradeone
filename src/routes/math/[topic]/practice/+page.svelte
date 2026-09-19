@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import { onMount } from 'svelte';
   import { load as loadProgress, recordAnswer, type Progress } from '$lib/progress';
   import { saveAndSync } from '$lib/sync';
@@ -101,7 +102,7 @@
 
 <div class="wrap narrow">
   <nav class="crumbs small">
-    <a href="/math/{data.topic.slug}">{data.topic.title}</a>
+    <a href="{base}/math/{data.topic.slug}">{data.topic.title}</a>
     <span aria-hidden="true">›</span>
     <span class="muted">Practice</span>
   </nav>
@@ -125,7 +126,7 @@
       </p>
       <div class="row">
         <button class="primary" onclick={start}>Try again</button>
-        <a class="quiet" href="/math/{data.topic.slug}">Back to {data.topic.title} ›</a>
+        <a class="quiet" href="{base}/math/{data.topic.slug}">Back to {data.topic.title} ›</a>
       </div>
     </div>
 

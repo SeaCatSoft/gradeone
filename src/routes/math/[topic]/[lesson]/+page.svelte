@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   let { data } = $props();
 </script>
 
@@ -12,9 +13,9 @@
 
 <div class="wrap">
   <nav class="crumbs small">
-    <a href="/math">Mathematics</a>
+    <a href="{base}/math">Mathematics</a>
     <span aria-hidden="true">›</span>
-    <a href="/math/{data.topic.slug}">{data.topic.title}</a>
+    <a href="{base}/math/{data.topic.slug}">{data.topic.title}</a>
   </nav>
 
   <article>
@@ -54,10 +55,10 @@
   <aside class="after">
     <p class="lead">Now practise it.</p>
     <div class="links">
-      <a class="pill" href="/math/{data.topic.slug}/flashcards">
+      <a class="pill" href="{base}/math/{data.topic.slug}/flashcards">
         Review {data.lesson.cardCount} flashcards
       </a>
-      <a class="pill" href="/math/{data.topic.slug}/practice">
+      <a class="pill" href="{base}/math/{data.topic.slug}/practice">
         Try {data.lesson.questionCount} questions
       </a>
     </div>
@@ -65,7 +66,7 @@
 
   <nav class="pager">
     {#if data.prev}
-      <a class="step" href="/math/{data.topic.slug}/{data.prev.slug}">
+      <a class="step" href="{base}/math/{data.topic.slug}/{data.prev.slug}">
         <span class="small muted">‹ Previous</span>
         <strong>{data.prev.title}</strong>
       </a>
@@ -73,7 +74,7 @@
       <span></span>
     {/if}
     {#if data.next}
-      <a class="step next" href="/math/{data.topic.slug}/{data.next.slug}">
+      <a class="step next" href="{base}/math/{data.topic.slug}/{data.next.slug}">
         <span class="small muted">Next ›</span>
         <strong>{data.next.title}</strong>
       </a>

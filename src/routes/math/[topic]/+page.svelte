@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import { onMount } from 'svelte';
   import { load as loadProgress, topicMastery, dueCount, type Progress } from '$lib/progress';
 
@@ -33,7 +34,7 @@
 
 <div class="wrap">
   <nav class="crumbs small">
-    <a href="/math">Mathematics</a>
+    <a href="{base}/math">Mathematics</a>
     <span aria-hidden="true">›</span>
     <span class="muted">Module {data.module.number}</span>
   </nav>
@@ -69,7 +70,7 @@
 
   {#if hasContent}
     <div class="actions">
-      <a class="action" href="/math/{data.topic.slug}/flashcards">
+      <a class="action" href="{base}/math/{data.topic.slug}/flashcards">
         <span class="glyph" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
                stroke-linejoin="round">
@@ -85,7 +86,7 @@
         </span>
       </a>
 
-      <a class="action" href="/math/{data.topic.slug}/practice">
+      <a class="action" href="{base}/math/{data.topic.slug}/practice">
         <span class="glyph" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
                stroke-linecap="round" stroke-linejoin="round">
@@ -104,7 +105,7 @@
     <ol class="lessons">
       {#each data.lessons as lesson, i}
         <li>
-          <a class="lesson" href="/math/{data.topic.slug}/{lesson.slug}">
+          <a class="lesson" href="{base}/math/{data.topic.slug}/{lesson.slug}">
             <span class="num">{i + 1}</span>
             <span class="body">
               <strong>{lesson.title}</strong>

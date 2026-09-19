@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import { goto } from '$app/navigation';
   import { session } from '$lib/session.svelte';
   import { supabase, friendlyError } from '$lib/supabase';
@@ -85,7 +86,7 @@
     await flush(loadProgress(), session.user?.id ?? null);
     await session.signOut();
     clearLocal();
-    await goto('/');
+    await goto(`${base}/`);
   }
 </script>
 
@@ -106,8 +107,8 @@
         devices.
       </p>
       <div class="row">
-        <a class="btn" href="/signup">Create account</a>
-        <a class="quiet" href="/login">Sign in ›</a>
+        <a class="btn" href="{base}/signup">Create account</a>
+        <a class="quiet" href="{base}/login">Sign in ›</a>
       </div>
     </div>
 

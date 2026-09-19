@@ -15,10 +15,13 @@
     "content:test": "node backend/tools/test_parser.mjs",
     "objectives:import": "node --env-file=.env backend/tools/import_objectives.mjs",
     "content:coverage": "node backend/tools/coverage.mjs content",
-    "syllabus:check": "node backend/tools/check_syllabus.mjs"
+    "syllabus:check": "node backend/tools/check_syllabus.mjs",
+    "links:check": "node backend/tools/check_links.mjs",
+    "preview:pages": "node backend/tools/serve_pages.mjs"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^7.0.1",
+    "@sveltejs/adapter-static": "^3.0.10",
     "@sveltejs/kit": "^2.63.0",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "@types/node": "^22.20.3",

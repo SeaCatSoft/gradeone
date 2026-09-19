@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import '../app.css';
   import 'katex/dist/katex.min.css';
   import favicon from '$lib/assets/favicon.svg';
@@ -75,7 +76,7 @@
 
 <header class:scrolled>
   <div class="wrap bar">
-    <a class="brand" href="/">
+    <a class="brand" href="{base}/">
       <span class="mark" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
              stroke-linecap="round" stroke-linejoin="round">
@@ -87,7 +88,7 @@
     </a>
 
     <nav>
-      <a href="/math">Mathematics</a>
+      <a href="{base}/math">Mathematics</a>
     </nav>
 
     <div class="stats">
@@ -123,11 +124,11 @@
                 <strong>{session.displayName}</strong>
                 <span class="muted">{session.user.email}</span>
               </p>
-              <a href="/account" role="menuitem" onclick={() => (menuOpen = false)}>Your account</a>
+              <a href="{base}/account" role="menuitem" onclick={() => (menuOpen = false)}>Your account</a>
             </div>
           {/if}
         {:else if session.ready}
-          <a class="signin" href="/login">Sign in</a>
+          <a class="signin" href="{base}/login">Sign in</a>
         {/if}
       </div>
 

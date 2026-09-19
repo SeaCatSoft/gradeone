@@ -1,3 +1,7 @@
+<script lang="ts">
+  import { base } from '$app/paths';
+</script>
+
 <svelte:head>
   <title>Grade One — CSEC study, built on the syllabus</title>
   <meta
@@ -16,8 +20,8 @@
       and what the examiner can ask.
     </p>
     <div class="cta">
-      <a class="btn" href="/math">Start with Mathematics</a>
-      <a class="btn ghost" href="/signup">Create an account</a>
+      <a class="btn" href="{base}/math">Start with Mathematics</a>
+      <a class="btn ghost" href="{base}/signup">Create an account</a>
     </div>
   </div>
 </section>

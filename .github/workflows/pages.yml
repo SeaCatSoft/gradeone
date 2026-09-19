@@ -1,0 +1,81 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# A newer push cancels an older deploy still in flight. This is also what
+# unsticks a run that wedges at "waiting" during a GitHub-side incident -- on
+# Roost the fix for that was to push again, and this makes the push enough.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # Job-level, not on the build step alone: `npm run check` generates types
+    # from the PUBLIC_ variables too, and fails without them.
+    env:
+      # The site lives at seacatsoft.github.io/gradeone/. When it moves to a
+      # custom domain, delete this line -- nothing else changes.
+      BASE_PATH: /gradeone
+      # Repository VARIABLES, not secrets: the anon key is designed to be public
+      # and ends up in the browser bundle regardless; RLS is what protects the
+      # data. The fallbacks let the site build and run signed-out before the
+      # variables are set.
+      PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL || 'https://YOUR-PROJECT.supabase.co' }}
+      PUBLIC_SUPABASE_ANON_KEY: ${{ vars.PUBLIC_SUPABASE_ANON_KEY || 'YOUR-ANON-KEY' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # Every check runs before the build. A bad link, broken content or a
+      # drifted syllabus stops the deploy instead of reaching students.
+      - name: Links go through the base path
+        run: npm run links:check
+      - name: Syllabus structure agrees across sources
+        run: npm run syllabus:check
+      - name: Parser still catches every known mistake
+        run: npm run content:test
+      - name: Content validates
+        run: npm run content:check
+      - name: Types
+        run: npm run check
+
+      - name: Build
+        run: npm run build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          # deploy-pages gives up after 10 minutes of polling GitHub's Pages
+          # backend by default. Roost hit exactly that mark on 2026-08-06 with
+          # nothing actually wrong. 20 minutes gives a slow backend room to
+          # confirm instead of the action quitting early.
+          timeout: 1200000

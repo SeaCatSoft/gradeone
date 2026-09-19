@@ -156,3 +156,24 @@ spaced-repetition schedules has no correct answer, and quietly picking one
 produces review dates neither device asked for. Last-signed-in-device-wins is
 the honest behaviour, and the account page says so in plain words rather than
 leaving a student to discover it.
+
+## Hosting: GitHub Pages now, custom domain later
+
+The site is static, so it deploys to GitHub Pages at
+`seacatsoft.github.io/gradeone/`. A project site lives under a subfolder, so
+every internal link goes through `base` from `$app/paths`, set by `BASE_PATH`
+at build time. Moving to a custom domain later means deleting one line from
+`.github/workflows/pages.yml` — no link in the app changes.
+
+The trap with base paths is that a hardcoded `/math` works perfectly on
+localhost, where the base is empty, and only 404s once deployed. So
+`npm run links:check` fails on any link that skips the base, and it runs in the
+deploy workflow before the build. `npm run preview:pages` serves the build the
+way Pages does — under `/gradeone/`, extensionless URLs mapped to `.html`,
+404.html for the rest — because `vite preview` serves from the root and cannot
+catch the mistake.
+
+Locally, build with `MSYS_NO_PATHCONV=1 BASE_PATH=/gradeone`. Git Bash rewrites
+a bare `/gradeone` into `C:/Program Files/Git/gradeone` before Node sees it; the
+validation in `vite.config.ts` is what caught that. CI runs on Linux and is
+unaffected.

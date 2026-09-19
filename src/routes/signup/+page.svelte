@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import { goto } from '$app/navigation';
   import { supabase, isConfigured, friendlyError } from '$lib/supabase';
   import { syncOnSignIn } from '$lib/sync';
@@ -39,7 +40,7 @@
       options: {
         // Read by the handle_new_user trigger in migration 003.
         data: { display_name: name.trim(), exam_sitting: sitting },
-        emailRedirectTo: `${location.origin}/login`
+        emailRedirectTo: `${location.origin}${base}/login`
       }
     });
 
@@ -57,7 +58,7 @@
     }
 
     await syncOnSignIn(data.session.user.id);
-    await goto('/math');
+    await goto(`${base}/math`);
   }
 </script>
 
@@ -82,7 +83,7 @@
         signed in. Nothing you have already studied is lost — it is saved in this browser
         and will move across once you confirm.
       </p>
-      <a class="quiet" href="/login">Back to sign in ›</a>
+      <a class="quiet" href="{base}/login">Back to sign in ›</a>
     </div>
 
   {:else}
@@ -141,7 +142,7 @@
       </form>
 
       <p class="alt small">
-        Already have an account? <a href="/login">Sign in</a>
+        Already have an account? <a href="{base}/login">Sign in</a>
       </p>
     </div>
   {/if}

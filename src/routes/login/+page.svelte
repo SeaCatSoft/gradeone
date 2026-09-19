@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import { goto } from '$app/navigation';
   import { supabase, isConfigured, friendlyError } from '$lib/supabase';
   import { syncOnSignIn } from '$lib/sync';
@@ -40,7 +41,7 @@
     // swapping it — this is the moment they are most likely to notice.
     const outcome = await syncOnSignIn(data.user.id);
     if (outcome === 'uploaded') notice = 'Your progress from this browser was saved to your account.';
-    await goto('/math');
+    await goto(`${base}/math`);
   }
 
   async function resetPassword() {
@@ -51,7 +52,7 @@
     }
     busy = true;
     const { error: err } = await db.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${location.origin}/account`
+      redirectTo: `${location.origin}${base}/account`
     });
     busy = false;
     if (err) error = friendlyError(err.message);
@@ -111,7 +112,7 @@
     </button>
 
     <p class="alt small">
-      No account yet? <a href="/signup">Create one</a>
+      No account yet? <a href="{base}/signup">Create one</a>
     </p>
   </div>
 </div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import { onMount } from 'svelte';
   import { load as loadProgress, topicMastery, type Progress } from '$lib/progress';
 
@@ -49,7 +50,7 @@
         {#each mod.topics as topic}
           {@const pct = mastery(topic.objectiveKeys)}
           {@const ready = topic.lessonCount > 0}
-          <a class="topic" class:empty={!ready} href="/math/{topic.slug}">
+          <a class="topic" class:empty={!ready} href="{base}/math/{topic.slug}">
             <div class="top">
               <h3>{topic.title}</h3>
               <span class="weight" title="{topic.mcqCount} questions on Paper 01">
