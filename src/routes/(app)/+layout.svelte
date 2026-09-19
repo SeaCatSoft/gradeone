@@ -1,0 +1,313 @@
+<script lang="ts">
+  import { base } from '$app/paths';
+  import { page } from '$app/state';
+  import Icon, { type IconName } from '$lib/components/Icon.svelte';
+  import Rings from '$lib/components/Rings.svelte';
+  import { session } from '$lib/session.svelte';
+  import { stats } from '$lib/stats.svelte';
+  import { theme } from '$lib/theme.svelte';
+  import { RING_COLORS } from '$lib/modules';
+
+  let { children } = $props();
+
+  type Item = { href: string; label: string; icon: IconName; match: (p: string) => boolean };
+
+  const path = $derived(page.url.pathname.slice(base.length) || '/');
+
+  // Named for what is inside, not "Home": Today is today's work, Mathematics is
+  // the syllabus. Specific labels are predictable ones.
+  const items: Item[] = [
+    { href: '/today', label: 'Today', icon: 'today', match: (p) => p.startsWith('/today') },
+    { href: '/math', label: 'Mathematics', icon: 'book', match: (p) => p.startsWith('/math') },
+    { href: '/account', label: 'Account', icon: 'person', match: (p) => p.startsWith('/account') }
+  ];
+
+  const miniRings = $derived([
+    { value: stats.rings.learn, ...RING_COLORS.learn, label: 'Learn' },
+    { value: stats.rings.review, ...RING_COLORS.review, label: 'Review' },
+    { value: stats.rings.practice, ...RING_COLORS.practice, label: 'Practice' }
+  ]);
+</script>
+
+<div class="shell">
+  <!-- Desktop: a floating glass sidebar, inset from the window edges. -->
+  <aside class="sidebar glass" aria-label="Main">
+    <a class="brand" href="{base}/">
+      <span class="mark"><Icon name="sparkle" size={16} /></span>
+      Grade One
+    </a>
+
+    <nav class="side-nav">
+      {#each items.slice(0, 2) as it}
+        <a href="{base}{it.href}" class:active={it.match(path)} aria-current={it.match(path) ? 'page' : undefined}>
+          <Icon name={it.icon} size={19} />
+          <span>{it.label}</span>
+        </a>
+      {/each}
+    </nav>
+
+    <p class="side-label">Subjects</p>
+    <nav class="side-nav subjects">
+      <a href="{base}/math" class:active={path.startsWith('/math')}>
+        <span class="dot" style="background:#30b862"></span><span>Mathematics</span>
+      </a>
+      <!-- Shown, not hidden: a student should see the platform is growing into
+           their other subjects. Disabled rather than linking to an empty page. -->
+      <span class="soon"><span class="dot" style="background:#0a84ff"></span>Information Technology<em>Soon</em></span>
+      <span class="soon"><span class="dot" style="background:#ff8a00"></span>EDPM<em>Soon</em></span>
+    </nav>
+
+    <div class="side-foot">
+      <a class="today-mini" href="{base}/today" aria-label="Today's rings">
+        <Rings rings={miniRings} size={38} stroke={5} gap={1.5} />
+        <span class="mini-text">
+          <strong>Level {stats.level}</strong>
+          <span>
+            {#if stats.streak > 0}<span class="flame"><Icon name="flame" size={12} /></span>{stats.streak}-day streak{:else}Start a streak today{/if}
+          </span>
+        </span>
+      </a>
+
+      <div class="account-row">
+        {#if session.ready && session.user}
+          <a class="who" href="{base}/account">
+            <span class="avatar">{session.displayName.slice(0, 1).toUpperCase()}</span>
+            <span class="who-text">
+              <strong>{session.displayName}</strong>
+              <span>Account</span>
+            </span>
+          </a>
+        {:else if session.ready}
+          <a class="signin" href="{base}/login">Sign in</a>
+        {:else}
+          <span></span>
+        {/if}
+        <button class="icon-btn" onclick={() => theme.toggle()}
+                aria-label="Switch to {theme.isDark ? 'light' : 'dark'} appearance">
+          <Icon name={theme.isDark ? 'sun' : 'moon'} size={17} />
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="content">
+    {@render children()}
+  </main>
+
+  <!-- Phones: a floating glass tab bar, clear of the home indicator. -->
+  <nav class="tabbar glass" aria-label="Main">
+    {#each items as it}
+      <a href="{base}{it.href}" class:active={it.match(path)} aria-current={it.match(path) ? 'page' : undefined}>
+        <Icon name={it.icon} size={22} />
+        <span>{it.label === 'Mathematics' ? 'Maths' : it.label}</span>
+      </a>
+    {/each}
+  </nav>
+</div>
+
+<style>
+  .content {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 2.25rem clamp(1.1rem, 4vw, 2.75rem) calc(7rem + env(safe-area-inset-bottom));
+  }
+
+  /* ------------------------------------------------------------ sidebar */
+  .sidebar { display: none; }
+
+  @media (min-width: 1000px) {
+    .sidebar {
+      position: fixed;
+      top: 12px;
+      bottom: 12px;
+      left: 12px;
+      width: var(--sidebar-w);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      padding: 1.1rem .75rem .8rem;
+      border-radius: 22px;
+    }
+    .content {
+      margin-left: calc(var(--sidebar-w) + 24px);
+      margin-right: auto;
+      padding-bottom: 4rem;
+      max-width: 1000px;
+    }
+    .tabbar { display: none !important; }
+  }
+  /* Centre the content in the space right of the sidebar on wide screens. */
+  @media (min-width: 1400px) {
+    .content { margin-left: max(calc(var(--sidebar-w) + 24px), calc((100vw - 1000px + var(--sidebar-w)) / 2)); }
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    padding: .2rem .6rem .9rem;
+    color: var(--text);
+    font-weight: 680;
+    font-size: 1.02rem;
+    letter-spacing: -.02em;
+  }
+  .brand:hover { color: var(--text); }
+  .mark {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    color: #fff;
+    background: linear-gradient(135deg, #34c759, #0b7a5e);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35);
+  }
+
+  .side-nav { display: flex; flex-direction: column; gap: 2px; }
+  .side-nav a, .soon {
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    padding: .5rem .65rem;
+    border-radius: 10px;
+    color: var(--text);
+    font-size: .95rem;
+    font-weight: 500;
+    letter-spacing: -.008em;
+    transition: background-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+  }
+  .side-nav a :global(svg) { color: var(--text-secondary); }
+  @media (hover: hover) {
+    .side-nav a:hover { background: color-mix(in srgb, var(--text) 6%, transparent); color: var(--text); }
+  }
+  .side-nav a:active { transform: scale(.98); }
+  .side-nav a.active {
+    background: color-mix(in srgb, var(--brand) 14%, transparent);
+    color: var(--brand);
+    font-weight: 600;
+  }
+  .side-nav a.active :global(svg) { color: var(--brand); }
+
+  .side-label {
+    margin: 1.4rem .65rem .35rem;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; margin: 0 .25rem 0 .35rem; }
+  .soon { color: var(--text-tertiary); cursor: default; }
+  .soon em {
+    margin-left: auto;
+    font-style: normal;
+    font-size: .68rem;
+    font-weight: 600;
+    padding: .08rem .45rem;
+    border-radius: var(--r-pill);
+    background: color-mix(in srgb, var(--text) 7%, transparent);
+  }
+
+  .side-foot { margin-top: auto; display: flex; flex-direction: column; gap: .5rem; }
+  .today-mini {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .6rem .65rem;
+    border-radius: 14px;
+    color: var(--text);
+    background: color-mix(in srgb, var(--text) 4%, transparent);
+    transition: background-color var(--dur-fast) var(--ease);
+  }
+  .today-mini:hover { color: var(--text); background: color-mix(in srgb, var(--text) 7%, transparent); }
+  .mini-text { display: flex; flex-direction: column; line-height: 1.25; font-size: .8rem; color: var(--text-secondary); }
+  .mini-text strong { color: var(--text); font-size: .9rem; font-weight: 620; }
+  .flame { color: #ff8a00; display: inline-flex; vertical-align: -1px; margin-right: 2px; }
+
+  .account-row { display: flex; align-items: center; gap: .4rem; }
+  .who {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .35rem .4rem;
+    border-radius: 12px;
+    color: var(--text);
+  }
+  .who:hover { color: var(--text); background: color-mix(in srgb, var(--text) 5%, transparent); }
+  .avatar {
+    flex: none;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #fff;
+    font-weight: 650;
+    font-size: .85rem;
+    background: linear-gradient(135deg, #40a9ff, #3a3ad6);
+  }
+  .who-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.2; }
+  .who-text strong { font-size: .88rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .who-text span { font-size: .76rem; color: var(--text-secondary); }
+  .signin {
+    flex: 1;
+    text-align: center;
+    padding: .5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: .9rem;
+    background: var(--brand);
+    color: var(--on-brand);
+  }
+  .signin:hover { color: var(--on-brand); background: var(--brand-hover); }
+
+  .icon-btn {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 0;
+    background: transparent;
+    color: var(--text-secondary);
+  }
+  @media (hover: hover) {
+    .icon-btn:hover { background: color-mix(in srgb, var(--text) 7%, transparent); color: var(--text); }
+  }
+
+  /* ------------------------------------------------------------ tab bar */
+  .tabbar {
+    position: fixed;
+    left: 50%;
+    bottom: calc(14px + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 30;
+    display: flex;
+    gap: 2px;
+    padding: 5px;
+    border-radius: 30px;
+  }
+  .tabbar a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 76px;
+    padding: .42rem .9rem .38rem;
+    border-radius: 24px;
+    color: var(--text-secondary);
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .01em;
+    transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), transform var(--dur-fast) var(--ease);
+  }
+  .tabbar a:active { transform: scale(.94); }
+  .tabbar a.active {
+    color: var(--brand);
+    background: color-mix(in srgb, var(--brand) 13%, transparent);
+  }
+</style>

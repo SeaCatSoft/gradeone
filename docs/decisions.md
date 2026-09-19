@@ -177,3 +177,36 @@ Locally, build with `MSYS_NO_PATHCONV=1 BASE_PATH=/gradeone`. Git Bash rewrites
 a bare `/gradeone` into `C:/Program Files/Git/gradeone` before Node sees it; the
 validation in `vite.config.ts` is what caught that. CI runs on Linux and is
 unaffected.
+
+## The app is laid out like an Apple app, not a website
+
+The first visual pass applied Apple's surface rules (type, colour, depth) to an
+ordinary web layout — top bar, card grids — and still read as a website. The
+redesign changed the structure:
+
+- **An app shell.** A floating glass sidebar on desktop; a floating glass tab
+  bar on phones. Routes are split into `(app)` and `(marketing)` groups, which
+  are folders only — no URL changed.
+- **Today, after Apple Fitness.** Three rings — Learn one lesson, Review ten
+  cards, Practice five questions — derived from the XP event log, which
+  already syncs, so every device agrees without a new table. Goals are small
+  on purpose: a ring you can close on a school night is a habit.
+- **A colour per module**, carried through rings, heroes and tiles (see
+  `$lib/modules`). Ring colours are Activity's, which are tuned for black —
+  so the rings card is always dark, like the Fitness widget.
+- **Flashcards are a gesture-driven stack.** `$lib/spring` implements Apple's
+  spring parameterisation (response + damping ratio), velocity handoff,
+  momentum projection and rubber-banding. `npm run test:motion` tests the
+  physics and the swipe rules on a fake clock, because a browser test is
+  unreliable here: a background tab throttles animation frames and springs
+  stall mid-flight.
+
+## Bugs the redesign surfaced
+
+- **Evening streaks broke.** Days were UTC; the Caribbean is 4-5 hours behind,
+  so studying after 8pm counted as tomorrow. Days are now the student's local
+  days (`localDay` in `$lib/progress`).
+- **A broken streak still displayed.** The stored count is only reset on the
+  next activity; `liveStreak` checks it is actually alive.
+- **Drag, pause, release graded the card.** The velocity tracker used samples
+  from before the pause. A finger that has stopped now has zero velocity.

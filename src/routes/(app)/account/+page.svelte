@@ -5,6 +5,8 @@
   import { supabase, friendlyError } from '$lib/supabase';
   import { clearLocal, flush } from '$lib/sync';
   import { load as loadProgress, totalXp, level } from '$lib/progress';
+  import { theme } from '$lib/theme.svelte';
+  import Icon from '$lib/components/Icon.svelte';
 
   let name = $state('');
   let school = $state('');
@@ -95,7 +97,9 @@
   <meta name="robots" content="noindex" />
 </svelte:head>
 
-<div class="wrap account">
+<div class="account">
+  <h1 class="large-title">Account</h1>
+
   {#if !session.ready}
     <p class="muted">Loading…</p>
 
@@ -114,8 +118,11 @@
 
   {:else}
     <header class="head">
-      <h1>{session.displayName}</h1>
-      <p class="muted small">{session.user.email}</p>
+      <span class="big-avatar">{session.displayName.slice(0, 1).toUpperCase()}</span>
+      <div>
+        <p class="name">{session.displayName}</p>
+        <p class="muted small">{session.user.email}</p>
+      </div>
     </header>
 
     <section class="stats">
@@ -175,10 +182,53 @@
       <button type="button" onclick={signOut}>Sign out</button>
     </div>
   {/if}
+
+  <!-- Here as well as in the sidebar: on a phone the tab bar has no room for
+       it, and this is where iOS puts appearance settings. -->
+  <h2 class="section">Appearance</h2>
+  <button class="appearance" onclick={() => theme.toggle()}>
+    <Icon name={theme.isDark ? 'moon' : 'sun'} size={19} />
+    <span>{theme.isDark ? 'Dark' : 'Light'}</span>
+    <span class="muted small switch-to">Switch to {theme.isDark ? 'light' : 'dark'}</span>
+  </button>
 </div>
 
 <style>
-  .account { max-width: 560px; }
+  .account { max-width: 600px; }
+  .account > :global(.large-title) { margin-bottom: 1.5rem; }
+  .big-avatar {
+    flex: none;
+    width: 60px;
+    height: 60px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 650;
+    background: linear-gradient(135deg, #40a9ff, #3a3ad6);
+  }
+  .name { margin: 0; font-size: 1.35rem; font-weight: 680; letter-spacing: -.02em; }
+  /* Its own class rather than reusing .panel: .panel is a column, and on a
+     button its layout lost to .panel's by source order. */
+  button.appearance {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    width: 100%;
+    padding: .95rem 1.2rem;
+    border: 0;
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow-sm);
+    text-align: left;
+    font-weight: 560;
+  }
+  @media (hover: hover) {
+    button.appearance:hover { background: var(--surface-2); }
+  }
+  .switch-to { margin-left: auto; }
 
   .panel {
     background: var(--surface);
@@ -193,13 +243,7 @@
   .center h1 { font-size: 1.4rem; letter-spacing: -.022em; margin: 0; }
   .center p { margin: 0; max-width: 40ch; }
 
-  .head { margin-bottom: 1.75rem; }
-  .head h1 {
-    font-size: clamp(1.8rem, 4vw, 2.5rem);
-    letter-spacing: -.026em;
-    line-height: 1.08;
-    margin: 0 0 .2rem;
-  }
+  .head { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
   .head p { margin: 0; }
 
   .stats {

@@ -4,6 +4,8 @@
   import { load as loadProgress, recordAnswer, type Progress } from '$lib/progress';
   import { saveAndSync } from '$lib/sync';
   import { session } from '$lib/session.svelte';
+  import Icon from '$lib/components/Icon.svelte';
+  import { themeVars } from '$lib/modules';
 
   let { data } = $props();
 
@@ -100,12 +102,8 @@
   <title>{data.topic.title} practice — Grade One</title>
 </svelte:head>
 
-<div class="wrap narrow">
-  <nav class="crumbs small">
-    <a href="{base}/math/{data.topic.slug}">{data.topic.title}</a>
-    <span aria-hidden="true">›</span>
-    <span class="muted">Practice</span>
-  </nav>
+<div class="narrow" style={themeVars(data.topic.module)}>
+  <a class="back-link" href="{base}/math/{data.topic.slug}"><Icon name="chevron-left" size={17} />{data.topic.title}</a>
 
   {#if !progress}
     <div class="panel"><p class="muted">Loading questions…</p></div>
@@ -237,14 +235,21 @@
 </div>
 
 <style>
-  .narrow { max-width: 640px; }
-  .crumbs { display: flex; align-items: center; gap: .45rem; margin-bottom: 1.4rem; }
-  .crumbs span[aria-hidden] { color: var(--text-tertiary); }
+  .narrow { max-width: 620px; margin: 0 auto; }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: .1rem;
+    margin: 0 0 1.2rem -.3rem;
+    font-weight: 500;
+    color: var(--mod);
+  }
+  .back-link:hover { color: var(--mod); opacity: .8; }
 
   .panel {
     background: var(--surface);
-    border-radius: var(--r-xl);
-    box-shadow: var(--shadow-sm);
+    border-radius: 26px;
+    box-shadow: var(--shadow);
     padding: 2rem 1.75rem;
   }
   .done { text-align: center; }
@@ -257,7 +262,7 @@
     font-variant-numeric: tabular-nums;
     animation: pop var(--dur-slow) var(--ease-spring) both;
   }
-  .score { color: var(--brand); }
+  .score { color: var(--mod); }
   .of { color: var(--text-tertiary); font-size: .5em; font-weight: 500; }
   .verdict-line { margin: 0 auto 1.5rem; max-width: 40ch; }
   @keyframes pop {
@@ -276,14 +281,14 @@
   .track > span {
     display: block;
     height: 100%;
-    background: var(--brand);
+    background: var(--mod);
     border-radius: inherit;
     transition: width var(--dur) var(--ease);
   }
 
   .question {
     background: var(--surface);
-    border-radius: var(--r-xl);
+    border-radius: 26px;
     box-shadow: var(--shadow);
     padding: 1.4rem 1.5rem 1.5rem;
     animation: card-in var(--dur) var(--ease) both;
@@ -295,10 +300,10 @@
 
   .qmeta { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: .9rem; }
   .obj {
-    color: var(--brand);
-    font-weight: 600;
+    color: var(--mod);
+    font-weight: 700;
     font-variant-numeric: tabular-nums;
-    background: var(--brand-soft);
+    background: var(--mod-soft);
     border-radius: var(--r-pill);
     padding: .1rem .5rem;
   }
@@ -316,8 +321,8 @@
     gap: .75rem;
     text-align: left;
     padding: .7rem .9rem;
-    border-radius: var(--r);
-    font-weight: 450;
+    border-radius: 16px;
+    font-weight: 480;
     background: var(--surface-2);
     border-color: transparent;
   }
@@ -337,8 +342,8 @@
     font-weight: 620;
   }
 
-  .selected { background: var(--brand-soft); box-shadow: inset 0 0 0 1.5px var(--brand); }
-  .selected .key { background: var(--brand); color: var(--on-brand); }
+  .selected { background: var(--mod-soft); box-shadow: inset 0 0 0 2px var(--mod); }
+  .selected .key { background: var(--mod); color: #fff; }
   .right { background: var(--correct-soft); box-shadow: inset 0 0 0 1.5px var(--correct); }
   .right .key { background: var(--correct); color: var(--surface); }
   .wrong { background: var(--wrong-soft); box-shadow: inset 0 0 0 1.5px var(--wrong); }
@@ -357,7 +362,7 @@
     max-width: 240px;
     transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
   }
-  .numeric input:focus { border-color: var(--brand); outline: none; }
+  .numeric input:focus { border-color: var(--mod); outline: none; }
   .numeric input.right { border-color: var(--correct); background: var(--correct-soft); }
   .numeric input.wrong { border-color: var(--wrong); background: var(--wrong-soft); }
 

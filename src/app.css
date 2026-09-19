@@ -288,6 +288,94 @@ th {
   letter-spacing: var(--track-caption);
 }
 
+/* ---------------------------------------------------------- glass & space
+   The current Apple look floats controls as glass above the content rather
+   than bolting bars to the edges. Glass only reads as glass if there is
+   something behind it, so the page ground carries a faint ambient wash in the
+   module colours. It is fixed, so it never scrolls or moves — no
+   full-viewport motion. */
+
+:root {
+  --glass:        rgba(255, 255, 255, .64);
+  --glass-strong: rgba(255, 255, 255, .8);
+  --glass-edge:   rgba(255, 255, 255, .75);  /* the lit top edge of the material */
+  --glass-line:   rgba(0, 0, 0, .06);
+  --glass-blur:   saturate(185%) blur(24px);
+  --glass-shadow: 0 1px 1px rgba(0, 0, 0, .04), 0 10px 30px -10px rgba(0, 0, 0, .18);
+  --ambient-1: rgba(52, 199, 89, .10);
+  --ambient-2: rgba(10, 132, 255, .09);
+  --ambient-3: rgba(255, 138, 0, .07);
+  --sidebar-w: 248px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --glass:        rgba(44, 44, 48, .58);
+    --glass-strong: rgba(44, 44, 48, .78);
+    --glass-edge:   rgba(255, 255, 255, .14);
+    --glass-line:   rgba(255, 255, 255, .08);
+    --glass-shadow: 0 1px 1px rgba(0, 0, 0, .4), 0 12px 34px -10px rgba(0, 0, 0, .7);
+    --ambient-1: rgba(48, 209, 88, .12);
+    --ambient-2: rgba(10, 132, 255, .12);
+    --ambient-3: rgba(255, 138, 0, .08);
+  }
+}
+:root[data-theme='dark'] {
+  --glass:        rgba(44, 44, 48, .58);
+  --glass-strong: rgba(44, 44, 48, .78);
+  --glass-edge:   rgba(255, 255, 255, .14);
+  --glass-line:   rgba(255, 255, 255, .08);
+  --glass-shadow: 0 1px 1px rgba(0, 0, 0, .4), 0 12px 34px -10px rgba(0, 0, 0, .7);
+  --ambient-1: rgba(48, 209, 88, .12);
+  --ambient-2: rgba(10, 132, 255, .12);
+  --ambient-3: rgba(255, 138, 0, .08);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60vmax 50vmax at 8% -10%, var(--ambient-1), transparent 60%),
+    radial-gradient(50vmax 45vmax at 105% 20%, var(--ambient-2), transparent 60%),
+    radial-gradient(55vmax 40vmax at 40% 115%, var(--ambient-3), transparent 60%);
+}
+
+/* A floating glass surface: translucent fill, blur, a lit top edge, soft depth. */
+.glass {
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: inset 0 1px 0 var(--glass-edge), inset 0 0 0 .5px var(--glass-line), var(--glass-shadow);
+}
+
+/* iOS Large Title: big, bold, tight. It is the page's name, not decoration. */
+.large-title {
+  font-size: clamp(2rem, 4.2vw, 2.6rem);
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -.028em;
+  margin: 0;
+}
+.subtitle {
+  margin: .35rem 0 0;
+  color: var(--text-secondary);
+  font-size: 1.02rem;
+  letter-spacing: -.008em;
+}
+
+/* Section header in the grouped-list style: a title and an optional action. */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 2.4rem 0 .85rem;
+}
+.section-head h2 { margin: 0; font-size: 1.28rem; font-weight: 680; letter-spacing: -.02em; }
+.section-head a { font-size: .92rem; font-weight: 500; }
+
 /* -------------------------------------------------- accessibility prefs */
 
 /* Reduced motion is not "no feedback" — it is gentler feedback. Opacity and
@@ -304,7 +392,11 @@ th {
 
 /* Frost the materials rather than blurring them. */
 @media (prefers-reduced-transparency: reduce) {
-  :root { --material: var(--surface); --material-blur: none; }
+  :root {
+    --material: var(--surface); --material-blur: none;
+    --glass: var(--surface); --glass-strong: var(--surface); --glass-blur: none;
+  }
+  body::before { display: none; }
 }
 
 @media (prefers-contrast: more) {
