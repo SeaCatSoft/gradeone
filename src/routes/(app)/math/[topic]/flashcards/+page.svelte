@@ -307,29 +307,28 @@
     gap: .1rem;
     margin: 0 0 1.2rem -.3rem;
     font-weight: 500;
-    color: var(--mod-text);
+    color: var(--mod);
   }
-  .back-link:hover { color: var(--mod-text); opacity: .8; }
+  .back-link:hover { color: var(--mod); opacity: .8; }
 
   .panel {
     padding: 2rem 1.75rem;
-    border-radius: 20px;
+    border-radius: 26px;
     background: var(--surface);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow);
   }
   .done { text-align: center; }
-  .done h1 { margin: .3rem 0 .5rem; font-size: 1.8rem; font-weight: 700; }
+  .done h1 { margin: .3rem 0 .5rem; font-size: 1.6rem; font-weight: 720; letter-spacing: -.026em; }
   .done p { margin: 0 auto 1.5rem; max-width: 40ch; }
   .tick {
     display: grid;
     place-items: center;
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
     margin: 0 auto .9rem;
-    border-radius: 16px;
+    border-radius: 50%;
     color: #fff;
-    background: #15803d;
-    box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14);
+    background: linear-gradient(145deg, #a6f04a, #4cb61c);
     animation: pop var(--dur-slow) var(--ease-spring) both;
   }
   @keyframes pop { from { transform: scale(.55); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -340,22 +339,20 @@
     align-items: center;
     margin-bottom: .5rem;
     font-size: .86rem;
-    font-weight: 700;
     color: var(--text-secondary);
   }
   .obj {
     font-weight: 700;
     font-variant-numeric: tabular-nums;
-    color: var(--mod-text);
+    color: var(--mod);
     background: var(--mod-soft);
     padding: .1rem .55rem;
     border-radius: var(--r-pill);
   }
-  .track { height: 8px; border-radius: var(--r-pill); background: var(--mod-soft); overflow: hidden; margin-bottom: 1.4rem; }
+  .track { height: 4px; border-radius: var(--r-pill); background: var(--surface-2); overflow: hidden; margin-bottom: 1.4rem; }
   .track span {
     display: block;
     height: 100%;
-    border-radius: inherit;
     background: var(--mod);
     transform-origin: left;
     transition: transform var(--dur) var(--ease);
@@ -364,9 +361,8 @@
   /* --------------------------------------------------------------- stack */
   .stack { position: relative; margin-bottom: 1.8rem; }
   .card {
-    border-radius: 20px;
+    border-radius: 28px;
     background: var(--surface);
-    box-shadow: var(--shadow);
   }
   .top {
     position: relative;
@@ -381,22 +377,24 @@
     user-select: none;
     transform-origin: 50% 120%;         /* tilts like a card held at the bottom */
     will-change: transform;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .06), 0 24px 48px -26px rgba(0, 0, 0, .35);
     outline: none;
   }
   .top:active { cursor: grabbing; }
-  .top:focus-visible { box-shadow: inset 0 0 0 3px var(--mod-text), 0 6px 0 var(--line); }
+  .top:focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--mod) 55%, transparent), 0 24px 48px -26px rgba(0, 0, 0, .35); }
   .behind {
     position: absolute;
     inset: 0;
     /* Scale from the BOTTOM edge. From the top, the shrink (5.5% of ~260px)
        cancelled the 14px drop and the deck hid exactly behind the top card. */
     transform-origin: 50% 100%;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .05), 0 10px 24px -16px rgba(0, 0, 0, .3);
     pointer-events: none;
   }
 
   .face :global(p) { margin: 0 0 .75em; }
   .face :global(p:last-child) { margin-bottom: 0; }
-  .front { font-family: var(--font-display); font-size: 1.45rem; font-weight: 680; line-height: 1.3; text-wrap: balance; }
+  .front { font-size: 1.32rem; font-weight: 620; line-height: 1.35; letter-spacing: -.018em; text-wrap: balance; }
   .back {
     font-size: 1.02rem;
     line-height: 1.6;
@@ -405,8 +403,8 @@
   }
   .back :global(.katex-display) { overflow-x: auto; }
   @keyframes reveal { from { transform: translateY(-8px); opacity: 0; } to { transform: none; opacity: 1; } }
-  .rule { height: 2px; border-radius: 2px; background: var(--separator); margin: 1.4rem 0; }
-  .tap { margin: 1.4rem 0 0; font-size: .85rem; font-weight: 700; color: var(--text-tertiary); }
+  .rule { height: .5px; background: var(--separator); margin: 1.4rem 0; }
+  .tap { margin: 1.4rem 0 0; font-size: .82rem; color: var(--text-tertiary); }
   .hint {
     margin: 1.2rem 0 0;
     padding: .6rem .85rem;
@@ -424,57 +422,45 @@
     top: 1.1rem;
     padding: .2rem .7rem;
     border-radius: 10px;
-    border: 2px solid currentColor;
+    border: 2.5px solid currentColor;
     font-size: .95rem;
-    font-weight: 650;
+    font-weight: 800;
     letter-spacing: .06em;
     text-transform: uppercase;
     pointer-events: none;
   }
-  .stamp.good { left: 1.2rem; color: var(--correct); transform: rotate(-10deg); }
-  .stamp.again { right: 1.2rem; color: var(--wrong); transform: rotate(10deg); }
+  .stamp.good { left: 1.2rem; color: #34c759; transform: rotate(-10deg); }
+  .stamp.again { right: 1.2rem; color: #ff3b30; transform: rotate(10deg); }
 
   /* ------------------------------------------------------------ controls */
-  .swipe-help { margin: 0 0 .7rem; text-align: center; font-size: .86rem; font-weight: 700; color: var(--text-secondary); }
-  /* Four chunky keys, one colour each. Every fill carries its text at >= 4.5:1:
-     white on the deep reds, greens and blues; ink on the amber. */
-  .grades { display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem; }
+  .swipe-help { margin: 0 0 .6rem; text-align: center; font-size: .84rem; color: var(--text-secondary); }
+  .grades { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; }
   .grades button {
-    --g: var(--surface);
-    --g-edge: var(--line);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: .25rem;
-    min-height: 60px;
-    padding: .7rem .3rem .6rem;
-    border-radius: 14px;
-    font-family: var(--font-display);
-    font-size: 1.1rem;
-    font-weight: 680;
-    color: #fff;
-    background: var(--g);
-    box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14);
+    padding: .7rem .3rem .55rem;
+    border-radius: 16px;
+    border: 0;
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    font-weight: 620;
   }
-  .grades button:hover:not(:disabled) { background: var(--g); filter: brightness(1.08); }
-  .grades button:active:not(:disabled) { transform: scale(.98); }
-  .grades .again { --g: #dc2626; --g-edge: #991b1b; }
-  .grades .hard  { --g: #fbbf24; --g-edge: #b45309; color: #1e1b4b; }
-  .grades .good  { --g: #15803d; --g-edge: #14532d; }
-  .grades .easy  { --g: #0369a1; --g-edge: #0c4a6e; }
-  .grades kbd { color: inherit; background: rgba(0, 0, 0, .18); }
+  .grades .again { color: var(--wrong); }
+  .grades .easy { color: var(--correct); }
 
   .row { display: flex; gap: .6rem; align-items: stretch; }
   .wide { flex: 1; }
-  .primary { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 56px; padding: .8rem 1.1rem; border-radius: 14px; font-size: 1.15rem; }
-  .row > button:not(.primary) { border-radius: 14px; }
+  .primary { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; padding: .8rem 1.1rem; border-radius: 16px; }
+  .row > button:not(.primary) { border-radius: 16px; }
   .quiet { display: inline-flex; align-items: center; gap: .2rem; align-self: center; font-size: .92rem; color: var(--text-secondary); }
-  .quiet:hover { color: var(--mod-text); }
+  .quiet:hover { color: var(--mod); }
 
   kbd {
     font-family: inherit;
     font-size: .66rem;
-    font-weight: 650;
+    font-weight: 600;
     padding: .05rem .35rem;
     border-radius: 5px;
     color: var(--text-tertiary);

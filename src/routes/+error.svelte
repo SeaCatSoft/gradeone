@@ -42,6 +42,7 @@
   h1 {
     font-size: clamp(1.9rem, 5vw, 2.6rem);
     line-height: 1.08;
+    letter-spacing: -.026em;
     margin: 0 0 .8rem;
   }
   p.muted { margin: 0 0 1.75rem; max-width: 46ch; }
@@ -58,5 +59,5 @@
   .btn:hover { background: var(--brand-hover); color: var(--on-brand); }
   .btn:active { transform: scale(.97); }
   .quiet { color: var(--text-secondary); font-size: .95rem; }
-  .quiet:hover { color: var(--brand-text); }
+  .quiet:hover { color: var(--brand); }
 </style>
