@@ -5,9 +5,16 @@
  * to catch. A parser that stops catching one of them fails here rather than
  * silently importing bad content months later.
  */
+import { fileURLToPath } from 'node:url';
 import { parseFile } from './parse_content.mjs';
 
-const res = parseFile(new URL('fixtures/broken.md', import.meta.url).pathname.replace(/^\//, ''));
+// fileURLToPath, not `.pathname.replace(/^\//, '')`. That hack strips the
+// leading slash, which is right for "/C:/..." on Windows and turns Linux's
+// absolute "/home/runner/..." into a relative path that does not exist -- it
+// passed on Raymond's machine and failed the first CI run.
+const fixture = (name) => fileURLToPath(new URL('fixtures/' + name, import.meta.url));
+
+const res = parseFile(fixture('broken.md'));
 const msgs = res.errors.map((e) => e.msg).join('\n');
 
 const expected = [
@@ -42,9 +49,7 @@ for (const [name, re] of [
 // as one truncated every lesson at its first subheading -- silently, with no
 // error, because the dropped lines went into entries nothing ever read. These
 // assert the prose after a subheading actually survives.
-const sub = parseFile(
-  new URL('fixtures/subheadings.md', import.meta.url).pathname.replace(/^\//, '')
-);
+const sub = parseFile(fixture('subheadings.md'));
 const body = (sub.lesson && sub.lesson.body_md) || '';
 
 for (const [name, needle] of [
