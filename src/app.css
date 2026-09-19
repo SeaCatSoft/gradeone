@@ -1,11 +1,11 @@
 /* Grade One — design tokens and base styles.
  *
  * Design system: design-system/grade-one/MASTER.md (built with ui-ux-pro-max).
- * Vibrant & Block-based with clay softness: solid chunky surfaces with a 2px
- * border and a solid bottom edge, 3D buttons that press down, flat colour
- * blocks, Fredoka headings over Nunito body. Every text/background pair below
- * was checked to WCAG AA (4.5:1) in light and dark — the numbers are in the
- * Master file. Change a colour, re-check it.
+ * Modern pass: a cool near-white ground, white surfaces with a 1px hairline
+ * and soft layered shadows, flat colour blocks for modules and quests, and
+ * Plus Jakarta Sans throughout (the skill's "Friendly SaaS" pairing). Every
+ * text/background pair below was checked to WCAG AA (4.5:1) in light and
+ * dark. Change a colour, re-check it.
  *
  * Light palette on bare :root; dark redefined under the media query AND an
  * explicit [data-theme], so nothing has its only definition in a conditional.
@@ -13,93 +13,90 @@
 
 :root {
   /* ---- Ground and surfaces ------------------------------------------- */
-  --bg:             #eef2ff;
+  --bg:             #f8f9fc;
   --surface:        #ffffff;
-  --surface-2:      #f5f7ff;
-  --surface-sunken: #e4e8fb;
-  --line:           #d6daf3;     /* borders and the 3D edge under cards */
-  --dots:           rgba(79, 70, 229, .10);
+  --surface-2:      #f3f4f8;
+  --surface-sunken: #eceef4;
+  --line:           #e4e6ee;     /* hairline borders */
+  --glow:           rgba(79, 70, 229, .08);
+  --shade:          rgba(15, 23, 42, .06);
+  --shade-strong:   rgba(15, 23, 42, .12);
 
   /* Kept for pages that still use the older names. */
-  --separator:      #e1e4f7;
-  --separator-firm: #c9ceef;
+  --separator:      #eceef3;
+  --separator-firm: #dfe2ea;
 
   /* ---- Text ----------------------------------------------------------- */
-  --text:           #1e1b4b;     /* 14.3:1 on page */
-  --text-secondary: #4b5078;     /*  6.9:1 */
-  --text-tertiary:  #5f6390;     /*  5.1:1 */
+  --text:           #0f172a;     /* 17.0:1 on page */
+  --text-secondary: #475569;     /*  7.2:1 */
+  --text-tertiary:  #5b6477;     /*  5.6:1 */
 
   /* ---- Brand, energy, semantics ---------------------------------------- */
   --brand:          #4f46e5;     /* white text 6.3:1 */
   --brand-hover:    #4338ca;
   --brand-edge:     #3730a3;
-  --brand-soft:     rgba(79, 70, 229, .12);
+  --brand-soft:     rgba(79, 70, 229, .09);
   --brand-text:     #4f46e5;
   --on-brand:       #ffffff;
 
-  /* Orange is energy: streaks, XP. It carries dark ink, never white — white
-     on this orange is 2.8:1 and fails. */
   --energy:         #f97316;
   --energy-edge:    #c2410c;
-  --energy-soft:    rgba(249, 115, 22, .15);
-  --on-energy:      #1e1b4b;
+  --energy-soft:    rgba(249, 115, 22, .12);
+  --on-energy:      #0f172a;
 
   --reward:         #c2410c;
-  --reward-soft:    rgba(249, 115, 22, .14);
+  --reward-soft:    rgba(249, 115, 22, .11);
   --correct:        #15803d;
   --correct-edge:   #14532d;
-  --correct-soft:   rgba(34, 197, 94, .16);
+  --correct-soft:   rgba(34, 197, 94, .12);
   --wrong:          #dc2626;
   --wrong-edge:     #991b1b;
-  --wrong-soft:     rgba(239, 68, 68, .13);
+  --wrong-soft:     rgba(239, 68, 68, .1);
 
-  /* ---- Depth: blocks, not shadows ---------------------------------------
-     An inset ring draws the 2px border, a solid offset draws the edge. As
-     tokens, every card on every page becomes a block without touching it. */
-  --shadow-sm: inset 0 0 0 2px var(--line), 0 3px 0 var(--line);
-  --shadow:    inset 0 0 0 2px var(--line), 0 5px 0 var(--line);
-  --shadow-lg: inset 0 0 0 2px var(--line), 0 8px 0 var(--line);
+  /* ---- Depth: a hairline plus a soft, low shadow ------------------------ */
+  --shadow-sm: 0 0 0 1px var(--line), 0 1px 2px var(--shade);
+  --shadow:    0 0 0 1px var(--line), 0 1px 2px var(--shade), 0 6px 20px -8px var(--shade-strong);
+  --shadow-lg: 0 0 0 1px var(--line), 0 2px 4px var(--shade), 0 18px 44px -18px var(--shade-strong);
 
-  /* Old material tokens now resolve to solid surfaces: no blur anywhere. */
   --material:       var(--surface);
   --material-blur:  none;
-  --glass:          var(--surface);
+  --glass:          color-mix(in srgb, var(--surface) 82%, transparent);
   --glass-strong:   var(--surface);
   --glass-edge:     transparent;
   --glass-line:     var(--line);
-  --glass-blur:     none;
-  --glass-shadow:   0 4px 0 var(--line);
+  --glass-blur:     saturate(180%) blur(16px);
+  --glass-shadow:   var(--shadow);
   --ambient-1: transparent;
   --ambient-2: transparent;
   --ambient-3: transparent;
 
   /* ---- Shape ---------------------------------------------------------- */
-  --r-sm:  10px;
-  --r:     14px;
-  --r-lg:  20px;
-  --r-xl:  26px;
+  --r-sm:  8px;
+  --r:     12px;
+  --r-lg:  16px;
+  --r-xl:  20px;
   --r-pill: 999px;
   --sidebar-w: 256px;
 
   /* ---- Type ----------------------------------------------------------- */
-  --font: 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --font-display: 'Fredoka', 'Nunito', system-ui, sans-serif;
+  --font: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-display: var(--font);
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
-  --track-display: 0em;
-  --track-title:   0em;
-  --track-heading: 0em;
-  --track-body:    0em;
-  --track-caption: .01em;
+  --track-display: -.035em;
+  --track-title:   -.028em;
+  --track-heading: -.02em;
+  --track-body:    -.006em;
+  --track-caption: 0em;
 
-  /* ---- Motion (skill: 150-300ms; press feedback faster) ---------------- */
+  /* ---- Motion ----------------------------------------------------------- */
   --ease: cubic-bezier(.2, .8, .2, 1);
   --ease-spring: linear(
     0, .0088 1.1%, .0346 2.4%, .1305 5.2%, .5083 13.4%, .6813 17.2%,
     .8232 21.1%, .9339 25.2%, 1.0016 28.9%, 1.0374 32.5%, 1.0499 36.6%,
     1.0425 41.2%, 1.0243 47.2%, 1.0009 57.2%, .9981 63.9%, 1
   );
-  --dur-fast: .1s;
-  --dur:      .22s;
+  --dur-fast: .12s;
+  --dur:      .2s;
   --dur-slow: .32s;
 
   --measure: 66ch;
@@ -108,30 +105,32 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --bg: #0f1024; --surface: #1a1b3a; --surface-2: #22244a; --surface-sunken: #14152f;
-    --line: #2f3263; --dots: rgba(165, 180, 252, .08);
-    --separator: #2a2d5a; --separator-firm: #3a3e75;
-    --text: #eef0ff; --text-secondary: #a5a9cf; --text-tertiary: #8a8ebf;
+    --bg: #0a0b10; --surface: #12141c; --surface-2: #1a1d27; --surface-sunken: #0e1016;
+    --line: #242836; --glow: rgba(99, 102, 241, .14);
+    --shade: rgba(0, 0, 0, .3); --shade-strong: rgba(0, 0, 0, .55);
+    --separator: #1f2230; --separator-firm: #2c3142;
+    --text: #f1f5f9; --text-secondary: #a3adc2; --text-tertiary: #8a93a8;
     --brand: #5850ee; --brand-hover: #6a63f2; --brand-edge: #3a33b8;
-    --brand-soft: rgba(129, 140, 248, .16); --brand-text: #a5b4fc;
-    --energy: #fb923c; --energy-edge: #c2410c; --energy-soft: rgba(251, 146, 60, .16);
-    --reward: #fb923c; --reward-soft: rgba(251, 146, 60, .15);
-    --correct: #4ade80; --correct-edge: #166534; --correct-soft: rgba(74, 222, 128, .14);
-    --wrong: #f87171; --wrong-edge: #991b1b; --wrong-soft: rgba(248, 113, 113, .14);
+    --brand-soft: rgba(129, 140, 248, .13); --brand-text: #a5b4fc;
+    --energy: #fb923c; --energy-edge: #c2410c; --energy-soft: rgba(251, 146, 60, .13);
+    --reward: #fb923c; --reward-soft: rgba(251, 146, 60, .12);
+    --correct: #4ade80; --correct-edge: #166534; --correct-soft: rgba(74, 222, 128, .11);
+    --wrong: #f87171; --wrong-edge: #991b1b; --wrong-soft: rgba(248, 113, 113, .11);
     color-scheme: dark;
   }
 }
 :root[data-theme='dark'] {
-  --bg: #0f1024; --surface: #1a1b3a; --surface-2: #22244a; --surface-sunken: #14152f;
-  --line: #2f3263; --dots: rgba(165, 180, 252, .08);
-  --separator: #2a2d5a; --separator-firm: #3a3e75;
-  --text: #eef0ff; --text-secondary: #a5a9cf; --text-tertiary: #8a8ebf;
+  --bg: #0a0b10; --surface: #12141c; --surface-2: #1a1d27; --surface-sunken: #0e1016;
+  --line: #242836; --glow: rgba(99, 102, 241, .14);
+  --shade: rgba(0, 0, 0, .3); --shade-strong: rgba(0, 0, 0, .55);
+  --separator: #1f2230; --separator-firm: #2c3142;
+  --text: #f1f5f9; --text-secondary: #a3adc2; --text-tertiary: #8a93a8;
   --brand: #5850ee; --brand-hover: #6a63f2; --brand-edge: #3a33b8;
-  --brand-soft: rgba(129, 140, 248, .16); --brand-text: #a5b4fc;
-  --energy: #fb923c; --energy-edge: #c2410c; --energy-soft: rgba(251, 146, 60, .16);
-  --reward: #fb923c; --reward-soft: rgba(251, 146, 60, .15);
-  --correct: #4ade80; --correct-edge: #166534; --correct-soft: rgba(74, 222, 128, .14);
-  --wrong: #f87171; --wrong-edge: #991b1b; --wrong-soft: rgba(248, 113, 113, .14);
+  --brand-soft: rgba(129, 140, 248, .13); --brand-text: #a5b4fc;
+  --energy: #fb923c; --energy-edge: #c2410c; --energy-soft: rgba(251, 146, 60, .13);
+  --reward: #fb923c; --reward-soft: rgba(251, 146, 60, .12);
+  --correct: #4ade80; --correct-edge: #166534; --correct-soft: rgba(74, 222, 128, .11);
+  --wrong: #f87171; --wrong-edge: #991b1b; --wrong-soft: rgba(248, 113, 113, .11);
   color-scheme: dark;
 }
 
@@ -154,30 +153,29 @@ body {
   margin: 0;
   color: var(--text);
   font-family: var(--font);
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.6;
-  font-weight: 500;
+  font-weight: 450;
+  letter-spacing: var(--track-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* A static dot grid: pattern, not motion. The style's animated patterns
-     were dropped (MASTER.md, overrides). */
+  /* One soft brand glow at the top of the page, nothing else. */
   background-color: var(--bg);
-  background-image: radial-gradient(var(--dots) 1.3px, transparent 1.4px);
-  background-size: 22px 22px;
+  background-image: radial-gradient(1100px 520px at 50% -260px, var(--glow), transparent 70%);
+  background-repeat: no-repeat;
   background-attachment: fixed;
 }
 
-/* Headings are Fredoka. Rounded display faces want near-zero tracking; the
-   pages were tuned for a tight grotesk, so this resets it globally. */
+/* Tight, heavy headings: the modern-SaaS signature. */
 h1, h2, h3, h4, .large-title, .display {
   font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: 0 !important;
+  font-weight: 700;
+  letter-spacing: var(--track-heading);
   line-height: 1.15;
   margin: 0 0 .4em;
   text-wrap: balance;
 }
-h1 { font-size: 2.2rem; }
+h1 { font-size: 2.2rem; letter-spacing: var(--track-title); }
 h2 { font-size: 1.5rem; }
 h3 { font-size: 1.15rem; }
 
@@ -187,11 +185,11 @@ a:hover { color: var(--brand-hover); }
 img, svg { max-width: 100%; }
 
 /* ---------------------------------------------------------------- buttons
-   Every button is a physical key: a solid edge underneath that disappears as
-   it is pressed. Feedback lands on pointer-down, in 100ms. */
+   Flat buttons with a hairline; a small press scale for feedback on
+   pointer-down. */
 button {
   font: inherit;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   min-height: 44px;                           /* skill: touch target >= 44px */
   padding: .6rem 1.1rem;
@@ -199,7 +197,7 @@ button {
   border-radius: var(--r);
   color: var(--text);
   background: var(--surface);
-  box-shadow: inset 0 0 0 2px var(--line), 0 4px 0 var(--line);
+  box-shadow: var(--shadow-sm);
   transition:
     transform var(--dur-fast) var(--ease),
     box-shadow var(--dur-fast) var(--ease),
@@ -209,25 +207,18 @@ button {
 @media (hover: hover) {
   button:hover:not(:disabled) { background: var(--surface-2); }
 }
-button:active:not(:disabled) {
-  transform: translateY(4px);
-  box-shadow: inset 0 0 0 2px var(--line), 0 0 0 var(--line);
-}
+button:active:not(:disabled) { transform: scale(.975); }
 button:disabled { opacity: .45; cursor: not-allowed; }
 
 button.primary {
   color: var(--on-brand);
   background: var(--brand);
-  box-shadow: 0 4px 0 var(--brand-edge);
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.05rem;
-  letter-spacing: .01em;
+  box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14), 0 6px 16px -8px var(--brand);
+  font-weight: 650;
 }
 @media (hover: hover) {
   button.primary:hover:not(:disabled) { background: var(--brand-hover); }
 }
-button.primary:active:not(:disabled) { box-shadow: 0 0 0 var(--brand-edge); }
 
 /* Link-styled call to action, same physics as a button. */
 .btn3d {
@@ -238,28 +229,25 @@ button.primary:active:not(:disabled) { box-shadow: 0 0 0 var(--brand-edge); }
   min-height: 48px;
   padding: .7rem 1.4rem;
   border-radius: var(--r);
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.08rem;
-  letter-spacing: .01em;
+  font-weight: 650;
+  font-size: 1rem;
   color: var(--on-brand);
   background: var(--brand);
-  box-shadow: 0 4px 0 var(--brand-edge);
+  box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14), 0 6px 16px -8px var(--brand);
   transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease), background-color var(--dur) var(--ease);
 }
 .btn3d:hover { color: var(--on-brand); background: var(--brand-hover); }
-.btn3d:active { transform: translateY(4px); box-shadow: 0 0 0 var(--brand-edge); }
+.btn3d:active { transform: scale(.975); }
 .btn3d.ghost {
   color: var(--text);
   background: var(--surface);
-  box-shadow: inset 0 0 0 2px var(--line), 0 4px 0 var(--line);
+  box-shadow: var(--shadow-sm);
 }
 .btn3d.ghost:hover { color: var(--text); background: var(--surface-2); }
-.btn3d.ghost:active { box-shadow: inset 0 0 0 2px var(--line), 0 0 0 var(--line); }
 
 :focus-visible {
-  outline: 3px solid var(--brand-text);
-  outline-offset: 3px;
+  outline: 2px solid var(--brand-text);
+  outline-offset: 2px;
   border-radius: var(--r-sm);
 }
 
@@ -272,7 +260,7 @@ button.primary:active:not(:disabled) { box-shadow: 0 0 0 var(--brand-edge); }
   box-shadow: var(--shadow);
 }
 
-.large-title { font-size: clamp(2.1rem, 4.5vw, 2.8rem); font-weight: 600; line-height: 1.05; margin: 0; }
+.large-title { font-size: clamp(2rem, 4.2vw, 2.6rem); font-weight: 750; line-height: 1.08; letter-spacing: var(--track-display); margin: 0; }
 .subtitle { margin: .4rem 0 0; color: var(--text-secondary); font-size: 1.05rem; }
 
 .section-head {
@@ -282,8 +270,8 @@ button.primary:active:not(:disabled) { box-shadow: 0 0 0 var(--brand-edge); }
   gap: 1rem;
   margin: 2.4rem 0 .9rem;
 }
-.section-head h2 { margin: 0; font-size: 1.4rem; }
-.section-head a { font-weight: 700; font-size: .95rem; }
+.section-head h2 { margin: 0; font-size: 1.25rem; }
+.section-head a { font-weight: 600; font-size: .92rem; }
 
 .muted    { color: var(--text-secondary); }
 .small    { font-size: .875rem; }
@@ -291,15 +279,15 @@ button.primary:active:not(:disabled) { box-shadow: 0 0 0 var(--brand-edge); }
 
 .eyebrow {
   text-transform: uppercase;
-  font-size: .74rem;
-  font-weight: 800;
+  font-size: .72rem;
+  font-weight: 650;
   letter-spacing: .08em;
   color: var(--text-tertiary);
 }
 
 table { border-collapse: collapse; width: 100%; }
-th, td { text-align: left; padding: .6rem .8rem; border-bottom: 2px solid var(--separator); }
-th { font-weight: 800; color: var(--text-secondary); font-size: .82rem; }
+th, td { text-align: left; padding: .6rem .8rem; border-bottom: 1px solid var(--separator); }
+th { font-weight: 650; color: var(--text-secondary); font-size: .82rem; }
 
 a, button, [role='button'], summary, label[for] { cursor: pointer; }
 
@@ -313,6 +301,6 @@ a, button, [role='button'], summary, label[for] { cursor: pointer; }
   }
 }
 @media (prefers-contrast: more) {
-  :root { --line: #8e93c4; --text-secondary: #2f3360; --dots: transparent; }
-  :root[data-theme='dark'] { --line: #7b80c0; --text-secondary: #d8dbf5; }
+  :root { --line: #8b93a7; --text-secondary: #334155; }
+  :root[data-theme='dark'] { --line: #5b6477; --text-secondary: #d6dbe6; }
 }

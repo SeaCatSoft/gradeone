@@ -202,15 +202,15 @@
     height: 60px;
     display: grid;
     place-items: center;
-    border-radius: 18px;
+    border-radius: 14px;
     color: #fff;
     font-family: var(--font-display);
     font-size: 1.7rem;
-    font-weight: 600;
+    font-weight: 680;
     background: var(--brand);
-    box-shadow: 0 4px 0 var(--brand-edge);
+    box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14);
   }
-  .name { margin: 0; font-family: var(--font-display); font-size: 1.45rem; font-weight: 600; }
+  .name { margin: 0; font-family: var(--font-display); font-size: 1.45rem; font-weight: 680; }
   /* Its own class rather than reusing .panel: .panel is a column, and on a
      button its layout lost to .panel's by source order. */
   button.appearance {
@@ -225,7 +225,7 @@
     color: var(--text);
     box-shadow: var(--shadow);
     text-align: left;
-    font-weight: 800;
+    font-weight: 650;
   }
   @media (hover: hover) {
     button.appearance:hover { background: var(--surface-2); }
@@ -265,7 +265,7 @@
   .stat strong {
     font-family: var(--font-display);
     font-size: 1.7rem;
-    font-weight: 600;
+    font-weight: 680;
     font-variant-numeric: tabular-nums;
     line-height: 1.1;
   }
@@ -273,7 +273,7 @@
   .section {
     margin: 2rem 0 .8rem;
     font-size: .78rem;
-    font-weight: 800;
+    font-weight: 650;
     letter-spacing: .08em;
     text-transform: uppercase;
     color: var(--text-tertiary);
@@ -286,7 +286,7 @@
     font: inherit;
     letter-spacing: var(--track-body);
     padding: .6rem .8rem;
-    border: 2px solid var(--line);
+    border: 1px solid var(--line);
     min-height: 48px;
     border-radius: var(--r);
     background: var(--surface);
@@ -309,19 +309,19 @@
     color: var(--on-brand);
     font-family: var(--font-display);
     font-size: 1.05rem;
-    font-weight: 600;
+    font-weight: 680;
     padding: .6rem 1.4rem;
     border-radius: var(--r);
-    box-shadow: 0 4px 0 var(--brand-edge);
+    box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14);
     transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
   }
   .btn:hover { background: var(--brand-hover); color: var(--on-brand); }
-  .btn:active { transform: translateY(4px); box-shadow: 0 0 0 var(--brand-edge); }
+  .btn:active { transform: scale(.98); }
   .quiet { color: var(--text-secondary); font-size: .92rem; }
   .quiet:hover { color: var(--brand-text); }
 
-  .danger { margin-top: 2.25rem; padding-top: 1.5rem; border-top: 2px solid var(--separator); }
-  .danger button { color: var(--wrong); background: var(--wrong-soft); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--wrong) 40%, transparent), 0 4px 0 color-mix(in srgb, var(--wrong) 40%, transparent); }
+  .danger { margin-top: 2.25rem; padding-top: 1.5rem; border-top: 1px solid var(--separator); }
+  .danger button { color: var(--wrong); background: var(--wrong-soft); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wrong) 40%, transparent); }
   .danger button:hover:not(:disabled) { background: color-mix(in srgb, var(--wrong) 18%, transparent); }
-  .danger button:active:not(:disabled) { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--wrong) 40%, transparent), 0 0 0 transparent; }
+  .danger button:active:not(:disabled) { transform: scale(.98); }
 </style>

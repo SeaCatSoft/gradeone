@@ -99,3 +99,23 @@ Nunito stays readable at length, which matters for lessons.
 - [ ] `prefers-reduced-motion` respected
 - [ ] Touch targets ≥ 44 × 44px
 - [ ] Responsive at 375, 768, 1024, 1440 — no horizontal scroll
+
+## Modern pass (supersedes the depth and type rules above)
+
+Feedback on the block style: "make it more modern". The structure (Daily
+Quests, module colour blocks, coloured grade keys) is unchanged; the surface
+treatment moved from chunky/clay to modern SaaS.
+
+| Was | Now |
+|---|---|
+| Fredoka headings + Nunito body | Plus Jakarta Sans throughout (skill: "Friendly SaaS"), tight negative tracking on headings |
+| 2px border + solid 3D bottom edge | 1px hairline + soft layered shadow (`--shadow-sm/--shadow/--shadow-lg`) |
+| Press = sink into the edge (`translateY`) | Press = `scale(.975–.98)` |
+| Solid coloured edges under blocks | Soft tinted drop shadow under heroes, 1px highlight on small tiles |
+| Chunky 12–16px bars with bevels | 6–8px flat bars |
+| Radii 18–28px | 12–20px |
+| Dotted indigo page | Cool near-white `#f8f9fc` with one soft brand glow at the top; dark `#0a0b10` |
+| Labels at 800 weight | 600–650 |
+
+Contrast re-checked: text 17.0 / 7.2 / 5.6 on the light page; 17.9 / 8.2 / 6.0
+on dark surfaces; brand-text 9.2 on dark; all module and quest fills unchanged.

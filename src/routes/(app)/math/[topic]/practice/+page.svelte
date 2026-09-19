@@ -248,7 +248,7 @@
 
   .panel {
     background: var(--surface);
-    border-radius: 28px;
+    border-radius: 20px;
     box-shadow: var(--shadow-lg);
     padding: 2rem 1.75rem;
   }
@@ -271,7 +271,7 @@
 
   .status { display: flex; justify-content: space-between; margin-bottom: .5rem; font-weight: 700; }
   .track {
-    height: 12px;
+    height: 8px;
     border-radius: var(--r-pill);
     background: var(--mod-soft);
     overflow: hidden;
@@ -282,13 +282,12 @@
     height: 100%;
     background: var(--mod);
     border-radius: inherit;
-    box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .18);
     transition: width var(--dur) var(--ease);
   }
 
   .question {
     background: var(--surface);
-    border-radius: 28px;
+    border-radius: 20px;
     box-shadow: var(--shadow-lg);
     padding: 1.4rem 1.5rem 1.5rem;
     animation: card-in var(--dur) var(--ease) both;
@@ -323,7 +322,7 @@
     text-align: left;
     min-height: 56px;
     padding: .7rem .95rem;
-    border-radius: 18px;
+    border-radius: 14px;
     font-weight: 700;
     background: var(--surface);
   }
@@ -338,11 +337,11 @@
     place-items: center;
     border-radius: 10px;
     background: var(--surface-2);
-    box-shadow: inset 0 0 0 2px var(--line);
+    box-shadow: inset 0 0 0 1px var(--line);
     color: var(--text-secondary);
     font-family: var(--font-display);
     font-size: .95rem;
-    font-weight: 600;
+    font-weight: 680;
   }
 
   .option.selected, .option.selected:hover:not(:disabled) { background: var(--mod-soft); box-shadow: inset 0 0 0 2px var(--mod-text), 0 4px 0 var(--mod-text); }
@@ -359,7 +358,7 @@
     font-variant-numeric: tabular-nums;
     min-height: 48px;
     padding: .6rem .85rem;
-    border: 2px solid var(--line);
+    border: 1px solid var(--line);
     border-radius: var(--r);
     background: var(--surface);
     color: var(--text);
@@ -377,7 +376,7 @@
     align-items: center;
     gap: .5rem;
     margin: 1.2rem 0 0;
-    font-weight: 800;
+    font-weight: 650;
     animation: rise var(--dur) var(--ease-spring) both;
   }
   .verdict svg { width: 17px; height: 17px; flex: none; }
@@ -391,7 +390,7 @@
   .reveal {
     margin-top: 1.35rem;
     padding-top: 1.1rem;
-    border-top: 2px solid var(--separator);
+    border-top: 1px solid var(--separator);
     animation: rise var(--dur-slow) var(--ease) both;
   }
   .reveal h3 { margin: 0 0 .5rem; }
