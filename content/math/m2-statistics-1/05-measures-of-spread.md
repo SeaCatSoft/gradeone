@@ -6,7 +6,7 @@ title: Measures of Spread
 objectives: ["1.6", "1.8"]
 est_minutes: 18
 status: draft
-source: Original prose written against Module 2 syllabus objectives 1.6 (measures of dispersion for raw ungrouped data: range, quartiles, interquartile and semi-interquartile range, per the content notes) and 1.8 (use standard deviation to compare sets of ungrouped data). The content notes state that no calculation of the standard deviation is required, so it is interpreted, not computed. Quartile conventions vary between textbooks; the median-of-halves method is used here. NOT YET checked against textbook for depth.
+source: "Original prose written against Module 2 syllabus objectives 1.6 (measures of dispersion for raw ungrouped data: range, quartiles, interquartile and semi-interquartile range, per the content notes) and 1.8 (use standard deviation to compare sets of ungrouped data). The content notes state that no calculation of the standard deviation is required, so it is interpreted, not computed. Quartile conventions vary between textbooks; the median-of-halves method is used here. NOT YET checked against textbook for depth."
 ---
 
 ## Lesson
