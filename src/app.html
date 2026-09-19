@@ -6,20 +6,19 @@
 		<meta name="text-scale" content="scale" />
 
 		<!--
-			Inter, because SF Pro is not licensable for the web and most of these
-			students are not on an Apple device. -apple-system stays first in the
-			stack so an iPhone uses the real thing; Inter covers everyone else, and
-			the system font renders immediately while it loads.
+			Fredoka for headings, Nunito for body -- the ui-ux-pro-max "Playful
+			Creative" pairing (see design-system/grade-one/MASTER.md). display=swap so
+			text renders in the system font at once on slow mobile data.
 		-->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
 			rel="stylesheet"
-			href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap"
 		/>
 
-		<meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)" />
-		<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+		<meta name="theme-color" content="#eef2ff" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#0f1024" media="(prefers-color-scheme: dark)" />
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

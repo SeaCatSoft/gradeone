@@ -1,13 +1,12 @@
 <script lang="ts">
   import { base } from '$app/paths';
   import { onMount } from 'svelte';
-  import Rings from '$lib/components/Rings.svelte';
   import Icon from '$lib/components/Icon.svelte';
   import { stats } from '$lib/stats.svelte';
   import { session } from '$lib/session.svelte';
   import { GOALS, getRecent, type Recent } from '$lib/activity';
   import { load as loadProgress, dueCount, topicMastery, type Progress } from '$lib/progress';
-  import { RING_COLORS, theme as modTheme, themeVars } from '$lib/modules';
+  import { RING_COLORS, themeVars } from '$lib/modules';
 
   let { data } = $props();
 
@@ -31,18 +30,14 @@
     return name ? `${part}, ${name}` : part;
   });
 
-  const rings = $derived([
-    { value: stats.rings.learn, ...RING_COLORS.learn, label: 'Learn' },
-    { value: stats.rings.review, ...RING_COLORS.review, label: 'Review' },
-    { value: stats.rings.practice, ...RING_COLORS.practice, label: 'Practice' }
-  ]);
-  const closed = $derived(Object.values(stats.rings).filter((v) => v >= 1).length);
-
-  const rows = $derived([
-    { key: 'learn', name: 'Learn', have: stats.today.learn, goal: GOALS.learn, unit: 'lesson', color: RING_COLORS.learn.color },
-    { key: 'review', name: 'Review', have: stats.today.review, goal: GOALS.review, unit: 'cards', color: RING_COLORS.review.color },
-    { key: 'practice', name: 'Practice', have: stats.today.practice, goal: GOALS.practice, unit: 'questions', color: RING_COLORS.practice.color }
-  ]);
+  // Three quests, one per kind of study. Completion is always stated in words
+  // as well as by the bar, so it never rests on colour alone.
+  const quests = $derived([
+    { key: 'learn', icon: 'book', title: 'Read a lesson', have: stats.today.learn, goal: GOALS.learn, unit: 'lesson', ...RING_COLORS.learn },
+    { key: 'review', icon: 'cards', title: `Review ${GOALS.review} flashcards`, have: stats.today.review, goal: GOALS.review, unit: 'cards', ...RING_COLORS.review },
+    { key: 'practice', icon: 'check', title: `Answer ${GOALS.practice} questions`, have: stats.today.practice, goal: GOALS.practice, unit: 'questions', ...RING_COLORS.practice }
+  ] as const);
+  const doneCount = $derived(quests.filter((q) => q.have >= q.goal).length);
 
   const due = $derived(
     data.topics.map((t) => ({ ...t, due: progress ? dueCount(progress, t.cardIds) : t.cardIds.length }))
@@ -67,33 +62,56 @@
 
 <header class="head">
   <p class="eyebrow">{dateLine}</p>
-  <h1 class="large-title">Today</h1>
-  <p class="subtitle">{greeting}.</p>
+  <h1 class="large-title">{greeting}!</h1>
 </header>
 
-<!-- The Activity-style summary. Always on a dark surface, like the Fitness
-     widget: the ring colours are tuned for black and lose contrast on white. -->
-<section class="summary" aria-label="Today's goals">
-  <div class="rings">
-    <Rings {rings} size={172} stroke={20} gap={3} />
+<!-- Streak and level: the two numbers a student checks first. -->
+<div class="stats">
+  <div class="stat streak" class:lit={stats.streak > 0}>
+    <span class="flame"><Icon name="flame" size={30} /></span>
+    <span class="stat-text">
+      <strong>{stats.streak}</strong>
+      <span>day streak</span>
+    </span>
   </div>
-  <div class="rows">
-    {#each rows as r}
-      <div class="row">
-        <span class="name" style="color:{r.color}">{r.name}</span>
-        <span class="count" style="color:{r.color}">
-          {r.have}<span class="of">/{r.goal}</span>
-          <span class="unit">{r.unit}</span>
-        </span>
-      </div>
+  <div class="stat level">
+    <span class="badge" aria-hidden="true">{stats.level}</span>
+    <span class="stat-text">
+      <strong>{stats.xpToday}<small> XP</small></strong>
+      <span>today · Level {stats.level}</span>
+    </span>
+  </div>
+</div>
+
+<section class="quests" aria-labelledby="quests-title">
+  <div class="section-head">
+    <h2 id="quests-title">Daily quests</h2>
+    <span class="tally">{doneCount} of 3 done</span>
+  </div>
+
+  <ul>
+    {#each quests as q}
+      {@const done = q.have >= q.goal}
+      {@const pct = Math.min(1, q.have / q.goal)}
+      <li class="quest" class:done style="--q:{q.color};--q-edge:{q.edge};--q-track:{q.track}">
+        <span class="q-icon"><Icon name={done ? 'check' : q.icon} size={24} /></span>
+        <div class="q-body">
+          <div class="q-top">
+            <strong>{q.title}</strong>
+            {#if done}<span class="q-done">Done</span>{/if}
+          </div>
+          <div class="bar" role="progressbar" aria-label={q.title}
+               aria-valuemin={0} aria-valuemax={q.goal} aria-valuenow={Math.min(q.have, q.goal)}>
+            <span style="transform:scaleX({pct})"></span>
+          </div>
+          <span class="q-count">{Math.min(q.have, q.goal)} / {q.goal} {q.unit}</span>
+        </div>
+      </li>
     {/each}
-    <div class="summary-foot">
-      <span><Icon name="flame" size={13} /> {stats.streak > 0 ? `${stats.streak}-day streak` : 'No streak yet'}</span>
-      <span>{stats.xpToday} XP today · Level {stats.level}</span>
-    </div>
-  </div>
-  {#if closed === 3}
-    <p class="closed">All three rings closed. That is a proper day's work.</p>
+  </ul>
+
+  {#if doneCount === 3}
+    <p class="cleared"><Icon name="sparkle" size={18} /> All quests cleared. That is a proper day's work.</p>
   {/if}
 </section>
 
@@ -127,12 +145,12 @@
 <div class="topics">
   {#each due as t}
     {@const m = progress ? topicMastery(progress, t.objectiveKeys) : 0}
-    {@const th = modTheme(t.module)}
-    <a class="topic" href="{base}/math/{t.slug}">
-      <Rings rings={[{ value: m / 100, color: th.solid, track: th.soft, label: 'Mastery' }]} size={46} stroke={6} />
+    <a class="topic" href="{base}/math/{t.slug}" style={themeVars(t.module)}>
+      <span class="t-num" aria-label="Module {t.module}">M{t.module}</span>
       <span class="topic-text">
         <strong>{t.title}</strong>
-        <span>{[`Module ${t.module}`, `${m}% mastery`, t.due > 0 ? `${t.due} due` : ''].filter(Boolean).join(' · ')}</span>
+        <span class="mini-bar" aria-hidden="true"><span style="transform:scaleX({m / 100})"></span></span>
+        <span class="t-meta">{[`${m}% mastery`, t.due > 0 ? `${t.due} due` : ''].filter(Boolean).join(' · ')}</span>
       </span>
       <span class="chev"><Icon name="chevron" size={16} /></span>
     </a>
@@ -140,136 +158,221 @@
 </div>
 
 <style>
-  .head { margin-bottom: 1.6rem; }
+  .head { margin-bottom: 1.4rem; }
   .head .eyebrow { margin: 0 0 .2rem; }
 
-  .summary {
-    position: relative;
-    display: grid;
-    grid-template-columns: auto 1fr;
+  /* ---------------------------------------------------------------- stats */
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+  .stat {
+    display: flex;
     align-items: center;
-    gap: clamp(1.25rem, 4vw, 2.75rem);
-    padding: clamp(1.25rem, 3vw, 1.9rem);
-    border-radius: 26px;
-    background: #0b0b0d;
-    color: #f5f5f7;
-    /* Hairline edge: without it the card dissolves into a black page in dark mode. */
-    box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .1), 0 1px 2px rgba(0, 0, 0, .2), 0 22px 50px -24px rgba(0, 0, 0, .55);
-    overflow: hidden;
+    gap: .9rem;
+    padding: 1rem 1.1rem;
+    border-radius: 22px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
   }
-  .rows { display: flex; flex-direction: column; gap: .7rem; min-width: 0; }
-  .row { display: flex; flex-direction: column; }
-  .name { font-size: .78rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
-  .count {
-    font-size: clamp(1.55rem, 3vw, 1.95rem);
+  .stat-text { display: flex; flex-direction: column; min-width: 0; }
+  .stat-text strong {
+    font-family: var(--font-display);
+    font-size: 2rem;
     font-weight: 700;
-    line-height: 1.05;
-    letter-spacing: -.02em;
+    line-height: 1;
     font-variant-numeric: tabular-nums;
   }
-  .of { opacity: .95; }
-  .unit { font-size: .52em; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; margin-left: .15em; }
-  .summary-foot {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .35rem 1.25rem;
-    margin-top: .35rem;
-    padding-top: .8rem;
-    border-top: .5px solid rgba(255, 255, 255, .14);
-    font-size: .82rem;
-    color: #a1a1a6;
+  .stat-text strong small { font-size: .5em; font-weight: 600; }
+  .stat-text > span { font-size: .88rem; font-weight: 700; color: var(--text-secondary); }
+
+  .flame, .badge {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 18px;
   }
-  .summary-foot :global(svg) { color: #ff8a00; vertical-align: -2px; }
-  .closed {
-    grid-column: 1 / -1;
-    margin: 0;
-    font-weight: 600;
-    color: #f5f5f7;
+  .flame { color: var(--text-tertiary); background: var(--surface-2); box-shadow: inset 0 0 0 2px var(--line); }
+  .streak.lit .flame {
+    color: #fff;
+    background: #c2410c;
+    box-shadow: 0 4px 0 #7c2d12;
+    animation: flicker 2.4s ease-in-out infinite;
+  }
+  @keyframes flicker { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg) scale(1.04); } }
+  .badge {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--brand);
+    box-shadow: 0 4px 0 var(--brand-edge);
+  }
+
+  /* --------------------------------------------------------------- quests */
+  .quests { margin-top: .4rem; }
+  .tally {
+    font-weight: 800;
+    font-size: .85rem;
+    padding: .25rem .7rem;
+    border-radius: var(--r-pill);
+    color: var(--text-secondary);
+    background: var(--surface);
+    box-shadow: inset 0 0 0 2px var(--line);
+  }
+  .quests ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .75rem; }
+  .quest {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: .95rem 1.1rem;
+    border-radius: 22px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .q-icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    color: #fff;
+    background: var(--q);
+    box-shadow: 0 4px 0 var(--q-edge);
+  }
+  .q-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: .4rem; }
+  .q-top { display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; }
+  .q-top strong { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; }
+  .q-done {
+    flex: none;
+    font-size: .78rem;
+    font-weight: 800;
+    padding: .1rem .6rem;
+    border-radius: var(--r-pill);
+    color: var(--correct);
+    background: var(--correct-soft);
+  }
+  .q-count { font-size: .82rem; font-weight: 700; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+
+  /* Chunky bar: scaleX so the fill animates on the compositor. */
+  .bar {
+    height: 14px;
+    border-radius: var(--r-pill);
+    background: var(--q-track);
+    overflow: hidden;
+  }
+  .bar span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--q);
+    box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .18), inset 0 3px 0 rgba(255, 255, 255, .25);
+    transform-origin: left;
+    transition: transform var(--dur-slow) var(--ease-spring);
+  }
+
+  .cleared {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin: .9rem 0 0;
+    padding: .8rem 1rem;
+    border-radius: 18px;
+    font-weight: 800;
+    color: var(--correct);
+    background: var(--correct-soft);
     animation: rise var(--dur-slow) var(--ease-spring) both;
   }
   @keyframes rise { from { transform: translateY(6px); opacity: 0; } to { transform: none; opacity: 1; } }
-
-  @media (max-width: 520px) {
-    .summary { grid-template-columns: 1fr; justify-items: center; text-align: center; }
-    .rows { width: 100%; }
-    .row { align-items: center; }
-    .summary-foot { justify-content: center; }
-  }
 
   /* ---------------------------------------------------------------- tiles */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 1rem;
-    margin-top: 1rem;
+    margin-top: 1.8rem;
   }
   .tile {
-    position: relative;
     display: flex;
     flex-direction: column;
     gap: .15rem;
     min-height: 168px;
     padding: 1.2rem 1.3rem;
-    border-radius: 22px;
+    border-radius: 24px;
     color: inherit;
-    overflow: hidden;
-    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+    transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
   }
-  @media (hover: hover) {
-    .tile:hover { transform: translateY(-3px); }
-  }
-  .tile:active { transform: scale(.985); transition-duration: var(--dur-fast); }
-
   .continue {
     color: #fff;
     background: linear-gradient(145deg, var(--mod-from), var(--mod-to));
-    box-shadow: 0 16px 36px -18px var(--mod-to);
+    box-shadow: 0 6px 0 var(--mod-edge);
   }
   .continue:hover { color: #fff; }
-  .review { background: var(--surface); box-shadow: var(--shadow); }
+  .continue:active { transform: translateY(6px); box-shadow: 0 0 0 var(--mod-edge); }
+  .review { background: var(--surface); box-shadow: var(--shadow-lg); }
   .review:hover { color: inherit; }
+  .review:active { transform: translateY(6px); box-shadow: inset 0 0 0 2px var(--line), 0 0 0 var(--line); }
 
-  .tile-eyebrow { font-size: .74rem; font-weight: 650; letter-spacing: .05em; text-transform: uppercase; opacity: .82; }
-  .tile strong { font-size: 1.35rem; font-weight: 680; line-height: 1.18; letter-spacing: -.02em; margin-top: .25rem; }
-  .tile .big { font-size: 2.3rem; line-height: 1; font-variant-numeric: tabular-nums; }
-  .tile .big .unit-word { margin-left: .22em; font-size: .45em; font-weight: 600; color: var(--text-secondary); letter-spacing: 0; }
-  .tile-sub { font-size: .9rem; opacity: .85; }
-  .review .tile-sub { color: var(--text-secondary); opacity: 1; }
+  .tile-eyebrow { font-size: .76rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+  .tile strong { font-family: var(--font-display); font-size: 1.4rem; font-weight: 600; line-height: 1.18; margin-top: .25rem; }
+  .tile .big { font-size: 2.4rem; line-height: 1; font-variant-numeric: tabular-nums; }
+  .tile .big .unit-word { margin-left: .22em; font-size: .45em; color: var(--text-secondary); }
+  .tile-sub { font-size: .92rem; font-weight: 600; }
+  .review .tile-sub, .review .tile-eyebrow { color: var(--text-secondary); }
   .go {
     margin-top: auto;
     align-self: flex-start;
     display: inline-flex;
     align-items: center;
     gap: .4rem;
-    padding: .42rem .9rem;
+    padding: .5rem 1rem;
     border-radius: var(--r-pill);
-    font-size: .85rem;
-    font-weight: 620;
+    font-size: .88rem;
+    font-weight: 800;
   }
-  .continue .go { background: rgba(255, 255, 255, .22); backdrop-filter: blur(10px); }
-  .review .go { background: var(--correct-soft); color: var(--correct); }
+  .continue .go { color: var(--mod-edge); background: #fff; }
+  .review .go { color: #fff; background: #c2410c; box-shadow: 0 3px 0 #7c2d12; }
 
   /* --------------------------------------------------------------- topics */
-  .topics {
-    display: flex;
-    flex-direction: column;
-    background: var(--surface);
-    border-radius: 20px;
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
-  }
+  .topics { display: flex; flex-direction: column; gap: .65rem; }
   .topic {
     display: flex;
     align-items: center;
     gap: .95rem;
     padding: .8rem 1.1rem;
+    border-radius: 20px;
     color: inherit;
-    transition: background-color var(--dur-fast) var(--ease);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
   }
-  .topic + .topic { border-top: .5px solid var(--separator); }
-  .topic:hover { color: inherit; background: var(--surface-2); }
-  .topic-text { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-  .topic-text strong { font-weight: 600; letter-spacing: -.01em; }
-  .topic-text span { font-size: .84rem; color: var(--text-secondary); }
+  .topic:hover { color: inherit; }
+  .topic:active { transform: translateY(3px); box-shadow: inset 0 0 0 2px var(--line), 0 0 0 var(--line); }
+  .t-num {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: #fff;
+    background: var(--mod);
+    box-shadow: 0 3px 0 var(--mod-edge);
+  }
+  .topic-text { flex: 1; display: flex; flex-direction: column; gap: .3rem; min-width: 0; }
+  .topic-text strong { font-weight: 800; }
+  .mini-bar { height: 8px; border-radius: var(--r-pill); background: var(--mod-soft); overflow: hidden; }
+  .mini-bar span { display: block; height: 100%; background: var(--mod); transform-origin: left; }
+  .t-meta { font-size: .84rem; font-weight: 600; color: var(--text-secondary); }
   .chev { color: var(--text-tertiary); display: flex; }
+
+  @media (max-width: 520px) {
+    .stats { grid-template-columns: 1fr 1fr; gap: .6rem; }
+    .stat { flex-direction: column; align-items: flex-start; gap: .6rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .streak.lit .flame { animation: none; }
+  }
 </style>

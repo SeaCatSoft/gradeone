@@ -202,13 +202,15 @@
     height: 60px;
     display: grid;
     place-items: center;
-    border-radius: 50%;
+    border-radius: 18px;
     color: #fff;
-    font-size: 1.6rem;
-    font-weight: 650;
-    background: linear-gradient(135deg, #40a9ff, #3a3ad6);
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 600;
+    background: var(--brand);
+    box-shadow: 0 4px 0 var(--brand-edge);
   }
-  .name { margin: 0; font-size: 1.35rem; font-weight: 680; letter-spacing: -.02em; }
+  .name { margin: 0; font-family: var(--font-display); font-size: 1.45rem; font-weight: 600; }
   /* Its own class rather than reusing .panel: .panel is a column, and on a
      button its layout lost to .panel's by source order. */
   button.appearance {
@@ -221,9 +223,9 @@
     border-radius: var(--r-lg);
     background: var(--surface);
     color: var(--text);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow);
     text-align: left;
-    font-weight: 560;
+    font-weight: 800;
   }
   @media (hover: hover) {
     button.appearance:hover { background: var(--surface-2); }
@@ -233,14 +235,14 @@
   .panel {
     background: var(--surface);
     border-radius: var(--r-lg);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow);
     padding: 1.35rem 1.4rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
   .center { text-align: center; align-items: center; }
-  .center h1 { font-size: 1.4rem; letter-spacing: -.022em; margin: 0; }
+  .center h1 { font-size: 1.4rem; margin: 0; }
   .center p { margin: 0; max-width: 40ch; }
 
   .head { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
@@ -254,16 +256,16 @@
   .stat {
     background: var(--surface);
     border-radius: var(--r);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow);
     padding: .85rem 1rem;
     display: flex;
     flex-direction: column;
     gap: .1rem;
   }
   .stat strong {
-    font-size: 1.5rem;
-    font-weight: 620;
-    letter-spacing: -.024em;
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 600;
     font-variant-numeric: tabular-nums;
     line-height: 1.1;
   }
@@ -271,8 +273,8 @@
   .section {
     margin: 2rem 0 .8rem;
     font-size: .78rem;
-    font-weight: 600;
-    letter-spacing: .06em;
+    font-weight: 800;
+    letter-spacing: .08em;
     text-transform: uppercase;
     color: var(--text-tertiary);
   }
@@ -284,13 +286,14 @@
     font: inherit;
     letter-spacing: var(--track-body);
     padding: .6rem .8rem;
-    border: 1px solid var(--separator-firm);
+    border: 2px solid var(--line);
+    min-height: 48px;
     border-radius: var(--r);
     background: var(--surface);
     color: var(--text);
     transition: border-color var(--dur-fast) var(--ease);
   }
-  input:focus, select:focus { border-color: var(--brand); outline: none; }
+  input:focus, select:focus { border-color: var(--brand-text); outline: none; box-shadow: 0 0 0 4px var(--brand-soft); }
 
   .error { margin: 0; color: var(--wrong); background: var(--wrong-soft); border-radius: var(--r); padding: .5rem .7rem; }
   .ok { margin: 0; color: var(--correct); background: var(--correct-soft); border-radius: var(--r); padding: .5rem .7rem; }
@@ -299,18 +302,26 @@
 
   .row { display: flex; gap: 1rem; align-items: center; justify-content: center; }
   .btn {
-    display: inline-block;
+    display: inline-grid;
+    place-items: center;
+    min-height: 48px;
     background: var(--brand);
     color: var(--on-brand);
-    font-weight: 560;
-    padding: .65rem 1.3rem;
-    border-radius: var(--r-pill);
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding: .6rem 1.4rem;
+    border-radius: var(--r);
+    box-shadow: 0 4px 0 var(--brand-edge);
+    transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
   }
   .btn:hover { background: var(--brand-hover); color: var(--on-brand); }
+  .btn:active { transform: translateY(4px); box-shadow: 0 0 0 var(--brand-edge); }
   .quiet { color: var(--text-secondary); font-size: .92rem; }
-  .quiet:hover { color: var(--brand); }
+  .quiet:hover { color: var(--brand-text); }
 
-  .danger { margin-top: 2.25rem; padding-top: 1.5rem; border-top: .5px solid var(--separator); }
-  .danger button { color: var(--wrong); border-color: transparent; background: var(--wrong-soft); }
+  .danger { margin-top: 2.25rem; padding-top: 1.5rem; border-top: 2px solid var(--separator); }
+  .danger button { color: var(--wrong); background: var(--wrong-soft); box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--wrong) 40%, transparent), 0 4px 0 color-mix(in srgb, var(--wrong) 40%, transparent); }
   .danger button:hover:not(:disabled) { background: color-mix(in srgb, var(--wrong) 18%, transparent); }
+  .danger button:active:not(:disabled) { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--wrong) 40%, transparent), 0 0 0 transparent; }
 </style>

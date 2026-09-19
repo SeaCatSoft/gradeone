@@ -1,15 +1,14 @@
 <script lang="ts">
   import { base } from '$app/paths';
-  import Rings from '$lib/components/Rings.svelte';
   import Icon from '$lib/components/Icon.svelte';
   import { RING_COLORS, MODULE_THEMES } from '$lib/modules';
 
   // Illustrative values for the product shot, not anyone's data.
   const demo = [
-    { value: 1, ...RING_COLORS.learn, label: 'Learn' },
-    { value: 0.7, ...RING_COLORS.review, label: 'Review' },
-    { value: 0.8, ...RING_COLORS.practice, label: 'Practice' }
-  ];
+    { icon: 'book', title: 'Read a lesson', have: 1, goal: 1, unit: 'lesson', ...RING_COLORS.learn },
+    { icon: 'cards', title: 'Review 10 flashcards', have: 7, goal: 10, unit: 'cards', ...RING_COLORS.review },
+    { icon: 'check', title: 'Answer 5 questions', have: 4, goal: 5, unit: 'questions', ...RING_COLORS.practice }
+  ] as const;
   const modules = [
     { n: 1, name: 'Fundamentals', topics: 6 },
     { n: 2, name: 'Intermediate', topics: 5 },
@@ -25,87 +24,98 @@
   />
 </svelte:head>
 
-<section class="hero">
-  <p class="kicker">CSEC Mathematics · 2027 syllabus</p>
-  <h1>Study for the exam<br />you're actually sitting.</h1>
-  <p class="lede">
-    Every lesson, flashcard and question is tied to a specific objective in the CXC syllabus.
-    You always know what you've covered, what's left, and what can come up.
-  </p>
-  <div class="ctas">
-    <a class="btn" href="{base}/today">Start studying</a>
-    <a class="link" href="{base}/math">Browse Mathematics <Icon name="chevron" size={14} /></a>
+<section class="hero wrap">
+  <div class="hero-copy">
+    <p class="kicker">CSEC Mathematics · 2027 syllabus</p>
+    <h1>Study for the exam you're <span class="hl">actually sitting.</span></h1>
+    <p class="lede">
+      Every lesson, flashcard and question is tied to a specific objective in the CXC syllabus.
+      You always know what you've covered, what's left, and what can come up.
+    </p>
+    <div class="ctas">
+      <a class="btn3d big" href="{base}/today">Start studying <Icon name="chevron" size={18} /></a>
+      <a class="btn3d ghost big" href="{base}/math">Browse Mathematics</a>
+    </div>
+    <p class="free">Free. No account needed to begin.</p>
   </div>
 
-  <!-- The product shot: the actual Today summary, not a mock-up of one. -->
+  <!-- The product shot: the Today page's quest cards, with example numbers. -->
   <div class="shot" aria-hidden="true">
-    <div class="shot-inner">
-      <Rings rings={demo} size={190} stroke={22} gap={3} />
-      <div class="shot-rows">
-        <div><span style="color:{RING_COLORS.learn.color}">Learn</span><strong style="color:{RING_COLORS.learn.color}">1<small>/1 lesson</small></strong></div>
-        <div><span style="color:{RING_COLORS.review.color}">Review</span><strong style="color:{RING_COLORS.review.color}">7<small>/10 cards</small></strong></div>
-        <div><span style="color:{RING_COLORS.practice.color}">Practice</span><strong style="color:{RING_COLORS.practice.color}">4<small>/5 questions</small></strong></div>
-      </div>
+    <div class="shot-head">
+      <span class="shot-flame"><Icon name="flame" size={22} /></span>
+      <span><strong>12</strong> day streak</span>
+      <span class="shot-lvl">Lv 4</span>
     </div>
+    {#each demo as q}
+      {@const done = q.have >= q.goal}
+      <div class="shot-q" style="--q:{q.color};--q-edge:{q.edge};--q-track:{q.track}">
+        <span class="shot-icon"><Icon name={done ? 'check' : q.icon} size={20} /></span>
+        <span class="shot-body">
+          <strong>{q.title}</strong>
+          <span class="shot-bar"><span style="transform:scaleX({Math.min(1, q.have / q.goal)})"></span></span>
+          <span class="shot-count">{q.have} / {q.goal} {q.unit}</span>
+        </span>
+      </div>
+    {/each}
   </div>
 </section>
 
-<section class="bento wrap">
-  <article class="b tall dark">
-    <p class="b-kicker">Daily goals</p>
-    <h3>Close your rings.</h3>
-    <p>Read a lesson, review ten cards, answer five questions. About twenty minutes, every day, and a streak that shows it.</p>
-    <div class="b-rings"><Rings rings={demo} size={120} stroke={14} gap={2} /></div>
+<section class="features wrap">
+  <article class="f f-brand">
+    <span class="f-glyph"><Icon name="flame" size={24} /></span>
+    <h3>Three quests a day.</h3>
+    <p>Read a lesson, review ten cards, answer five questions. About twenty minutes, and a streak that shows it.</p>
   </article>
 
-  <article class="b">
-    <span class="b-glyph" style="background:linear-gradient(145deg,#34c759,#0b7a5e)"><Icon name="grid" size={20} /></span>
+  <article class="f">
+    <span class="f-glyph" style="--g:#15803d;--g-edge:#14532d"><Icon name="grid" size={22} /></span>
     <h3>Objective by objective.</h3>
     <p>Progress is measured against the syllabus itself. A topic is done when its objectives are.</p>
   </article>
 
-  <article class="b">
-    <span class="b-glyph" style="background:linear-gradient(145deg,#a6f04a,#4cb61c)"><Icon name="cards" size={20} /></span>
+  <article class="f">
+    <span class="f-glyph" style="--g:#c2410c;--g-edge:#7c2d12"><Icon name="cards" size={22} /></span>
     <h3>Flashcards that remember.</h3>
     <p>Swipe right if you knew it. Hard cards come back tomorrow; easy ones wait a week.</p>
   </article>
 
-  <article class="b wide">
-    <p class="b-kicker">Papers with the real shape</p>
+  <article class="f">
+    <span class="f-glyph" style="--g:#0369a1;--g-edge:#0c4a6e"><Icon name="check" size={22} /></span>
+    <h3>Worked, not just marked.</h3>
+    <p>Every question shows its working, so a wrong answer teaches something.</p>
+  </article>
+
+  <article class="f wide">
+    <p class="f-kicker">Papers with the real shape</p>
     <h3>60 questions. 20 from each module.</h3>
     <div class="bars">
       {#each modules as m}
         <div class="bar-row">
           <span>Module {m.n}</span>
-          <span class="bar" style="background:linear-gradient(90deg,{MODULE_THEMES[m.n].from},{MODULE_THEMES[m.n].to})">20</span>
+          <span class="bar" style="--m:{MODULE_THEMES[m.n].solid};--m-edge:{MODULE_THEMES[m.n].edge}">20</span>
         </div>
       {/each}
     </div>
     <p>Practice draws questions in the same proportions as the published assessment grid.</p>
   </article>
-
-  <article class="b">
-    <span class="b-glyph" style="background:linear-gradient(145deg,#4ff0f4,#0a9fd6)"><Icon name="check" size={20} /></span>
-    <h3>Worked, not just marked.</h3>
-    <p>Every question shows its working, so a wrong answer teaches something.</p>
-  </article>
 </section>
 
 <section class="band">
   <div class="wrap band-inner">
-    <p class="b-kicker">Built on the October 2025 amendment</p>
-    <h2>Three modules.<br />Each one a credit.</h2>
+    <p class="band-kicker">Built on the October 2025 amendment</p>
+    <h2>Three modules. Each one a credit.</h2>
     <p class="band-lede">
       From May–June 2027, CSEC Mathematics is three separately sittable modules.
       Most study material still teaches the old nine-section shape. This doesn't.
     </p>
     <div class="chips">
       {#each modules as m}
-        <div class="chip" style="background:linear-gradient(150deg,{MODULE_THEMES[m.n].from},{MODULE_THEMES[m.n].to})">
+        <a class="chip" href="{base}/math#module-{m.n}"
+           style="--m-from:{MODULE_THEMES[m.n].from};--m-to:{MODULE_THEMES[m.n].to};--m-edge:{MODULE_THEMES[m.n].edge}">
           <span class="chip-n">{m.n}</span>
           <strong>{m.name}</strong>
           <span>{m.topics} topics</span>
-        </div>
+        </a>
       {/each}
     </div>
   </div>
@@ -114,164 +124,225 @@
 <section class="closer wrap">
   <h2>Start today. It's free.</h2>
   <p>No account needed to begin. Sign up when you want your progress on every device.</p>
-  <div class="ctas">
-    <a class="btn" href="{base}/today">Start studying</a>
-    <a class="link" href="{base}/signup">Create an account <Icon name="chevron" size={14} /></a>
+  <div class="ctas center">
+    <a class="btn3d big" href="{base}/today">Start studying <Icon name="chevron" size={18} /></a>
+    <a class="btn3d ghost big" href="{base}/signup">Create an account</a>
   </div>
 </section>
 
 <style>
-  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 1.25rem; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 1.25rem; }
 
   /* ---------------------------------------------------------------- hero */
-  .hero { text-align: center; padding: clamp(3rem, 9vw, 6.5rem) 1.25rem 0; }
-  .kicker { margin: 0 0 .7rem; font-size: 1.05rem; font-weight: 600; color: var(--brand); letter-spacing: -.01em; }
-  h1 {
-    margin: 0 auto 1.1rem;
-    max-width: 16ch;
-    font-size: clamp(2.6rem, 7.6vw, 5rem);
-    font-weight: 750;
-    line-height: 1.02;
-    letter-spacing: -.038em;
+  .hero {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    align-items: center;
+    gap: clamp(2rem, 5vw, 4rem);
+    padding-top: clamp(2.5rem, 7vw, 5rem);
   }
+  .kicker {
+    display: inline-block;
+    margin: 0 0 1rem;
+    padding: .3rem .8rem;
+    border-radius: var(--r-pill);
+    font-size: .88rem;
+    font-weight: 800;
+    color: var(--brand-text);
+    background: var(--brand-soft);
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--brand) 30%, transparent);
+  }
+  h1 {
+    margin: 0 0 1.1rem;
+    font-size: clamp(2.5rem, 6.4vw, 4.4rem);
+    font-weight: 700;
+    line-height: 1.04;
+  }
+  .hl { color: var(--brand-text); }
   .lede {
-    margin: 0 auto 1.9rem;
-    max-width: 44ch;
-    font-size: clamp(1.1rem, 1.9vw, 1.35rem);
-    line-height: 1.45;
-    letter-spacing: -.012em;
+    margin: 0 0 1.8rem;
+    max-width: 46ch;
+    font-size: clamp(1.08rem, 1.8vw, 1.25rem);
+    font-weight: 600;
+    line-height: 1.5;
     color: var(--text-secondary);
     text-wrap: pretty;
   }
-  .ctas { display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
-  .btn {
-    padding: .8rem 1.5rem;
-    border-radius: var(--r-pill);
-    background: var(--brand);
-    color: var(--on-brand);
-    font-size: 1.05rem;
-    font-weight: 600;
-    transition: transform var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
-  }
-  .btn:hover { background: var(--brand-hover); color: var(--on-brand); }
-  .btn:active { transform: scale(.97); }
-  .link { display: inline-flex; align-items: center; gap: .15rem; font-size: 1.05rem; font-weight: 500; }
+  .ctas { display: flex; align-items: center; gap: .9rem; flex-wrap: wrap; }
+  .ctas.center { justify-content: center; }
+  .btn3d.big { min-height: 56px; padding: .8rem 1.6rem; font-size: 1.2rem; border-radius: 18px; }
+  .free { margin: 1rem 0 0; font-size: .9rem; font-weight: 700; color: var(--text-tertiary); }
 
   .shot {
-    max-width: 640px;
-    margin: clamp(2.5rem, 6vw, 4rem) auto 0;
-    padding: 10px;
-    border-radius: 38px;
-    background: linear-gradient(180deg, #2a2a2e, #0f0f11);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, .2), 0 40px 80px -40px rgba(0, 0, 0, .6);
-  }
-  .shot-inner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(1.5rem, 5vw, 3rem);
-    padding: clamp(1.5rem, 4vw, 2.5rem);
-    border-radius: 30px;
-    background: #000;
-    color: #f5f5f7;
-    text-align: left;
-  }
-  .shot-rows { display: flex; flex-direction: column; gap: .9rem; }
-  .shot-rows span { display: block; font-size: .78rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
-  .shot-rows strong { font-size: 2rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.05; }
-  .shot-rows small { font-size: .45em; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; margin-left: .1em; }
-  @media (max-width: 520px) {
-    .shot-inner { flex-direction: column; text-align: center; }
-  }
-
-  /* --------------------------------------------------------------- bento */
-  .bento {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    margin-top: clamp(4rem, 9vw, 6.5rem);
-  }
-  .b {
     display: flex;
     flex-direction: column;
-    padding: 1.6rem 1.6rem 1.7rem;
-    border-radius: 28px;
+    gap: .7rem;
+    padding: 1.1rem;
+    border-radius: 30px;
     background: var(--surface);
-    box-shadow: var(--shadow-sm);
+    box-shadow: inset 0 0 0 2px var(--line), 0 8px 0 var(--line);
+    transform: rotate(1.5deg);
   }
-  .b h3 { margin: 0 0 .45rem; font-size: 1.35rem; font-weight: 720; line-height: 1.15; letter-spacing: -.024em; }
-  .b p { margin: 0; color: var(--text-secondary); font-size: .98rem; line-height: 1.5; }
-  .b-kicker { margin: 0 0 .4rem !important; font-size: .82rem !important; font-weight: 650; color: var(--brand) !important; }
-  .b-glyph {
+  .shot-head {
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    padding: .2rem .3rem .4rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+  }
+  .shot-head strong { font-family: var(--font-display); font-size: 1.5rem; color: var(--text); }
+  .shot-flame {
     display: grid;
     place-items: center;
-    width: 46px;
-    height: 46px;
-    margin-bottom: 1.2rem;
+    width: 44px;
+    height: 44px;
     border-radius: 14px;
     color: #fff;
+    background: #c2410c;
+    box-shadow: 0 3px 0 #7c2d12;
   }
-  .tall { grid-row: span 2; }
-  .wide { grid-column: span 2; }
-  /* The hairline keeps a black tile's edge visible on a black page in dark mode. */
-  .dark { background: #0b0b0d; color: #f5f5f7; box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .1), var(--shadow-sm); }
-  .dark p { color: #a1a1a6; }
-  .dark .b-kicker { color: #fa114f !important; }
-  .b-rings { margin-top: auto; padding-top: 1.5rem; display: flex; justify-content: center; }
-
-  .bars { display: flex; flex-direction: column; gap: .5rem; margin: .6rem 0 1rem; }
-  .bar-row { display: grid; grid-template-columns: 5.5rem 1fr; align-items: center; gap: .8rem; font-size: .88rem; color: var(--text-secondary); }
-  .bar {
+  .shot-lvl {
+    margin-left: auto;
     padding: .3rem .7rem;
-    border-radius: 10px;
+    border-radius: 12px;
+    font-family: var(--font-display);
+    font-weight: 600;
     color: #fff;
-    font-weight: 700;
+    background: var(--brand);
+    box-shadow: 0 3px 0 var(--brand-edge);
+  }
+  .shot-q {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    padding: .75rem .85rem;
+    border-radius: 18px;
+    background: var(--surface-2);
+    box-shadow: inset 0 0 0 2px var(--line);
+  }
+  .shot-icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    color: #fff;
+    background: var(--q);
+    box-shadow: 0 3px 0 var(--q-edge);
+  }
+  .shot-body { flex: 1; display: flex; flex-direction: column; gap: .3rem; min-width: 0; }
+  .shot-body strong { font-family: var(--font-display); font-weight: 600; }
+  .shot-bar { height: 12px; border-radius: var(--r-pill); background: var(--q-track); overflow: hidden; }
+  .shot-bar span { display: block; height: 100%; border-radius: inherit; background: var(--q); transform-origin: left; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .18); }
+  .shot-count { font-size: .78rem; font-weight: 800; color: var(--text-secondary); }
+
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; }
+    .shot { transform: none; max-width: 480px; }
+  }
+
+  /* ------------------------------------------------------------ features */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.1rem;
+    margin-top: clamp(4rem, 9vw, 6rem);
+  }
+  .f {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1.5rem 1.6rem;
+    border-radius: 26px;
+    background: var(--surface);
+    box-shadow: var(--shadow-lg);
+  }
+  .f h3 { margin: 0 0 .45rem; font-size: 1.4rem; font-weight: 600; line-height: 1.15; }
+  .f p { margin: 0; color: var(--text-secondary); font-size: 1rem; font-weight: 600; line-height: 1.5; }
+  .f-kicker { margin: 0 0 .4rem !important; font-size: .8rem !important; font-weight: 800 !important; letter-spacing: .06em; text-transform: uppercase; color: var(--brand-text) !important; }
+  .f-glyph {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 1.1rem;
+    border-radius: 16px;
+    color: #fff;
+    background: var(--g, var(--brand));
+    box-shadow: 0 4px 0 var(--g-edge, var(--brand-edge));
+  }
+  .f-brand { grid-column: span 2; color: #fff; background: var(--brand); box-shadow: 0 8px 0 var(--brand-edge); }
+  .f-brand h3 { font-size: 2rem; }
+  .f-brand p { color: #fff; font-size: 1.08rem; }
+  .f-brand .f-glyph { color: var(--brand); background: #fff; box-shadow: 0 4px 0 rgba(0, 0, 0, .25); }
+
+
+  .bars { display: flex; flex-direction: column; gap: .55rem; margin: .7rem 0 1.1rem; }
+  .bar-row { display: grid; grid-template-columns: 5.5rem 1fr; align-items: center; gap: .8rem; font-size: .9rem; font-weight: 800; color: var(--text-secondary); }
+  .bar {
+    padding: .35rem .8rem;
+    border-radius: 12px;
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 600;
     text-align: right;
     font-variant-numeric: tabular-nums;
+    background: var(--m);
+    box-shadow: 0 3px 0 var(--m-edge);
   }
 
   @media (max-width: 860px) {
-    .bento { grid-template-columns: 1fr 1fr; }
-    .tall { grid-row: auto; }
+    .features { grid-template-columns: 1fr 1fr; }
+    .wide { grid-column: span 2; }
   }
   @media (max-width: 560px) {
-    .bento { grid-template-columns: 1fr; }
-    .wide { grid-column: auto; }
+    .features { grid-template-columns: 1fr; }
+    .wide, .f-brand { grid-column: auto; }
   }
 
   /* ---------------------------------------------------------------- band */
   .band {
-    margin-top: clamp(4rem, 9vw, 6.5rem);
-    padding: clamp(3.5rem, 8vw, 6rem) 0;
-    background: #000;
-    color: #f5f5f7;
+    margin-top: clamp(4rem, 9vw, 6rem);
+    padding: clamp(3.5rem, 8vw, 5.5rem) 0;
+    background: #1e1b4b;
+    color: #fff;
+    box-shadow: inset 0 6px 0 #312e81, inset 0 -6px 0 #312e81;
   }
   .band-inner { text-align: center; }
-  .band .b-kicker { color: #34c759 !important; }
-  .band h2 { margin: 0 0 1rem; font-size: clamp(2.2rem, 6vw, 3.8rem); font-weight: 750; line-height: 1.04; letter-spacing: -.036em; }
-  .band-lede { margin: 0 auto 2.5rem; max-width: 50ch; color: #a1a1a6; font-size: 1.12rem; line-height: 1.5; }
-  .chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; max-width: 760px; margin: 0 auto; }
+  .band-kicker { margin: 0 0 .7rem; font-size: .85rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #a5b4fc; }
+  .band h2 { margin: 0 0 1rem; font-size: clamp(2.2rem, 5.6vw, 3.6rem); font-weight: 700; line-height: 1.06; }
+  .band-lede { margin: 0 auto 2.5rem; max-width: 50ch; color: #c7d2fe; font-size: 1.12rem; font-weight: 600; line-height: 1.5; }
+  .chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; max-width: 780px; margin: 0 auto; }
   .chip {
-    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    min-height: 150px;
-    padding: 1.2rem;
+    min-height: 160px;
+    padding: 1.2rem 1.3rem;
     border-radius: 24px;
-    overflow: hidden;
     text-align: left;
+    color: #fff;
+    background: linear-gradient(150deg, var(--m-from), var(--m-to));
+    box-shadow: 0 6px 0 var(--m-edge);
+    transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
   }
-  .chip-n { font-size: 3.4rem; font-weight: 800; line-height: .9; letter-spacing: -.05em; opacity: .9; margin-bottom: auto; }
-  .chip strong { font-size: 1.1rem; font-weight: 700; letter-spacing: -.015em; }
-  .chip span:last-child { font-size: .85rem; opacity: .85; }
+  .chip:hover { color: #fff; }
+  .chip:active { transform: translateY(6px); box-shadow: 0 0 0 var(--m-edge); }
+  .chip-n { font-family: var(--font-display); font-size: 3.6rem; font-weight: 700; line-height: .9; margin-bottom: auto; }
+  .chip strong { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; }
+  .chip span:last-child { font-size: .88rem; font-weight: 700; }
   @media (max-width: 600px) {
     .chips { grid-template-columns: 1fr; }
-    .chip { min-height: 110px; }
+    .chip { min-height: 116px; }
   }
 
   /* -------------------------------------------------------------- closer */
-  .closer { text-align: center; padding-top: clamp(4rem, 9vw, 6rem); }
-  .closer h2 { margin: 0 0 .6rem; font-size: clamp(2rem, 5vw, 3rem); font-weight: 750; letter-spacing: -.032em; }
-  .closer p { margin: 0 auto 1.6rem; color: var(--text-secondary); font-size: 1.1rem; max-width: 42ch; }
+  .closer { text-align: center; padding-top: clamp(4rem, 9vw, 5.5rem); }
+  .closer h2 { margin: 0 0 .6rem; font-size: clamp(2.1rem, 5vw, 3.1rem); font-weight: 700; }
+  .closer p { margin: 0 auto 1.6rem; color: var(--text-secondary); font-size: 1.1rem; font-weight: 600; max-width: 42ch; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shot { transform: none; }
+  }
 </style>
