@@ -1,93 +1,103 @@
 /* Grade One — design tokens and base styles.
  *
- * Built on Apple's interface conventions: a neutral ground with one accent
- * colour, type whose tracking and leading change with size, translucent chrome
- * that content scrolls under, and motion that responds on press rather than on
- * release. Restraint is the point — colour is reserved for meaning, so when
- * something goes amber or green the student knows it matters.
+ * Design system: design-system/grade-one/MASTER.md (built with ui-ux-pro-max).
+ * Modern pass: a cool near-white ground, white surfaces with a 1px hairline
+ * and soft layered shadows, flat colour blocks for modules and quests, and
+ * Plus Jakarta Sans throughout (the skill's "Friendly SaaS" pairing). Every
+ * text/background pair below was checked to WCAG AA (4.5:1) in light and
+ * dark. Change a colour, re-check it.
  *
- * Light palette on bare :root; dark redefined under both the media query and an
- * explicit [data-theme], so nothing has its only definition inside a conditional.
+ * Light palette on bare :root; dark redefined under the media query AND an
+ * explicit [data-theme], so nothing has its only definition in a conditional.
  */
 
 :root {
   /* ---- Ground and surfaces ------------------------------------------- */
-  /* Grouped background behind white cards, the way Apple layers content. */
-  --bg:             #f5f5f7;
+  --bg:             #f8f9fc;
   --surface:        #ffffff;
-  --surface-2:      #f0f0f2;
-  --surface-sunken: #ebebef;
+  --surface-2:      #f3f4f8;
+  --surface-sunken: #eceef4;
+  --line:           #e4e6ee;     /* hairline borders */
+  --glow:           rgba(79, 70, 229, .08);
+  --shade:          rgba(15, 23, 42, .06);
+  --shade-strong:   rgba(15, 23, 42, .12);
 
-  /* Separators are alpha, not solid, so they sit correctly on any surface. */
-  --separator:      rgba(0, 0, 0, .09);
-  --separator-firm: rgba(0, 0, 0, .16);
+  /* Kept for pages that still use the older names. */
+  --separator:      #eceef3;
+  --separator-firm: #dfe2ea;
 
   /* ---- Text ----------------------------------------------------------- */
-  --text:           #1d1d1f;
-  --text-secondary: #6e6e73;
-  --text-tertiary:  #8e8e93;
+  --text:           #0f172a;     /* 17.0:1 on page */
+  --text-secondary: #475569;     /*  7.2:1 */
+  --text-tertiary:  #5b6477;     /*  5.6:1 */
 
-  /* ---- Accent and semantics ------------------------------------------- */
-  /* One brand colour. Amber means reward, and is never used for chrome. */
-  --brand:          #05796b;
-  --brand-hover:    #04665a;
-  --brand-soft:     rgba(5, 121, 107, .09);
+  /* ---- Brand, energy, semantics ---------------------------------------- */
+  --brand:          #4f46e5;     /* white text 6.3:1 */
+  --brand-hover:    #4338ca;
+  --brand-edge:     #3730a3;
+  --brand-soft:     rgba(79, 70, 229, .09);
+  --brand-text:     #4f46e5;
   --on-brand:       #ffffff;
 
-  --reward:         #b26205;
-  --reward-soft:    rgba(255, 149, 0, .13);
-  --correct:        #1c7a3e;
-  --correct-soft:   rgba(52, 199, 89, .14);
-  --wrong:          #c5221f;
-  --wrong-soft:     rgba(255, 59, 48, .12);
+  --energy:         #f97316;
+  --energy-edge:    #c2410c;
+  --energy-soft:    rgba(249, 115, 22, .12);
+  --on-energy:      #0f172a;
 
-  /* ---- Materials ------------------------------------------------------ */
-  /* Translucent chrome: content passes underneath rather than stopping at it. */
-  --material:       rgba(250, 250, 252, .72);
-  --material-blur:  saturate(180%) blur(20px);
+  --reward:         #c2410c;
+  --reward-soft:    rgba(249, 115, 22, .11);
+  --correct:        #15803d;
+  --correct-edge:   #14532d;
+  --correct-soft:   rgba(34, 197, 94, .12);
+  --wrong:          #dc2626;
+  --wrong-edge:     #991b1b;
+  --wrong-soft:     rgba(239, 68, 68, .1);
 
-  /* ---- Depth ---------------------------------------------------------- */
-  /* Layered and shallow. A single heavy shadow reads as a drop-shadow filter;
-     two soft ones read as an object slightly off the page. */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .03);
-  --shadow:    0 1px 3px rgba(0, 0, 0, .05), 0 6px 16px -6px rgba(0, 0, 0, .09);
-  --shadow-lg: 0 2px 6px rgba(0, 0, 0, .06), 0 18px 40px -12px rgba(0, 0, 0, .16);
+  /* ---- Depth: a hairline plus a soft, low shadow ------------------------ */
+  --shadow-sm: 0 0 0 1px var(--line), 0 1px 2px var(--shade);
+  --shadow:    0 0 0 1px var(--line), 0 1px 2px var(--shade), 0 6px 20px -8px var(--shade-strong);
+  --shadow-lg: 0 0 0 1px var(--line), 0 2px 4px var(--shade), 0 18px 44px -18px var(--shade-strong);
+
+  --material:       var(--surface);
+  --material-blur:  none;
+  --glass:          color-mix(in srgb, var(--surface) 82%, transparent);
+  --glass-strong:   var(--surface);
+  --glass-edge:     transparent;
+  --glass-line:     var(--line);
+  --glass-blur:     saturate(180%) blur(16px);
+  --glass-shadow:   var(--shadow);
+  --ambient-1: transparent;
+  --ambient-2: transparent;
+  --ambient-3: transparent;
 
   /* ---- Shape ---------------------------------------------------------- */
   --r-sm:  8px;
   --r:     12px;
-  --r-lg:  18px;
-  --r-xl:  24px;
-  --r-pill: 980px;
+  --r-lg:  16px;
+  --r-xl:  20px;
+  --r-pill: 999px;
+  --sidebar-w: 256px;
 
   /* ---- Type ----------------------------------------------------------- */
-  /* -apple-system first so an iPhone gets real SF Pro; Inter for everyone
-     else; the system font renders while Inter loads. */
-  --font: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui,
-          Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+  --font: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-display: var(--font);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --track-display: -.035em;
+  --track-title:   -.028em;
+  --track-heading: -.02em;
+  --track-body:    -.006em;
+  --track-caption: 0em;
 
-  /* Tracking is size-specific. Large text reads too loose as it grows, so it
-     tightens; small text needs a touch of air. One value for everything is
-     wrong somewhere. */
-  --track-display: -.022em;
-  --track-title:   -.019em;
-  --track-heading: -.014em;
-  --track-body:    -.003em;
-  --track-caption:  .005em;
-
-  /* ---- Motion --------------------------------------------------------- */
-  /* Critically damped by default: arrives quickly, settles without bounce. */
-  --ease: cubic-bezier(.32, .72, 0, 1);
-  /* Slight overshoot, reserved for moments that follow a deliberate action. */
+  /* ---- Motion ----------------------------------------------------------- */
+  --ease: cubic-bezier(.2, .8, .2, 1);
   --ease-spring: linear(
     0, .0088 1.1%, .0346 2.4%, .1305 5.2%, .5083 13.4%, .6813 17.2%,
     .8232 21.1%, .9339 25.2%, 1.0016 28.9%, 1.0374 32.5%, 1.0499 36.6%,
     1.0425 41.2%, 1.0243 47.2%, 1.0009 57.2%, .9981 63.9%, 1
   );
-  --dur-fast: .14s;
-  --dur:      .28s;
-  --dur-slow: .42s;
+  --dur-fast: .12s;
+  --dur:      .2s;
+  --dur-slow: .32s;
 
   --measure: 66ch;
   color-scheme: light;
@@ -95,228 +105,202 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --bg:             #000000;
-    --surface:        #1c1c1e;
-    --surface-2:      #2c2c2e;
-    --surface-sunken: #141416;
-
-    --separator:      rgba(255, 255, 255, .11);
-    --separator-firm: rgba(255, 255, 255, .2);
-
-    --text:           #f5f5f7;
-    --text-secondary: #a1a1a6;
-    --text-tertiary:  #8e8e93;
-
-    --brand:          #3fd9c4;
-    --brand-hover:    #63e3d2;
-    --brand-soft:     rgba(63, 217, 196, .14);
-    --on-brand:       #00312b;
-
-    --reward:         #ff9f0a;
-    --reward-soft:    rgba(255, 159, 10, .16);
-    --correct:        #30d158;
-    --correct-soft:   rgba(48, 209, 88, .16);
-    --wrong:          #ff453a;
-    --wrong-soft:     rgba(255, 69, 58, .16);
-
-    --material:       rgba(28, 28, 30, .72);
-
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .5);
-    --shadow:    0 1px 3px rgba(0, 0, 0, .5), 0 6px 16px -6px rgba(0, 0, 0, .6);
-    --shadow-lg: 0 2px 6px rgba(0, 0, 0, .5), 0 18px 40px -12px rgba(0, 0, 0, .7);
-
+    --bg: #0a0b10; --surface: #12141c; --surface-2: #1a1d27; --surface-sunken: #0e1016;
+    --line: #242836; --glow: rgba(99, 102, 241, .14);
+    --shade: rgba(0, 0, 0, .3); --shade-strong: rgba(0, 0, 0, .55);
+    --separator: #1f2230; --separator-firm: #2c3142;
+    --text: #f1f5f9; --text-secondary: #a3adc2; --text-tertiary: #8a93a8;
+    --brand: #5850ee; --brand-hover: #6a63f2; --brand-edge: #3a33b8;
+    --brand-soft: rgba(129, 140, 248, .13); --brand-text: #a5b4fc;
+    --energy: #fb923c; --energy-edge: #c2410c; --energy-soft: rgba(251, 146, 60, .13);
+    --reward: #fb923c; --reward-soft: rgba(251, 146, 60, .12);
+    --correct: #4ade80; --correct-edge: #166534; --correct-soft: rgba(74, 222, 128, .11);
+    --wrong: #f87171; --wrong-edge: #991b1b; --wrong-soft: rgba(248, 113, 113, .11);
     color-scheme: dark;
   }
 }
-
 :root[data-theme='dark'] {
-  --bg:             #000000;
-  --surface:        #1c1c1e;
-  --surface-2:      #2c2c2e;
-  --surface-sunken: #141416;
-
-  --separator:      rgba(255, 255, 255, .11);
-  --separator-firm: rgba(255, 255, 255, .2);
-
-  --text:           #f5f5f7;
-  --text-secondary: #a1a1a6;
-  --text-tertiary:  #8e8e93;
-
-  --brand:          #3fd9c4;
-  --brand-hover:    #63e3d2;
-  --brand-soft:     rgba(63, 217, 196, .14);
-  --on-brand:       #00312b;
-
-  --reward:         #ff9f0a;
-  --reward-soft:    rgba(255, 159, 10, .16);
-  --correct:        #30d158;
-  --correct-soft:   rgba(48, 209, 88, .16);
-  --wrong:          #ff453a;
-  --wrong-soft:     rgba(255, 69, 58, .16);
-
-  --material:       rgba(28, 28, 30, .72);
-
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .5);
-  --shadow:    0 1px 3px rgba(0, 0, 0, .5), 0 6px 16px -6px rgba(0, 0, 0, .6);
-  --shadow-lg: 0 2px 6px rgba(0, 0, 0, .5), 0 18px 40px -12px rgba(0, 0, 0, .7);
-
+  --bg: #0a0b10; --surface: #12141c; --surface-2: #1a1d27; --surface-sunken: #0e1016;
+  --line: #242836; --glow: rgba(99, 102, 241, .14);
+  --shade: rgba(0, 0, 0, .3); --shade-strong: rgba(0, 0, 0, .55);
+  --separator: #1f2230; --separator-firm: #2c3142;
+  --text: #f1f5f9; --text-secondary: #a3adc2; --text-tertiary: #8a93a8;
+  --brand: #5850ee; --brand-hover: #6a63f2; --brand-edge: #3a33b8;
+  --brand-soft: rgba(129, 140, 248, .13); --brand-text: #a5b4fc;
+  --energy: #fb923c; --energy-edge: #c2410c; --energy-soft: rgba(251, 146, 60, .13);
+  --reward: #fb923c; --reward-soft: rgba(251, 146, 60, .12);
+  --correct: #4ade80; --correct-edge: #166534; --correct-soft: rgba(74, 222, 128, .11);
+  --wrong: #f87171; --wrong-edge: #991b1b; --wrong-soft: rgba(248, 113, 113, .11);
   color-scheme: dark;
 }
 
-/* ---------------------------------------------------------------- base */
-
-* { box-sizing: border-box; }
-
-html {
-  -webkit-text-size-adjust: 100%;
-  scroll-behavior: smooth;
+/* ---- Module colour scopes --------------------------------------------
+   Pages set --mod / --mod-bright inline (see $lib/modules). --mod-text is the
+   colour for text and small accents: the deep fill in light mode (AA on
+   white), the bright tint in dark mode (AA on the dark card). It has to be
+   declared on the element that carries --mod, so it is keyed on that. */
+[style*='--mod:'] { --mod-text: var(--mod); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [style*='--mod:'] { --mod-text: var(--mod-bright); }
 }
+:root[data-theme='dark'] [style*='--mod:'] { --mod-text: var(--mod-bright); }
+
+/* ---------------------------------------------------------------- base */
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  background: var(--bg);
   color: var(--text);
   font-family: var(--font);
-  font-size: 17px;                  /* Apple's body size, not 16 */
-  line-height: 1.53;
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 450;
   letter-spacing: var(--track-body);
-  font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+  /* One soft brand glow at the top of the page, nothing else. */
+  background-color: var(--bg);
+  background-image: radial-gradient(1100px 520px at 50% -260px, var(--glow), transparent 70%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
-/* Leading tightens as size grows; tracking goes more negative with it. */
-h1, h2, h3, h4 {
+/* Tight, heavy headings: the modern-SaaS signature. */
+h1, h2, h3, h4, .large-title, .display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: var(--track-heading);
+  line-height: 1.15;
   margin: 0 0 .4em;
-  font-weight: 600;
   text-wrap: balance;
 }
-h1 { font-size: 2.1rem;  line-height: 1.09; letter-spacing: var(--track-display); }
-h2 { font-size: 1.45rem; line-height: 1.2;  letter-spacing: var(--track-title); }
-h3 { font-size: 1.12rem; line-height: 1.3;  letter-spacing: var(--track-heading); }
-h4 { font-size: 1rem;    line-height: 1.35; letter-spacing: var(--track-heading); }
+h1 { font-size: 2.2rem; letter-spacing: var(--track-title); }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.15rem; }
 
-a {
-  color: var(--brand);
-  text-decoration: none;
-  transition: color var(--dur-fast) var(--ease);
-}
+a { color: var(--brand-text); text-decoration: none; transition: color var(--dur) var(--ease); }
 a:hover { color: var(--brand-hover); }
 
 img, svg { max-width: 100%; }
 
-/* ------------------------------------------------------------- controls */
-
+/* ---------------------------------------------------------------- buttons
+   Flat buttons with a hairline; a small press scale for feedback on
+   pointer-down. */
 button {
   font: inherit;
-  letter-spacing: inherit;
+  font-weight: 600;
   cursor: pointer;
-  border: .5px solid var(--separator-firm);
-  background: var(--surface);
-  color: var(--text);
-  border-radius: var(--r);
+  min-height: 44px;                           /* skill: touch target >= 44px */
   padding: .6rem 1.1rem;
-  font-weight: 500;
-  /* Only compositor-friendly properties animate. */
+  border: 0;
+  border-radius: var(--r);
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
   transition:
     transform var(--dur-fast) var(--ease),
-    background-color var(--dur-fast) var(--ease),
-    border-color var(--dur-fast) var(--ease),
-    opacity var(--dur-fast) var(--ease);
+    box-shadow var(--dur-fast) var(--ease),
+    background-color var(--dur) var(--ease),
+    filter var(--dur) var(--ease);
 }
 @media (hover: hover) {
   button:hover:not(:disabled) { background: var(--surface-2); }
 }
-/* Feedback on the press, not on release — this is what makes it feel direct. */
-button:active:not(:disabled) { transform: scale(.97); }
-button:disabled { opacity: .4; cursor: not-allowed; }
+button:active:not(:disabled) { transform: scale(.975); }
+button:disabled { opacity: .45; cursor: not-allowed; }
 
 button.primary {
-  background: var(--brand);
-  border-color: transparent;
   color: var(--on-brand);
-  font-weight: 590;
+  background: var(--brand);
+  box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14), 0 6px 16px -8px var(--brand);
+  font-weight: 650;
 }
 @media (hover: hover) {
   button.primary:hover:not(:disabled) { background: var(--brand-hover); }
 }
 
+/* Link-styled call to action, same physics as a button. */
+.btn3d {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  min-height: 48px;
+  padding: .7rem 1.4rem;
+  border-radius: var(--r);
+  font-weight: 650;
+  font-size: 1rem;
+  color: var(--on-brand);
+  background: var(--brand);
+  box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14), 0 6px 16px -8px var(--brand);
+  transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease), background-color var(--dur) var(--ease);
+}
+.btn3d:hover { color: var(--on-brand); background: var(--brand-hover); }
+.btn3d:active { transform: scale(.975); }
+.btn3d.ghost {
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.btn3d.ghost:hover { color: var(--text); background: var(--surface-2); }
+
 :focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--brand) 55%, transparent);
+  outline: 2px solid var(--brand-text);
   outline-offset: 2px;
   border-radius: var(--r-sm);
 }
 
 /* --------------------------------------------------------------- layout */
+.wrap { max-width: 1000px; margin: 0 auto; padding: 0 max(1.25rem, env(safe-area-inset-left)); }
 
-.wrap {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 max(1.25rem, env(safe-area-inset-left));
-}
-
-.card {
+.card, .glass {
   background: var(--surface);
   border-radius: var(--r-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow);
 }
 
+.large-title { font-size: clamp(2rem, 4.2vw, 2.6rem); font-weight: 750; line-height: 1.08; letter-spacing: var(--track-display); margin: 0; }
+.subtitle { margin: .4rem 0 0; color: var(--text-secondary); font-size: 1.05rem; }
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 2.4rem 0 .9rem;
+}
+.section-head h2 { margin: 0; font-size: 1.25rem; }
+.section-head a { font-weight: 600; font-size: .92rem; }
+
 .muted    { color: var(--text-secondary); }
-.small    { font-size: .875rem; letter-spacing: var(--track-caption); }
+.small    { font-size: .875rem; }
 .scroll-x { overflow-x: auto; }
 
-/* Section labels: small, tracked out, quiet — Apple's grouped-list headers. */
 .eyebrow {
   text-transform: uppercase;
-  font-size: .7rem;
-  font-weight: 600;
-  letter-spacing: .06em;
+  font-size: .72rem;
+  font-weight: 650;
+  letter-spacing: .08em;
   color: var(--text-tertiary);
 }
 
 table { border-collapse: collapse; width: 100%; }
-th, td {
-  text-align: left;
-  padding: .6rem .8rem;
-  border-bottom: .5px solid var(--separator);
-}
-th {
-  font-weight: 590;
-  color: var(--text-secondary);
-  font-size: .82rem;
-  letter-spacing: var(--track-caption);
-}
+th, td { text-align: left; padding: .6rem .8rem; border-bottom: 1px solid var(--separator); }
+th { font-weight: 650; color: var(--text-secondary); font-size: .82rem; }
+
+a, button, [role='button'], summary, label[for] { cursor: pointer; }
 
 /* -------------------------------------------------- accessibility prefs */
-
-/* Reduced motion is not "no feedback" — it is gentler feedback. Opacity and
-   colour survive; travel and overshoot do not. */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
-    scroll-behavior: auto !important;
   }
 }
-
-/* Frost the materials rather than blurring them. */
-@media (prefers-reduced-transparency: reduce) {
-  :root { --material: var(--surface); --material-blur: none; }
-}
-
 @media (prefers-contrast: more) {
-  :root {
-    --separator: rgba(0, 0, 0, .35);
-    --separator-firm: rgba(0, 0, 0, .55);
-    --text-secondary: #40404a;
-    --material: var(--surface);
-  }
-  :root[data-theme='dark'] {
-    --separator: rgba(255, 255, 255, .4);
-    --separator-firm: rgba(255, 255, 255, .6);
-    --text-secondary: #d8d8dd;
-  }
+  :root { --line: #8b93a7; --text-secondary: #334155; }
+  :root[data-theme='dark'] { --line: #5b6477; --text-secondary: #d6dbe6; }
 }

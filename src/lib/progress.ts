@@ -1,10 +1,10 @@
 /**
- * Student progress: mastery, flashcard scheduling, XP and streaks.
+ * Student progress: mastery, flashcard scheduling, XP, streaks, and lessons read.
  *
- * Stored in localStorage for now so the whole platform works before Supabase
- * exists. The shapes here deliberately mirror the tables in migrations 004 and
- * 005 — `objective_mastery`, `flashcard_reviews`, `xp_events`, `streaks` — so
- * moving to the database is a change of backing store, not of model.
+ * Stored in localStorage and synced to Supabase by $lib/sync. The shapes
+ * mirror the tables in migrations 004 and 005 — objective_mastery,
+ * flashcard_reviews, xp_events, streaks — so the database is a backing store,
+ * not a second model.
  *
  * Every read is wrapped: a private window, cleared site data, or a browser set
  * to block storage must degrade to "no progress yet", never to a broken page.
@@ -26,9 +26,14 @@ export type Progress = {
   reviews: Record<string, Review>;
   xp: XpEvent[];
   streak: { current: number; longest: number; lastActive: string | null };
+  /** lesson key -> local day it was last read. Stops re-reading paying twice a day. */
+  lessons: Record<string, string>;
 };
 
-const EMPTY: Progress = { mastery: {}, reviews: {}, xp: [], streak: { current: 0, longest: 0, lastActive: null } };
+const EMPTY: Progress = {
+  mastery: {}, reviews: {}, xp: [], lessons: {},
+  streak: { current: 0, longest: 0, lastActive: null }
+};
 
 export function load(): Progress {
   if (!browser) return structuredClone(EMPTY);
@@ -50,7 +55,20 @@ export function save(p: Progress): void {
   }
 }
 
-const today = () => new Date().toISOString().slice(0, 10);
+/**
+ * The student's own calendar day, as YYYY-MM-DD.
+ *
+ * NOT toISOString(), which is UTC. The Caribbean sits 4-5 hours behind UTC, so
+ * a UTC day ends at 8pm local time: a student revising at 9pm had it counted as
+ * tomorrow, broke their streak by studying in the evening, and saw today's
+ * rings reset mid-session. Days are the student's days.
+ */
+export function localDay(d: Date = new Date()): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
 
 /* ------------------------------------------------------------------ mastery */
 
@@ -68,15 +86,30 @@ export function recordAnswer(p: Progress, objective: string, correct: boolean): 
     correct: m.correct + (correct ? 1 : 0),
     lastSeen: new Date().toISOString()
   };
-  if (correct) addXp(p, 10, 'question_correct');
+  // Wrong answers log a zero-XP event. They earn nothing, but they are practice,
+  // and the Practice ring counts effort rather than only success — a student
+  // grinding through hard questions should see the ring fill.
+  addXp(p, correct ? 10 : 0, correct ? 'question_correct' : 'question_wrong');
   touchStreak(p);
   return p;
 }
 
-export function topicMastery(p: Progress, objectiveCodes: string[]): number {
-  if (!objectiveCodes.length) return 0;
-  const total = objectiveCodes.reduce((a, c) => a + (p.mastery[c]?.mastery ?? 0), 0);
-  return Math.round(total / objectiveCodes.length);
+export function topicMastery(p: Progress, objectiveKeys: string[]): number {
+  if (!objectiveKeys.length) return 0;
+  const total = objectiveKeys.reduce((a, c) => a + (p.mastery[c]?.mastery ?? 0), 0);
+  return Math.round(total / objectiveKeys.length);
+}
+
+/* ------------------------------------------------------------------ lessons */
+
+/** Returns true if this read earned XP (first time today for this lesson). */
+export function markLessonRead(p: Progress, lessonKey: string): boolean {
+  const today = localDay();
+  if (p.lessons[lessonKey] === today) return false;
+  p.lessons[lessonKey] = today;
+  addXp(p, 15, 'lesson_read');
+  touchStreak(p);
+  return true;
 }
 
 /* -------------------------------------------------------------- flashcards */
@@ -134,17 +167,30 @@ export function totalXp(p: Progress): number {
 }
 
 function touchStreak(p: Progress): void {
-  const d = today();
-  if (p.streak.lastActive === d) return;
+  const today = localDay();
+  if (p.streak.lastActive === today) return;
 
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const wasYesterday = p.streak.lastActive === yesterday.toISOString().slice(0, 10);
+  const y = new Date();
+  y.setDate(y.getDate() - 1);
+  const wasYesterday = p.streak.lastActive === localDay(y);
 
   p.streak.current = wasYesterday ? p.streak.current + 1 : 1;
   p.streak.longest = Math.max(p.streak.longest, p.streak.current);
-  p.streak.lastActive = d;
+  p.streak.lastActive = today;
   addXp(p, 20, 'streak_day');
+}
+
+/**
+ * A streak is only alive if the last active day was today or yesterday.
+ * The stored number is not reset until the next activity, so the display has
+ * to check — otherwise a streak broken last week still shows as 12 days.
+ */
+export function liveStreak(p: Progress): number {
+  const last = p.streak.lastActive;
+  if (!last) return 0;
+  const y = new Date();
+  y.setDate(y.getDate() - 1);
+  return last === localDay() || last === localDay(y) ? p.streak.current : 0;
 }
 
 /**

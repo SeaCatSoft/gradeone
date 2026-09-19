@@ -126,7 +126,7 @@
     box-shadow: var(--shadow);
     padding: 1.9rem 1.75rem;
   }
-  h1 { font-size: 1.6rem; letter-spacing: -.024em; line-height: 1.12; margin: 0 0 .4rem; }
+  h1 { font-size: 1.6rem; line-height: 1.12; margin: 0 0 .4rem; }
   .sub { margin: 0 0 1.5rem; font-size: .95rem; }
 
   form { display: flex; flex-direction: column; gap: 1rem; }
@@ -136,13 +136,14 @@
     font: inherit;
     letter-spacing: var(--track-body);
     padding: .65rem .8rem;
-    border: 1px solid var(--separator-firm);
+    border: 1px solid var(--line);
+    min-height: 48px;
     border-radius: var(--r);
     background: var(--surface);
     color: var(--text);
     transition: border-color var(--dur-fast) var(--ease);
   }
-  input:focus { border-color: var(--brand); outline: none; }
+  input:focus { border-color: var(--brand-text); outline: none; box-shadow: 0 0 0 4px var(--brand-soft); }
   input::placeholder { color: var(--text-tertiary); }
 
   .submit { margin-top: .3rem; padding: .72rem 1.1rem; }
@@ -176,9 +177,10 @@
     border: 0;
     background: none;
     color: var(--text-secondary);
-    font-weight: 450;
+    font-weight: 700;
   }
-  .link:hover:not(:disabled) { background: none; color: var(--brand); }
+  .link:hover:not(:disabled) { background: none; color: var(--brand-text); }
+  .link, .link:active:not(:disabled) { box-shadow: none; transform: none; }
 
   .alt { margin: 1.1rem 0 0; text-align: center; color: var(--text-secondary); }
 </style>

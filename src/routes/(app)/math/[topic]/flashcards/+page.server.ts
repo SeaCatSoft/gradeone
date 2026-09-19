@@ -29,5 +29,5 @@ export const load: PageServerLoad = async ({ params }) => {
     }))
   );
 
-  return { topic: { slug: topic.slug, title: topic.title }, cards };
+  return { topic: { slug: topic.slug, title: topic.title, module: topic.module }, cards };
 };

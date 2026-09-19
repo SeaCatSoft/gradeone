@@ -1,6 +1,7 @@
 import { supabase } from '$lib/supabase';
 import { browser } from '$app/environment';
 import { load as loadLocal, save as saveLocal, type Progress } from '$lib/progress';
+import { stats } from '$lib/stats.svelte';
 
 /**
  * Move progress between localStorage and Supabase.
@@ -50,6 +51,9 @@ export async function pull(userId: string): Promise<Progress | null> {
   const p: Progress = {
     mastery: {},
     reviews: {},
+    // Which lessons were read today is per-device bookkeeping to stop the same
+    // lesson paying XP twice in a day; it is not synced and starts empty.
+    lessons: {},
     xp: (xp.data ?? []).map((e) => ({
       amount: e.amount, reason: e.reason, at: e.created_at
     })),
@@ -183,6 +187,7 @@ export async function syncOnSignIn(userId: string): Promise<SyncOutcome> {
     const remote = await pull(userId);
     if (!remote) return 'failed';
     saveLocal(remote);
+    stats.refresh();
     setXpCursor(remote.xp.length);
     return 'downloaded';
   } catch {
@@ -210,6 +215,9 @@ let timer: ReturnType<typeof setTimeout> | null = null;
  */
 export function saveAndSync(p: Progress, userId: string | null): void {
   saveLocal(p);
+  // The chrome (rings, level, streak) re-reads immediately, so a closed ring
+  // closes the moment the answer is given, not on the next page load.
+  stats.refresh();
   if (!userId) return;
   if (timer) clearTimeout(timer);
   timer = setTimeout(() => { void push(userId, p).catch(() => {}); }, 1200);

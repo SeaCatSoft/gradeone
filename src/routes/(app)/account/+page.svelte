@@ -5,6 +5,8 @@
   import { supabase, friendlyError } from '$lib/supabase';
   import { clearLocal, flush } from '$lib/sync';
   import { load as loadProgress, totalXp, level } from '$lib/progress';
+  import { theme } from '$lib/theme.svelte';
+  import Icon from '$lib/components/Icon.svelte';
 
   let name = $state('');
   let school = $state('');
@@ -95,7 +97,9 @@
   <meta name="robots" content="noindex" />
 </svelte:head>
 
-<div class="wrap account">
+<div class="account">
+  <h1 class="large-title">Account</h1>
+
   {#if !session.ready}
     <p class="muted">Loading…</p>
 
@@ -114,8 +118,11 @@
 
   {:else}
     <header class="head">
-      <h1>{session.displayName}</h1>
-      <p class="muted small">{session.user.email}</p>
+      <span class="big-avatar">{session.displayName.slice(0, 1).toUpperCase()}</span>
+      <div>
+        <p class="name">{session.displayName}</p>
+        <p class="muted small">{session.user.email}</p>
+      </div>
     </header>
 
     <section class="stats">
@@ -175,31 +182,70 @@
       <button type="button" onclick={signOut}>Sign out</button>
     </div>
   {/if}
+
+  <!-- Here as well as in the sidebar: on a phone the tab bar has no room for
+       it, and this is where iOS puts appearance settings. -->
+  <h2 class="section">Appearance</h2>
+  <button class="appearance" onclick={() => theme.toggle()}>
+    <Icon name={theme.isDark ? 'moon' : 'sun'} size={19} />
+    <span>{theme.isDark ? 'Dark' : 'Light'}</span>
+    <span class="muted small switch-to">Switch to {theme.isDark ? 'light' : 'dark'}</span>
+  </button>
 </div>
 
 <style>
-  .account { max-width: 560px; }
+  .account { max-width: 600px; }
+  .account > :global(.large-title) { margin-bottom: 1.5rem; }
+  .big-avatar {
+    flex: none;
+    width: 60px;
+    height: 60px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 680;
+    background: var(--brand);
+    box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14);
+  }
+  .name { margin: 0; font-family: var(--font-display); font-size: 1.45rem; font-weight: 680; }
+  /* Its own class rather than reusing .panel: .panel is a column, and on a
+     button its layout lost to .panel's by source order. */
+  button.appearance {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    width: 100%;
+    padding: .95rem 1.2rem;
+    border: 0;
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow);
+    text-align: left;
+    font-weight: 650;
+  }
+  @media (hover: hover) {
+    button.appearance:hover { background: var(--surface-2); }
+  }
+  .switch-to { margin-left: auto; }
 
   .panel {
     background: var(--surface);
     border-radius: var(--r-lg);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow);
     padding: 1.35rem 1.4rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
   .center { text-align: center; align-items: center; }
-  .center h1 { font-size: 1.4rem; letter-spacing: -.022em; margin: 0; }
+  .center h1 { font-size: 1.4rem; margin: 0; }
   .center p { margin: 0; max-width: 40ch; }
 
-  .head { margin-bottom: 1.75rem; }
-  .head h1 {
-    font-size: clamp(1.8rem, 4vw, 2.5rem);
-    letter-spacing: -.026em;
-    line-height: 1.08;
-    margin: 0 0 .2rem;
-  }
+  .head { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
   .head p { margin: 0; }
 
   .stats {
@@ -210,16 +256,16 @@
   .stat {
     background: var(--surface);
     border-radius: var(--r);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow);
     padding: .85rem 1rem;
     display: flex;
     flex-direction: column;
     gap: .1rem;
   }
   .stat strong {
-    font-size: 1.5rem;
-    font-weight: 620;
-    letter-spacing: -.024em;
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 680;
     font-variant-numeric: tabular-nums;
     line-height: 1.1;
   }
@@ -227,8 +273,8 @@
   .section {
     margin: 2rem 0 .8rem;
     font-size: .78rem;
-    font-weight: 600;
-    letter-spacing: .06em;
+    font-weight: 650;
+    letter-spacing: .08em;
     text-transform: uppercase;
     color: var(--text-tertiary);
   }
@@ -240,13 +286,14 @@
     font: inherit;
     letter-spacing: var(--track-body);
     padding: .6rem .8rem;
-    border: 1px solid var(--separator-firm);
+    border: 1px solid var(--line);
+    min-height: 48px;
     border-radius: var(--r);
     background: var(--surface);
     color: var(--text);
     transition: border-color var(--dur-fast) var(--ease);
   }
-  input:focus, select:focus { border-color: var(--brand); outline: none; }
+  input:focus, select:focus { border-color: var(--brand-text); outline: none; box-shadow: 0 0 0 4px var(--brand-soft); }
 
   .error { margin: 0; color: var(--wrong); background: var(--wrong-soft); border-radius: var(--r); padding: .5rem .7rem; }
   .ok { margin: 0; color: var(--correct); background: var(--correct-soft); border-radius: var(--r); padding: .5rem .7rem; }
@@ -255,18 +302,26 @@
 
   .row { display: flex; gap: 1rem; align-items: center; justify-content: center; }
   .btn {
-    display: inline-block;
+    display: inline-grid;
+    place-items: center;
+    min-height: 48px;
     background: var(--brand);
     color: var(--on-brand);
-    font-weight: 560;
-    padding: .65rem 1.3rem;
-    border-radius: var(--r-pill);
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 680;
+    padding: .6rem 1.4rem;
+    border-radius: var(--r);
+    box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14);
+    transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
   }
   .btn:hover { background: var(--brand-hover); color: var(--on-brand); }
+  .btn:active { transform: scale(.98); }
   .quiet { color: var(--text-secondary); font-size: .92rem; }
-  .quiet:hover { color: var(--brand); }
+  .quiet:hover { color: var(--brand-text); }
 
-  .danger { margin-top: 2.25rem; padding-top: 1.5rem; border-top: .5px solid var(--separator); }
-  .danger button { color: var(--wrong); border-color: transparent; background: var(--wrong-soft); }
+  .danger { margin-top: 2.25rem; padding-top: 1.5rem; border-top: 1px solid var(--separator); }
+  .danger button { color: var(--wrong); background: var(--wrong-soft); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--wrong) 40%, transparent); }
   .danger button:hover:not(:disabled) { background: color-mix(in srgb, var(--wrong) 18%, transparent); }
+  .danger button:active:not(:disabled) { transform: scale(.98); }
 </style>

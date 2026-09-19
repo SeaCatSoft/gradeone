@@ -52,6 +52,8 @@ jobs:
         run: npm run content:test
       - name: Content validates
         run: npm run content:check
+      - name: Flashcard motion rules hold
+        run: npm run test:motion
       - name: Types
         run: npm run check
 

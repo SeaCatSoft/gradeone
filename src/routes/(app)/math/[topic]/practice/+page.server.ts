@@ -40,7 +40,7 @@ export const load: PageServerLoad = async ({ params }) => {
   );
 
   return {
-    topic: { slug: topic.slug, title: topic.title, mcqCount: topic.mcqCount },
+    topic: { slug: topic.slug, title: topic.title, mcqCount: topic.mcqCount, module: topic.module },
     questions
   };
 };

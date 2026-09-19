@@ -159,7 +159,6 @@
   }
   h1 {
     font-size: 1.6rem;
-    letter-spacing: -.024em;
     line-height: 1.12;
     margin: 0 0 .4rem;
   }
@@ -172,13 +171,14 @@
     font: inherit;
     letter-spacing: var(--track-body);
     padding: .65rem .8rem;
-    border: 1px solid var(--separator-firm);
+    border: 1px solid var(--line);
+    min-height: 48px;
     border-radius: var(--r);
     background: var(--surface);
     color: var(--text);
     transition: border-color var(--dur-fast) var(--ease);
   }
-  input:focus, select:focus { border-color: var(--brand); outline: none; }
+  input:focus, select:focus { border-color: var(--brand-text); outline: none; box-shadow: 0 0 0 4px var(--brand-soft); }
   input::placeholder { color: var(--text-tertiary); }
 
   .hint { color: var(--text-tertiary); }
@@ -215,5 +215,5 @@
   }
   .glyph svg { width: 21px; height: 21px; }
   .quiet { font-size: .92rem; color: var(--text-secondary); }
-  .quiet:hover { color: var(--brand); }
+  .quiet:hover { color: var(--brand-text); }
 </style>
