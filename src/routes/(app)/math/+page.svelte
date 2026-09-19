@@ -39,13 +39,12 @@
     {@const pct = mastery(moduleKeys(mod))}
     <a class="module" href="#module-{mod.number}" style={themeVars(mod.number)}>
       <span class="numeral">{mod.number}</span>
-      <span class="mod-tag">Module {mod.number}</span>
+      <span class="ring">
+        <Rings rings={[{ value: pct / 100, color: '#fff', track: 'rgba(255,255,255,.28)', label: 'Module mastery' }]}
+               size={44} stroke={6} />
+      </span>
       <strong>{SHORT[mod.number] ?? mod.title}</strong>
       <span class="meta">{mod.topics.length} topics · {mod.mcqCount} of 60 Paper 01 questions</span>
-      <span class="mod-bar" role="progressbar" aria-label="Module {mod.number} mastery" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct}>
-        <span style="transform:scaleX({pct / 100})"></span>
-      </span>
-      <span class="mod-pct">{pct}% mastery</span>
     </a>
   {/each}
 </div>
@@ -109,44 +108,30 @@
     flex-direction: column;
     min-height: 176px;
     padding: 1.1rem 1.2rem 1.15rem;
-    border-radius: 18px;
+    border-radius: 22px;
     overflow: hidden;
     color: #fff;
     background: linear-gradient(150deg, var(--mod-from), var(--mod-to));
-    box-shadow: 0 1px 2px var(--shade), 0 18px 40px -20px var(--mod-edge);
-    transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25), 0 18px 34px -20px var(--mod-to);
+    transition: transform var(--dur) var(--ease);
   }
-  .module:hover { color: #fff; }
-  .module:active { transform: scale(.98); }
+  .module:hover { color: #fff; transform: translateY(-3px); }
+  .module:active { transform: scale(.985); transition-duration: var(--dur-fast); }
   /* An oversized numeral, cropped by the tile — the module's name, set large. */
   .numeral {
     position: absolute;
     right: -.08em;
     bottom: -.28em;
-    font-family: var(--font-display);
     font-size: 8.5rem;
-    font-weight: 700;
+    font-weight: 800;
     line-height: 1;
-    color: rgba(255, 255, 255, .14);
+    letter-spacing: -.06em;
+    color: rgba(255, 255, 255, .16);
     pointer-events: none;
   }
-  .mod-tag {
-    position: relative;
-    align-self: flex-start;
-    margin-bottom: auto;
-    padding: .2rem .65rem;
-    border-radius: var(--r-pill);
-    font-size: .74rem;
-    font-weight: 650;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    background: rgba(0, 0, 0, .22);
-  }
-  .module strong { position: relative; margin-top: 1rem; font-family: var(--font-display); font-size: 1.35rem; font-weight: 680; line-height: 1.2; }
-  .module .meta { position: relative; font-size: .82rem; font-weight: 600; margin-top: .15rem; }
-  .mod-bar { position: relative; display: block; height: 10px; margin-top: .8rem; border-radius: var(--r-pill); background: rgba(0, 0, 0, .25); overflow: hidden; }
-  .mod-bar span { display: block; height: 100%; background: #fff; transform-origin: left; }
-  .mod-pct { position: relative; margin-top: .3rem; font-size: .78rem; font-weight: 650; }
+  .module .ring { margin-bottom: auto; }
+  .module strong { position: relative; margin-top: 1rem; font-size: 1.14rem; font-weight: 680; letter-spacing: -.018em; line-height: 1.2; }
+  .module .meta { position: relative; font-size: .8rem; opacity: .88; margin-top: .15rem; }
 
   @media (max-width: 760px) {
     .modules { grid-template-columns: 1fr; }
@@ -158,14 +143,13 @@
   .section-title { margin-bottom: 1rem; }
   .mod-eyebrow {
     margin: 0 0 .15rem;
-    font-weight: 650;
     font-size: .76rem;
     font-weight: 700;
     letter-spacing: .06em;
     text-transform: uppercase;
-    color: var(--mod-text);
+    color: var(--mod);
   }
-  .section-title h2 { margin: 0 0 .1rem; font-size: 1.55rem; }
+  .section-title h2 { margin: 0 0 .1rem; font-size: 1.45rem; font-weight: 700; letter-spacing: -.022em; }
   .section-title p { margin: 0; }
 
   .topics {
@@ -177,16 +161,18 @@
     display: flex;
     flex-direction: column;
     padding: 1rem 1.05rem 1.05rem;
-    border-radius: 16px;
+    border-radius: 20px;
     background: var(--surface);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-sm);
     color: inherit;
-    transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
   }
-  .topic:hover { color: inherit; }
-  .topic:active { transform: scale(.98); }
-  .topic.empty { background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
-  .topic.empty:active { transform: none; }
+  @media (hover: hover) {
+    .topic:hover { color: inherit; transform: translateY(-3px); box-shadow: var(--shadow); }
+  }
+  .topic:active { transform: scale(.985); transition-duration: var(--dur-fast); }
+  .topic.empty { background: color-mix(in srgb, var(--surface) 55%, transparent); box-shadow: none; outline: .5px solid var(--separator); }
+  .topic.empty:hover { transform: none; box-shadow: none; }
 
   .topic-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: .8rem; }
   .locked {
@@ -194,25 +180,23 @@
     place-items: center;
     width: 40px;
     height: 40px;
-    border-radius: 12px;
-    background: var(--surface);
-    box-shadow: inset 0 0 0 1px var(--line);
+    border-radius: 50%;
+    background: var(--surface-2);
     color: var(--text-tertiary);
   }
   .weight {
-    font-family: var(--font-display);
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: 700;
-    color: var(--mod-text);
+    color: var(--mod);
     font-variant-numeric: tabular-nums;
     letter-spacing: -.02em;
   }
   .weight small { font-size: .62em; font-weight: 650; margin-left: 2px; opacity: .8; letter-spacing: .02em; }
   .empty .weight { color: var(--text-tertiary); }
 
-  h3 { margin: 0 0 .2rem; font-size: 1.1rem; font-weight: 600; line-height: 1.25; }
-  .line { margin: 0; font-size: .82rem; font-weight: 600; color: var(--text-secondary); }
+  h3 { margin: 0 0 .2rem; font-size: 1.02rem; font-weight: 640; line-height: 1.25; letter-spacing: -.014em; }
+  .line { margin: 0; font-size: .82rem; color: var(--text-secondary); }
   .flag { margin-left: .3em; color: var(--reward); font-weight: 560; }
-  .state { margin: auto 0 0; padding-top: .7rem; font-size: .82rem; font-weight: 650; color: var(--mod-text); }
+  .state { margin: auto 0 0; padding-top: .7rem; font-size: .8rem; font-weight: 560; color: var(--mod); }
   .empty .state { color: var(--text-tertiary); font-weight: 500; }
 </style>

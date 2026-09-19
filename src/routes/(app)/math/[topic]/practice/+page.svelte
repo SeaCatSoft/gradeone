@@ -242,38 +242,39 @@
     gap: .1rem;
     margin: 0 0 1.2rem -.3rem;
     font-weight: 500;
-    color: var(--mod-text);
+    color: var(--mod);
   }
-  .back-link:hover { color: var(--mod-text); opacity: .8; }
+  .back-link:hover { color: var(--mod); opacity: .8; }
 
   .panel {
     background: var(--surface);
-    border-radius: 20px;
-    box-shadow: var(--shadow-lg);
+    border-radius: 26px;
+    box-shadow: var(--shadow);
     padding: 2rem 1.75rem;
   }
   .done { text-align: center; }
   .done h1 {
     margin: .3rem 0 .6rem;
-    font-size: 3.6rem;
+    font-size: 3.2rem;
     line-height: 1;
-    font-weight: 700;
+    letter-spacing: -.035em;
+    font-weight: 620;
     font-variant-numeric: tabular-nums;
     animation: pop var(--dur-slow) var(--ease-spring) both;
   }
-  .score { color: var(--mod-text); }
-  .of { color: var(--text-tertiary); font-size: .5em; font-weight: 600; }
+  .score { color: var(--mod); }
+  .of { color: var(--text-tertiary); font-size: .5em; font-weight: 500; }
   .verdict-line { margin: 0 auto 1.5rem; max-width: 40ch; }
   @keyframes pop {
     from { transform: scale(.85); opacity: 0; }
     to   { transform: scale(1); opacity: 1; }
   }
 
-  .status { display: flex; justify-content: space-between; margin-bottom: .5rem; font-weight: 700; }
+  .status { display: flex; justify-content: space-between; margin-bottom: .5rem; }
   .track {
-    height: 8px;
+    height: 3px;
     border-radius: var(--r-pill);
-    background: var(--mod-soft);
+    background: var(--surface-2);
     overflow: hidden;
     margin-bottom: 1.1rem;
   }
@@ -287,8 +288,8 @@
 
   .question {
     background: var(--surface);
-    border-radius: 20px;
-    box-shadow: var(--shadow-lg);
+    border-radius: 26px;
+    box-shadow: var(--shadow);
     padding: 1.4rem 1.5rem 1.5rem;
     animation: card-in var(--dur) var(--ease) both;
   }
@@ -299,7 +300,7 @@
 
   .qmeta { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: .9rem; }
   .obj {
-    color: var(--mod-text);
+    color: var(--mod);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     background: var(--mod-soft);
@@ -307,65 +308,61 @@
     padding: .1rem .5rem;
   }
 
-  .stem { font-size: 1.08rem; font-weight: 600; line-height: 1.6; }
+  .stem { font-size: 1.04rem; line-height: 1.6; }
   .stem :global(p) { margin: 0 0 .85em; text-wrap: pretty; }
   .stem :global(p:last-child) { margin-bottom: 0; }
   .stem :global(.katex-display) { overflow-x: auto; }
 
-  /* Answer tiles are keys too: a solid edge that the press pushes down into. */
-  .options { list-style: none; padding: 0; margin: 1.15rem 0 0; display: flex; flex-direction: column; gap: .65rem; }
+  .options { list-style: none; padding: 0; margin: 1.15rem 0 0; display: flex; flex-direction: column; gap: .5rem; }
   .option {
     width: 100%;
     display: flex;
-    align-items: center;
-    gap: .8rem;
+    align-items: flex-start;
+    gap: .75rem;
     text-align: left;
-    min-height: 56px;
-    padding: .7rem .95rem;
-    border-radius: 14px;
-    font-weight: 700;
-    background: var(--surface);
+    padding: .7rem .9rem;
+    border-radius: 16px;
+    font-weight: 480;
+    background: var(--surface-2);
+    border-color: transparent;
   }
-  .option:disabled { opacity: 1; cursor: default; }
+  .option:disabled { opacity: 1; }
   .text :global(p) { margin: 0; }
 
   .key {
     flex: none;
-    width: 32px;
-    height: 32px;
+    width: 22px;
+    height: 22px;
     display: grid;
     place-items: center;
-    border-radius: 10px;
-    background: var(--surface-2);
-    box-shadow: inset 0 0 0 1px var(--line);
+    border-radius: 6px;
+    background: var(--surface);
     color: var(--text-secondary);
-    font-family: var(--font-display);
-    font-size: .95rem;
-    font-weight: 680;
+    font-size: .78rem;
+    font-weight: 620;
   }
 
-  .option.selected, .option.selected:hover:not(:disabled) { background: var(--mod-soft); box-shadow: inset 0 0 0 2px var(--mod-text), 0 4px 0 var(--mod-text); }
-  .selected .key { background: var(--mod); color: #fff; box-shadow: none; }
-  .option.right, .option.right:hover:not(:disabled) { background: var(--correct-soft); box-shadow: inset 0 0 0 2px var(--correct), 0 4px 0 var(--correct); }
-  .right .key { background: var(--correct); color: var(--surface); box-shadow: none; }
-  .option.wrong, .option.wrong:hover:not(:disabled) { background: var(--wrong-soft); box-shadow: inset 0 0 0 2px var(--wrong), 0 4px 0 var(--wrong); }
-  .wrong .key { background: var(--wrong); color: var(--surface); box-shadow: none; }
+  .selected { background: var(--mod-soft); box-shadow: inset 0 0 0 2px var(--mod); }
+  .selected .key { background: var(--mod); color: #fff; }
+  .right { background: var(--correct-soft); box-shadow: inset 0 0 0 1.5px var(--correct); }
+  .right .key { background: var(--correct); color: var(--surface); }
+  .wrong { background: var(--wrong-soft); box-shadow: inset 0 0 0 1.5px var(--wrong); }
+  .wrong .key { background: var(--wrong); color: var(--surface); }
 
   .numeric { display: flex; flex-direction: column; gap: .4rem; margin-top: 1.15rem; }
   .numeric input {
     font: inherit;
     font-size: 1.1rem;
     font-variant-numeric: tabular-nums;
-    min-height: 48px;
     padding: .6rem .85rem;
-    border: 1px solid var(--line);
+    border: 1px solid var(--separator-firm);
     border-radius: var(--r);
     background: var(--surface);
     color: var(--text);
     max-width: 240px;
     transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
   }
-  .numeric input:focus { border-color: var(--mod-text); outline: none; }
+  .numeric input:focus { border-color: var(--mod); outline: none; }
   .numeric input.right { border-color: var(--correct); background: var(--correct-soft); }
   .numeric input.wrong { border-color: var(--wrong); background: var(--wrong-soft); }
 
@@ -376,7 +373,8 @@
     align-items: center;
     gap: .5rem;
     margin: 1.2rem 0 0;
-    font-weight: 650;
+    font-weight: 590;
+    letter-spacing: var(--track-heading);
     animation: rise var(--dur) var(--ease-spring) both;
   }
   .verdict svg { width: 17px; height: 17px; flex: none; }
@@ -390,7 +388,7 @@
   .reveal {
     margin-top: 1.35rem;
     padding-top: 1.1rem;
-    border-top: 1px solid var(--separator);
+    border-top: .5px solid var(--separator);
     animation: rise var(--dur-slow) var(--ease) both;
   }
   .reveal h3 { margin: 0 0 .5rem; }
@@ -402,5 +400,5 @@
   .row { display: flex; gap: .6rem; margin-top: 1.1rem; align-items: stretch; }
   .wide { flex: 1; }
   .quiet { align-self: center; font-size: .92rem; color: var(--text-secondary); }
-  .quiet:hover { color: var(--brand-text); }
+  .quiet:hover { color: var(--brand); }
 </style>
