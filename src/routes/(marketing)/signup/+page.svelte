@@ -171,7 +171,7 @@
     font: inherit;
     letter-spacing: var(--track-body);
     padding: .65rem .8rem;
-    border: 1px solid var(--line);
+    border: 2px solid var(--line);
     min-height: 48px;
     border-radius: var(--r);
     background: var(--surface);

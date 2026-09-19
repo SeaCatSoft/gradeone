@@ -80,9 +80,9 @@
     border-radius: 11px;
     color: #fff;
     background: var(--brand);
-    box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14);
+    box-shadow: 0 3px 0 var(--brand-edge);
   }
-  nav { display: flex; gap: 1.5rem; font-size: .95rem; font-weight: 650; }
+  nav { display: flex; gap: 1.5rem; font-size: .95rem; font-weight: 800; }
   nav a { color: var(--text); }
   nav a:hover { color: var(--brand-text); }
   .off { color: var(--text-tertiary); cursor: default; }
@@ -92,10 +92,10 @@
     padding: .05rem .4rem;
     border-radius: var(--r-pill);
     background: var(--surface-2);
-    box-shadow: inset 0 0 0 1px var(--line);
+    box-shadow: inset 0 0 0 1.5px var(--line);
   }
   .right { margin-left: auto; display: flex; align-items: center; gap: .75rem; }
-  .text { font-size: .95rem; font-weight: 650; color: var(--text); }
+  .text { font-size: .95rem; font-weight: 800; color: var(--text); }
   .text:hover { color: var(--brand-text); }
   .btn3d.small { min-height: 44px; padding: .45rem 1rem; font-size: .98rem; }
   .icon-btn {

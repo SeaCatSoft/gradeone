@@ -109,15 +109,15 @@
     flex-direction: column;
     min-height: 176px;
     padding: 1.1rem 1.2rem 1.15rem;
-    border-radius: 18px;
+    border-radius: 24px;
     overflow: hidden;
     color: #fff;
     background: linear-gradient(150deg, var(--mod-from), var(--mod-to));
-    box-shadow: 0 1px 2px var(--shade), 0 18px 40px -20px var(--mod-edge);
+    box-shadow: 0 6px 0 var(--mod-edge);
     transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
   }
   .module:hover { color: #fff; }
-  .module:active { transform: scale(.98); }
+  .module:active { transform: translateY(6px); box-shadow: 0 0 0 var(--mod-edge); }
   /* An oversized numeral, cropped by the tile — the module's name, set large. */
   .numeral {
     position: absolute;
@@ -137,16 +137,16 @@
     padding: .2rem .65rem;
     border-radius: var(--r-pill);
     font-size: .74rem;
-    font-weight: 650;
+    font-weight: 800;
     letter-spacing: .06em;
     text-transform: uppercase;
     background: rgba(0, 0, 0, .22);
   }
-  .module strong { position: relative; margin-top: 1rem; font-family: var(--font-display); font-size: 1.35rem; font-weight: 680; line-height: 1.2; }
+  .module strong { position: relative; margin-top: 1rem; font-family: var(--font-display); font-size: 1.35rem; font-weight: 600; line-height: 1.2; }
   .module .meta { position: relative; font-size: .82rem; font-weight: 600; margin-top: .15rem; }
   .mod-bar { position: relative; display: block; height: 10px; margin-top: .8rem; border-radius: var(--r-pill); background: rgba(0, 0, 0, .25); overflow: hidden; }
   .mod-bar span { display: block; height: 100%; background: #fff; transform-origin: left; }
-  .mod-pct { position: relative; margin-top: .3rem; font-size: .78rem; font-weight: 650; }
+  .mod-pct { position: relative; margin-top: .3rem; font-size: .78rem; font-weight: 800; }
 
   @media (max-width: 760px) {
     .modules { grid-template-columns: 1fr; }
@@ -158,7 +158,7 @@
   .section-title { margin-bottom: 1rem; }
   .mod-eyebrow {
     margin: 0 0 .15rem;
-    font-weight: 650;
+    font-weight: 800;
     font-size: .76rem;
     font-weight: 700;
     letter-spacing: .06em;
@@ -177,15 +177,15 @@
     display: flex;
     flex-direction: column;
     padding: 1rem 1.05rem 1.05rem;
-    border-radius: 16px;
+    border-radius: 22px;
     background: var(--surface);
     box-shadow: var(--shadow);
     color: inherit;
     transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
   }
   .topic:hover { color: inherit; }
-  .topic:active { transform: scale(.98); }
-  .topic.empty { background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
+  .topic:active { transform: translateY(5px); box-shadow: inset 0 0 0 2px var(--line), 0 0 0 var(--line); }
+  .topic.empty { background: var(--surface-2); box-shadow: inset 0 0 0 2px var(--line); }
   .topic.empty:active { transform: none; }
 
   .topic-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: .8rem; }
@@ -196,7 +196,7 @@
     height: 40px;
     border-radius: 12px;
     background: var(--surface);
-    box-shadow: inset 0 0 0 1px var(--line);
+    box-shadow: inset 0 0 0 2px var(--line);
     color: var(--text-tertiary);
   }
   .weight {
@@ -213,6 +213,6 @@
   h3 { margin: 0 0 .2rem; font-size: 1.1rem; font-weight: 600; line-height: 1.25; }
   .line { margin: 0; font-size: .82rem; font-weight: 600; color: var(--text-secondary); }
   .flag { margin-left: .3em; color: var(--reward); font-weight: 560; }
-  .state { margin: auto 0 0; padding-top: .7rem; font-size: .82rem; font-weight: 650; color: var(--mod-text); }
+  .state { margin: auto 0 0; padding-top: .7rem; font-size: .82rem; font-weight: 800; color: var(--mod-text); }
   .empty .state { color: var(--text-tertiary); font-weight: 500; }
 </style>

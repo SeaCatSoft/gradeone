@@ -129,7 +129,7 @@
       display: flex;
       flex-direction: column;
       padding: 1.1rem .75rem .8rem;
-      border-radius: 16px;
+      border-radius: 22px;
     }
     .content {
       margin-left: calc(var(--sidebar-w) + 24px);
@@ -163,7 +163,7 @@
     border-radius: 10px;
     color: #fff;
     background: var(--brand);
-    box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14);
+    box-shadow: 0 3px 0 var(--brand-edge);
   }
 
   .side-nav { display: flex; flex-direction: column; gap: 2px; }
@@ -187,14 +187,14 @@
   .side-nav a.active {
     background: var(--brand-soft);
     color: var(--brand-text);
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 35%, transparent);
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--brand) 35%, transparent);
   }
   .side-nav a.active :global(svg) { color: var(--brand-text); }
 
   .side-label {
     margin: 1.4rem .65rem .35rem;
     font-size: .72rem;
-    font-weight: 650;
+    font-weight: 800;
     letter-spacing: .08em;
     text-transform: uppercase;
     color: var(--text-tertiary);
@@ -217,14 +217,14 @@
     align-items: center;
     gap: .75rem;
     padding: .7rem .75rem;
-    border-radius: 12px;
+    border-radius: 16px;
     color: var(--text);
     background: var(--surface-2);
-    box-shadow: var(--shadow);
+    box-shadow: inset 0 0 0 2px var(--line), 0 3px 0 var(--line);
     transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
   }
   .today-mini:hover { color: var(--text); }
-  .today-mini:active { transform: scale(.98); }
+  .today-mini:active { transform: translateY(3px); box-shadow: inset 0 0 0 2px var(--line), 0 0 0 var(--line); }
   .mini-flame {
     flex: none;
     display: grid;
@@ -234,11 +234,11 @@
     border-radius: 12px;
     color: var(--text-tertiary);
     background: var(--surface);
-    box-shadow: inset 0 0 0 1px var(--line);
+    box-shadow: inset 0 0 0 2px var(--line);
   }
-  .mini-flame.lit { color: #fff; background: #c2410c; box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14); }
+  .mini-flame.lit { color: #fff; background: #c2410c; box-shadow: 0 3px 0 #7c2d12; }
   .mini-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; font-size: .78rem; font-weight: 700; color: var(--text-secondary); }
-  .mini-text strong { color: var(--text); font-size: .92rem; font-weight: 650; }
+  .mini-text strong { color: var(--text); font-size: .92rem; font-weight: 800; }
   .pips { display: flex; gap: 4px; margin-top: .3rem; }
   .pips span { width: 22px; height: 7px; border-radius: 4px; background: var(--q-track); }
   .pips span.done { background: var(--q); }
@@ -264,10 +264,10 @@
     border-radius: 10px;
     color: #fff;
     font-family: var(--font-display);
-    font-weight: 680;
+    font-weight: 600;
     font-size: .95rem;
     background: var(--brand);
-    box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14);
+    box-shadow: 0 2px 0 var(--brand-edge);
   }
   .who-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.2; }
   .who-text strong { font-size: .88rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -279,15 +279,15 @@
     min-height: 44px;
     border-radius: 14px;
     font-family: var(--font-display);
-    font-weight: 680;
+    font-weight: 600;
     font-size: 1rem;
     background: var(--brand);
     color: var(--on-brand);
-    box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14);
+    box-shadow: 0 3px 0 var(--brand-edge);
     transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
   }
   .signin:hover { color: var(--on-brand); background: var(--brand-hover); }
-  .signin:active { transform: scale(.98); }
+  .signin:active { transform: translateY(3px); box-shadow: 0 0 0 var(--brand-edge); }
 
   .icon-btn {
     flex: none;
@@ -310,8 +310,8 @@
     display: flex;
     gap: 4px;
     padding: 6px;
-    border-radius: 18px;
-    box-shadow: var(--shadow);
+    border-radius: 24px;
+    box-shadow: inset 0 0 0 2px var(--line), 0 5px 0 var(--line), 0 12px 30px -12px rgba(30, 27, 75, .35);
   }
   .tabbar a {
     display: flex;
@@ -321,16 +321,16 @@
     min-width: 76px;
     min-height: 48px;
     padding: .42rem .9rem .38rem;
-    border-radius: 14px;
+    border-radius: 18px;
     color: var(--text-secondary);
     font-size: .72rem;
-    font-weight: 650;
+    font-weight: 800;
     transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), transform var(--dur-fast) var(--ease);
   }
   .tabbar a:active { transform: scale(.94); }
   .tabbar a.active {
     color: var(--brand-text);
     background: var(--brand-soft);
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 35%, transparent);
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--brand) 35%, transparent);
   }
 </style>

@@ -313,7 +313,7 @@
 
   .panel {
     padding: 2rem 1.75rem;
-    border-radius: 20px;
+    border-radius: 28px;
     background: var(--surface);
     box-shadow: var(--shadow-lg);
   }
@@ -326,10 +326,10 @@
     width: 64px;
     height: 64px;
     margin: 0 auto .9rem;
-    border-radius: 16px;
+    border-radius: 20px;
     color: #fff;
     background: #15803d;
-    box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14);
+    box-shadow: 0 5px 0 #14532d;
     animation: pop var(--dur-slow) var(--ease-spring) both;
   }
   @keyframes pop { from { transform: scale(.55); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -351,12 +351,13 @@
     padding: .1rem .55rem;
     border-radius: var(--r-pill);
   }
-  .track { height: 8px; border-radius: var(--r-pill); background: var(--mod-soft); overflow: hidden; margin-bottom: 1.4rem; }
+  .track { height: 12px; border-radius: var(--r-pill); background: var(--mod-soft); overflow: hidden; margin-bottom: 1.4rem; }
   .track span {
     display: block;
     height: 100%;
     border-radius: inherit;
     background: var(--mod);
+    box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .18);
     transform-origin: left;
     transition: transform var(--dur) var(--ease);
   }
@@ -364,9 +365,9 @@
   /* --------------------------------------------------------------- stack */
   .stack { position: relative; margin-bottom: 1.8rem; }
   .card {
-    border-radius: 20px;
+    border-radius: 28px;
     background: var(--surface);
-    box-shadow: var(--shadow);
+    box-shadow: inset 0 0 0 2px var(--line), 0 6px 0 var(--line);
   }
   .top {
     position: relative;
@@ -396,7 +397,7 @@
 
   .face :global(p) { margin: 0 0 .75em; }
   .face :global(p:last-child) { margin-bottom: 0; }
-  .front { font-family: var(--font-display); font-size: 1.45rem; font-weight: 680; line-height: 1.3; text-wrap: balance; }
+  .front { font-family: var(--font-display); font-size: 1.45rem; font-weight: 600; line-height: 1.3; text-wrap: balance; }
   .back {
     font-size: 1.02rem;
     line-height: 1.6;
@@ -424,9 +425,9 @@
     top: 1.1rem;
     padding: .2rem .7rem;
     border-radius: 10px;
-    border: 2px solid currentColor;
+    border: 3px solid currentColor;
     font-size: .95rem;
-    font-weight: 650;
+    font-weight: 800;
     letter-spacing: .06em;
     text-transform: uppercase;
     pointer-events: none;
@@ -448,16 +449,16 @@
     gap: .25rem;
     min-height: 60px;
     padding: .7rem .3rem .6rem;
-    border-radius: 14px;
+    border-radius: 18px;
     font-family: var(--font-display);
     font-size: 1.1rem;
-    font-weight: 680;
+    font-weight: 600;
     color: #fff;
     background: var(--g);
-    box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14);
+    box-shadow: 0 5px 0 var(--g-edge);
   }
   .grades button:hover:not(:disabled) { background: var(--g); filter: brightness(1.08); }
-  .grades button:active:not(:disabled) { transform: scale(.98); }
+  .grades button:active:not(:disabled) { transform: translateY(5px); box-shadow: 0 0 0 var(--g-edge); }
   .grades .again { --g: #dc2626; --g-edge: #991b1b; }
   .grades .hard  { --g: #fbbf24; --g-edge: #b45309; color: #1e1b4b; }
   .grades .good  { --g: #15803d; --g-edge: #14532d; }
@@ -466,15 +467,15 @@
 
   .row { display: flex; gap: .6rem; align-items: stretch; }
   .wide { flex: 1; }
-  .primary { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 56px; padding: .8rem 1.1rem; border-radius: 14px; font-size: 1.15rem; }
-  .row > button:not(.primary) { border-radius: 14px; }
+  .primary { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 56px; padding: .8rem 1.1rem; border-radius: 18px; font-size: 1.15rem; }
+  .row > button:not(.primary) { border-radius: 18px; }
   .quiet { display: inline-flex; align-items: center; gap: .2rem; align-self: center; font-size: .92rem; color: var(--text-secondary); }
   .quiet:hover { color: var(--mod-text); }
 
   kbd {
     font-family: inherit;
     font-size: .66rem;
-    font-weight: 650;
+    font-weight: 800;
     padding: .05rem .35rem;
     border-radius: 5px;
     color: var(--text-tertiary);

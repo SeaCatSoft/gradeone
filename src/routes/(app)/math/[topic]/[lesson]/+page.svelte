@@ -186,9 +186,9 @@
   .covers {
     margin-bottom: 2.4rem;
     padding: 1rem 1.15rem;
-    border-radius: 16px;
+    border-radius: 20px;
     background: var(--mod-soft);
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mod-bright) 35%, transparent);
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--mod-bright) 35%, transparent);
   }
   .covers-title { margin: 0 0 .5rem; font-size: .76rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--mod-text); }
   .covers ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .3rem; }
@@ -206,14 +206,14 @@
     font-weight: 600;
     line-height: 1.2;
   }
-  .prose :global(strong) { font-weight: 650; }
+  .prose :global(strong) { font-weight: 800; }
   .prose :global(ul), .prose :global(ol) { margin: 0 0 1.15em; padding-left: 1.3em; }
   .prose :global(li) { margin-bottom: .35em; }
   .prose :global(table) {
     margin: 1.7rem 0;
     font-size: .98rem;
     background: var(--surface);
-    border-radius: 12px;
+    border-radius: 16px;
     box-shadow: var(--shadow-sm);
     overflow: hidden;
   }
@@ -224,7 +224,7 @@
     margin: 2rem auto;
     max-width: 420px;
     padding: 1.1rem;
-    border-radius: 16px;
+    border-radius: 20px;
     background: var(--surface);
     box-shadow: var(--shadow-sm);
     color: var(--text-secondary);
@@ -239,12 +239,12 @@
     gap: .9rem;
     margin: 3rem 0 0;
     padding: 1.1rem 1.2rem;
-    border-radius: 16px;
+    border-radius: 22px;
     background: var(--surface);
     box-shadow: var(--shadow);
   }
   .end div { display: flex; flex-direction: column; }
-  .end strong { font-family: var(--font-display); font-size: 1.1rem; font-weight: 680; }
+  .end strong { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; }
   .end span { font-size: .86rem; font-weight: 700; color: var(--text-secondary); }
   .end-mark {
     flex: none;
@@ -252,13 +252,13 @@
     place-items: center;
     width: 48px;
     height: 48px;
-    border-radius: 12px;
+    border-radius: 15px;
     color: var(--text-tertiary);
     background: var(--surface-2);
     transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
   }
   /* Arrives with a small overshoot: this is the reward for finishing. */
-  .end-mark.done { color: #fff; background: var(--correct-fill, #15803d); box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14); animation: pop var(--dur-slow) var(--ease-spring) both; }
+  .end-mark.done { color: #fff; background: var(--correct-fill, #15803d); box-shadow: 0 4px 0 #14532d; animation: pop var(--dur-slow) var(--ease-spring) both; }
   @keyframes pop { from { transform: scale(.6); } to { transform: scale(1); } }
 
   .practise { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin-top: 1rem; }
@@ -267,20 +267,20 @@
     align-items: center;
     gap: .8rem;
     padding: .9rem 1rem;
-    border-radius: 16px;
+    border-radius: 20px;
     background: var(--surface);
     box-shadow: var(--shadow);
     color: inherit;
     transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
   }
   .p-tile:hover { color: inherit; }
-  .p-tile:active { transform: scale(.98); }
+  .p-tile:active { transform: translateY(5px); box-shadow: inset 0 0 0 2px var(--line), 0 0 0 var(--line); }
   .p-tile > span:last-child { display: flex; flex-direction: column; }
-  .p-tile strong { font-family: var(--font-display); font-size: 1.08rem; font-weight: 680; }
+  .p-tile strong { font-family: var(--font-display); font-size: 1.08rem; font-weight: 600; }
   .p-tile span span { font-size: .82rem; font-weight: 700; color: var(--text-secondary); }
   .glyph { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; color: #fff; }
-  .glyph.review { background: #c2410c; box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14); }
-  .glyph.practice { background: #0369a1; box-shadow: 0 1px 2px var(--shade), inset 0 1px 0 rgba(255, 255, 255, .14); }
+  .glyph.review { background: #c2410c; box-shadow: 0 3px 0 #7c2d12; }
+  .glyph.practice { background: #0369a1; box-shadow: 0 3px 0 #0c4a6e; }
 
   .pager { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin-top: 2rem; }
   .pager a {
@@ -288,16 +288,16 @@
     flex-direction: column;
     gap: .1rem;
     padding: .9rem 1.05rem;
-    border-radius: 16px;
+    border-radius: 20px;
     color: inherit;
     background: var(--surface);
     box-shadow: var(--shadow-sm);
     transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
   }
   .pager a:hover { color: inherit; }
-  .pager a:active { transform: scale(.98); }
-  .dir { display: inline-flex; align-items: center; gap: .2rem; font-size: .8rem; color: var(--mod-text); font-weight: 650; }
-  .pager strong { font-weight: 650; }
+  .pager a:active { transform: translateY(3px); box-shadow: inset 0 0 0 2px var(--line), 0 0 0 var(--line); }
+  .dir { display: inline-flex; align-items: center; gap: .2rem; font-size: .8rem; color: var(--mod-text); font-weight: 800; }
+  .pager strong { font-weight: 800; }
   .next { text-align: right; align-items: flex-end; }
 
   @media (max-width: 560px) {
