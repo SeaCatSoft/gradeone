@@ -43,6 +43,13 @@ create table if not exists user_badges (
 );
 
 -- Total XP without scanning the whole event log on every dashboard load.
-create or replace view v_user_xp as
+--
+-- security_invoker is load-bearing. By default a Postgres view runs with its
+-- CREATOR's privileges -- here, the admin role -- so it would skip the RLS on
+-- xp_events and hand every student's user_id and XP total to anyone holding
+-- the public key. With security_invoker the view runs as whoever queries it,
+-- so the xp_read policy applies and a student sees only their own row.
+create or replace view v_user_xp
+  with (security_invoker = true) as
   select user_id, coalesce(sum(amount), 0)::bigint as total_xp
   from xp_events group by user_id;
