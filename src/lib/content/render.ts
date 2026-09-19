@@ -41,6 +41,14 @@ function extractMath(src: string): { text: string; slots: Slot[] } {
       continue;
     }
 
+    // \$ is a literal dollar sign (a price), never a maths delimiter. It is
+    // passed through for marked, which turns the escape into a plain "$".
+    if (src[i] === '\\' && src[i + 1] === '$') {
+      parts.push('\\$');
+      i += 2;
+      continue;
+    }
+
     if (src.startsWith('$$', i)) {
       const end = src.indexOf('$$', i + 2);
       if (end !== -1) {
@@ -51,7 +59,8 @@ function extractMath(src: string): { text: string; slots: Slot[] } {
       }
     }
     if (src[i] === '$') {
-      const end = src.indexOf('$', i + 1);
+      let end = src.indexOf('$', i + 1);
+      while (end !== -1 && src[end - 1] === '\\') end = src.indexOf('$', end + 1);
       // A lone dollar (a price, say) has no closing partner on the same line.
       if (end !== -1 && !src.slice(i + 1, end).includes('\n')) {
         slots.push({ tex: src.slice(i + 1, end).trim(), display: false });
