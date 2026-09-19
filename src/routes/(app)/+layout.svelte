@@ -2,10 +2,10 @@
   import { base } from '$app/paths';
   import { page } from '$app/state';
   import Icon, { type IconName } from '$lib/components/Icon.svelte';
+  import Rings from '$lib/components/Rings.svelte';
   import { session } from '$lib/session.svelte';
   import { stats } from '$lib/stats.svelte';
   import { theme } from '$lib/theme.svelte';
-  import { GOALS } from '$lib/activity';
   import { RING_COLORS } from '$lib/modules';
 
   let { children } = $props();
@@ -22,13 +22,11 @@
     { href: '/account', label: 'Account', icon: 'person', match: (p) => p.startsWith('/account') }
   ];
 
-  // Three pips, one per daily quest: filled when the quest is done.
-  const pips = $derived([
-    { done: stats.today.learn >= GOALS.learn, ...RING_COLORS.learn },
-    { done: stats.today.review >= GOALS.review, ...RING_COLORS.review },
-    { done: stats.today.practice >= GOALS.practice, ...RING_COLORS.practice }
+  const miniRings = $derived([
+    { value: stats.rings.learn, ...RING_COLORS.learn, label: 'Learn' },
+    { value: stats.rings.review, ...RING_COLORS.review, label: 'Review' },
+    { value: stats.rings.practice, ...RING_COLORS.practice, label: 'Practice' }
   ]);
-  const questsDone = $derived(pips.filter((p) => p.done).length);
 </script>
 
 <div class="shell">
@@ -51,22 +49,21 @@
     <p class="side-label">Subjects</p>
     <nav class="side-nav subjects">
       <a href="{base}/math" class:active={path.startsWith('/math')}>
-        <span class="dot" style="background:#15803d"></span><span>Mathematics</span>
+        <span class="dot" style="background:#30b862"></span><span>Mathematics</span>
       </a>
       <!-- Shown, not hidden: a student should see the platform is growing into
            their other subjects. Disabled rather than linking to an empty page. -->
-      <span class="soon"><span class="dot" style="background:#0369a1"></span>Information Technology<em>Soon</em></span>
-      <span class="soon"><span class="dot" style="background:#c2410c"></span>EDPM<em>Soon</em></span>
+      <span class="soon"><span class="dot" style="background:#0a84ff"></span>Information Technology<em>Soon</em></span>
+      <span class="soon"><span class="dot" style="background:#ff8a00"></span>EDPM<em>Soon</em></span>
     </nav>
 
     <div class="side-foot">
-      <a class="today-mini" href="{base}/today">
-        <span class="mini-flame" class:lit={stats.streak > 0}><Icon name="flame" size={20} /></span>
+      <a class="today-mini" href="{base}/today" aria-label="Today's rings">
+        <Rings rings={miniRings} size={38} stroke={5} gap={1.5} />
         <span class="mini-text">
-          <strong>{stats.streak > 0 ? `${stats.streak}-day streak` : 'Start a streak'}</strong>
-          <span>Level {stats.level} · {questsDone} of 3 quests</span>
-          <span class="pips" aria-hidden="true">
-            {#each pips as p}<span class:done={p.done} style="--q:{p.color};--q-track:{p.track}"></span>{/each}
+          <strong>Level {stats.level}</strong>
+          <span>
+            {#if stats.streak > 0}<span class="flame"><Icon name="flame" size={12} /></span>{stats.streak}-day streak{:else}Start a streak today{/if}
           </span>
         </span>
       </a>
@@ -150,20 +147,20 @@
     gap: .55rem;
     padding: .2rem .6rem .9rem;
     color: var(--text);
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 1.2rem;
+    font-weight: 680;
+    font-size: 1.02rem;
+    letter-spacing: -.02em;
   }
   .brand:hover { color: var(--text); }
   .mark {
     display: grid;
     place-items: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 10px;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
     color: #fff;
-    background: var(--brand);
-    box-shadow: 0 3px 0 var(--brand-edge);
+    background: linear-gradient(135deg, #34c759, #0b7a5e);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35);
   }
 
   .side-nav { display: flex; flex-direction: column; gap: 2px; }
@@ -171,12 +168,12 @@
     display: flex;
     align-items: center;
     gap: .7rem;
-    min-height: 44px;
-    padding: .5rem .7rem;
-    border-radius: 14px;
+    padding: .5rem .65rem;
+    border-radius: 10px;
     color: var(--text);
-    font-size: .98rem;
-    font-weight: 700;
+    font-size: .95rem;
+    font-weight: 500;
+    letter-spacing: -.008em;
     transition: background-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
   }
   .side-nav a :global(svg) { color: var(--text-secondary); }
@@ -185,21 +182,21 @@
   }
   .side-nav a:active { transform: scale(.98); }
   .side-nav a.active {
-    background: var(--brand-soft);
-    color: var(--brand-text);
-    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--brand) 35%, transparent);
+    background: color-mix(in srgb, var(--brand) 14%, transparent);
+    color: var(--brand);
+    font-weight: 600;
   }
-  .side-nav a.active :global(svg) { color: var(--brand-text); }
+  .side-nav a.active :global(svg) { color: var(--brand); }
 
   .side-label {
     margin: 1.4rem .65rem .35rem;
     font-size: .72rem;
-    font-weight: 800;
-    letter-spacing: .08em;
+    font-weight: 600;
+    letter-spacing: .05em;
     text-transform: uppercase;
     color: var(--text-tertiary);
   }
-  .dot { width: 12px; height: 12px; border-radius: 4px; flex: none; margin: 0 .25rem 0 .35rem; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; margin: 0 .25rem 0 .35rem; }
   .soon { color: var(--text-tertiary); cursor: default; }
   .soon em {
     margin-left: auto;
@@ -216,32 +213,16 @@
     display: flex;
     align-items: center;
     gap: .75rem;
-    padding: .7rem .75rem;
-    border-radius: 16px;
+    padding: .6rem .65rem;
+    border-radius: 14px;
     color: var(--text);
-    background: var(--surface-2);
-    box-shadow: inset 0 0 0 2px var(--line), 0 3px 0 var(--line);
-    transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+    background: color-mix(in srgb, var(--text) 4%, transparent);
+    transition: background-color var(--dur-fast) var(--ease);
   }
-  .today-mini:hover { color: var(--text); }
-  .today-mini:active { transform: translateY(3px); box-shadow: inset 0 0 0 2px var(--line), 0 0 0 var(--line); }
-  .mini-flame {
-    flex: none;
-    display: grid;
-    place-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    color: var(--text-tertiary);
-    background: var(--surface);
-    box-shadow: inset 0 0 0 2px var(--line);
-  }
-  .mini-flame.lit { color: #fff; background: #c2410c; box-shadow: 0 3px 0 #7c2d12; }
-  .mini-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; font-size: .78rem; font-weight: 700; color: var(--text-secondary); }
-  .mini-text strong { color: var(--text); font-size: .92rem; font-weight: 800; }
-  .pips { display: flex; gap: 4px; margin-top: .3rem; }
-  .pips span { width: 22px; height: 7px; border-radius: 4px; background: var(--q-track); }
-  .pips span.done { background: var(--q); }
+  .today-mini:hover { color: var(--text); background: color-mix(in srgb, var(--text) 7%, transparent); }
+  .mini-text { display: flex; flex-direction: column; line-height: 1.25; font-size: .8rem; color: var(--text-secondary); }
+  .mini-text strong { color: var(--text); font-size: .9rem; font-weight: 620; }
+  .flame { color: #ff8a00; display: inline-flex; vertical-align: -1px; margin-right: 2px; }
 
   .account-row { display: flex; align-items: center; gap: .4rem; }
   .who {
@@ -257,47 +238,45 @@
   .who:hover { color: var(--text); background: color-mix(in srgb, var(--text) 5%, transparent); }
   .avatar {
     flex: none;
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     display: grid;
     place-items: center;
-    border-radius: 10px;
+    border-radius: 50%;
     color: #fff;
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: .95rem;
-    background: var(--brand);
-    box-shadow: 0 2px 0 var(--brand-edge);
+    font-weight: 650;
+    font-size: .85rem;
+    background: linear-gradient(135deg, #40a9ff, #3a3ad6);
   }
   .who-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.2; }
   .who-text strong { font-size: .88rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .who-text span { font-size: .76rem; color: var(--text-secondary); }
   .signin {
     flex: 1;
-    display: grid;
-    place-items: center;
-    min-height: 44px;
-    border-radius: 14px;
-    font-family: var(--font-display);
+    text-align: center;
+    padding: .5rem;
+    border-radius: 12px;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: .9rem;
     background: var(--brand);
     color: var(--on-brand);
-    box-shadow: 0 3px 0 var(--brand-edge);
-    transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
   }
   .signin:hover { color: var(--on-brand); background: var(--brand-hover); }
-  .signin:active { transform: translateY(3px); box-shadow: 0 0 0 var(--brand-edge); }
 
   .icon-btn {
     flex: none;
-    width: 44px;
-    height: 44px;
+    width: 34px;
+    height: 34px;
     padding: 0;
     display: grid;
     place-items: center;
-    border-radius: 14px;
+    border-radius: 50%;
+    border: 0;
+    background: transparent;
     color: var(--text-secondary);
+  }
+  @media (hover: hover) {
+    .icon-btn:hover { background: color-mix(in srgb, var(--text) 7%, transparent); color: var(--text); }
   }
 
   /* ------------------------------------------------------------ tab bar */
@@ -308,10 +287,9 @@
     transform: translateX(-50%);
     z-index: 30;
     display: flex;
-    gap: 4px;
-    padding: 6px;
-    border-radius: 24px;
-    box-shadow: inset 0 0 0 2px var(--line), 0 5px 0 var(--line), 0 12px 30px -12px rgba(30, 27, 75, .35);
+    gap: 2px;
+    padding: 5px;
+    border-radius: 30px;
   }
   .tabbar a {
     display: flex;
@@ -319,18 +297,17 @@
     align-items: center;
     gap: 2px;
     min-width: 76px;
-    min-height: 48px;
     padding: .42rem .9rem .38rem;
-    border-radius: 18px;
+    border-radius: 24px;
     color: var(--text-secondary);
-    font-size: .72rem;
-    font-weight: 800;
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .01em;
     transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), transform var(--dur-fast) var(--ease);
   }
   .tabbar a:active { transform: scale(.94); }
   .tabbar a.active {
-    color: var(--brand-text);
-    background: var(--brand-soft);
-    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--brand) 35%, transparent);
+    color: var(--brand);
+    background: color-mix(in srgb, var(--brand) 13%, transparent);
   }
 </style>
