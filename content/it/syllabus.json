@@ -1,0 +1,120 @@
+{
+  "subject": "IT",
+  "name": "Information Technology",
+  "syllabusCode": "CXC 30/G/SYLL 17",
+  "effectiveFrom": "May-June 2020",
+  "moduleNote": "grouped by profile dimension",
+  "note": "Modules are the three Paper 01 groups, which are also the profile dimensions; topics are the syllabus's eight sections. Paper 01 is published per group, so each topic's mcqCount is an estimate shared out in proportion to objective count. A migration named <nnn>_seed_it_structure.sql must agree with this file; backend/tools/check_syllabus.mjs asserts it.",
+  "papers": {
+    "p1": {
+      "items": 60,
+      "perModule": {
+        "1": 35,
+        "2": 15,
+        "3": 10
+      },
+      "minutes": 75
+    },
+    "p2": {
+      "marks": 90,
+      "perModule": {
+        "1": 35,
+        "2": 30,
+        "3": 25
+      },
+      "minutes": 120
+    },
+    "sba": {
+      "paper": "031",
+      "marks": 50,
+      "percentOfTotal": 25
+    }
+  },
+  "modules": [
+    {
+      "number": 1,
+      "title": "Theory",
+      "minHours": null,
+      "topics": [
+        {
+          "number": 1,
+          "title": "Computer Fundamentals and Information Processing",
+          "slug": "computer-fundamentals",
+          "mcqCount": 21,
+          "p2Marks": null,
+          "p2Group": "Theory"
+        },
+        {
+          "number": 2,
+          "title": "Computer Networks and Web Technologies",
+          "slug": "networks-web",
+          "mcqCount": 6,
+          "p2Marks": null,
+          "p2Group": "Theory"
+        },
+        {
+          "number": 3,
+          "title": "Social and Economic Impact of ICT",
+          "slug": "ict-impact",
+          "mcqCount": 8,
+          "p2Marks": null,
+          "p2Group": "Theory"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "title": "Productivity Tools",
+      "minHours": null,
+      "topics": [
+        {
+          "number": 4,
+          "title": "Word-Processing and Web Page Design",
+          "slug": "word-processing-web",
+          "mcqCount": 7,
+          "p2Marks": null,
+          "p2Group": "Productivity Tools"
+        },
+        {
+          "number": 5,
+          "title": "Spreadsheets",
+          "slug": "spreadsheets",
+          "mcqCount": 6,
+          "p2Marks": null,
+          "p2Group": "Productivity Tools"
+        },
+        {
+          "number": 6,
+          "title": "Database Management",
+          "slug": "database-management",
+          "mcqCount": 2,
+          "p2Marks": null,
+          "p2Group": "Productivity Tools"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "title": "Problem-Solving and Programming",
+      "minHours": null,
+      "topics": [
+        {
+          "number": 7,
+          "title": "Problem-Solving and Program Design",
+          "slug": "problem-solving-design",
+          "mcqCount": 5,
+          "p2Marks": null,
+          "p2Group": "Problem-Solving and Programming"
+        },
+        {
+          "number": 8,
+          "title": "Program Implementation",
+          "slug": "program-implementation",
+          "mcqCount": 5,
+          "p2Marks": null,
+          "p2Group": "Problem-Solving and Programming"
+        }
+      ]
+    }
+  ]
+}

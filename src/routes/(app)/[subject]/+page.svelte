@@ -14,23 +14,31 @@
   const mastery = (keys: string[]) => (progress ? topicMastery(progress, keys) : 0);
   const moduleKeys = (m: (typeof data.modules)[number]) => m.topics.flatMap((t) => t.objectiveKeys);
 
-  // Short names for the tiles. Trimming the long titles by string surgery left
-  // "Fundamentals of" and "Higher Concepts in"; naming them outright cannot.
-  const SHORT: Record<number, string> = { 1: 'Fundamentals', 2: 'Intermediate', 3: 'Higher Concepts' };
+  // Short names for the tiles, where a syllabus uses long module titles.
+  // Trimming them by string surgery left "Fundamentals of" and "Higher
+  // Concepts in"; naming them outright cannot go wrong.
+  const SHORT: Record<string, Record<number, string>> = {
+    math: { 1: 'Fundamentals', 2: 'Intermediate', 3: 'Higher Concepts' }
+  };
+  const shortName = (n: number, title: string) => SHORT[data.subject]?.[n] ?? title;
+  const totalMcq = $derived(data.modules.reduce((a, m) => a + m.mcqCount, 0));
 </script>
 
 <svelte:head>
-  <title>CSEC Mathematics — Grade One</title>
+  <title>CSEC {data.name} — Grade One</title>
   <meta
     name="description"
-    content="CSEC Mathematics study guide covering all three modules of the CXC syllabus effective from May–June 2027: lessons, flashcards and practice questions for every specific objective."
+    content="CSEC {data.name} study guide covering the whole CXC syllabus ({data.syllabusCode}), effective from {data.effectiveFrom}: lessons, flashcards and practice questions for every specific objective."
   />
 </svelte:head>
 
 <header class="head">
   <p class="eyebrow">CSEC · {data.syllabusCode}</p>
-  <h1 class="large-title">Mathematics</h1>
-  <p class="subtitle">Three modules, each sat on its own and worth one credit. Effective from {data.effectiveFrom}.</p>
+  <h1 class="large-title">{data.name}</h1>
+  <p class="subtitle">
+    {[[`${data.modules.length} modules`, data.moduleNote].filter(Boolean).join(', '),
+      `Effective from ${data.effectiveFrom}`].join('. ')}.
+  </p>
 </header>
 
 <!-- Module overview: three surfaces in their own colours, like category tiles. -->
@@ -43,8 +51,8 @@
         <Rings rings={[{ value: pct / 100, color: '#fff', track: 'rgba(255,255,255,.28)', label: 'Module mastery' }]}
                size={44} stroke={6} />
       </span>
-      <strong>{SHORT[mod.number] ?? mod.title}</strong>
-      <span class="meta">{mod.topics.length} topics · {mod.mcqCount} of 60 Paper 01 questions</span>
+      <strong>{shortName(mod.number, mod.title)}</strong>
+      <span class="meta">{mod.topics.length} topics · {mod.mcqCount} of {totalMcq} Paper 01 questions</span>
     </a>
   {/each}
 </div>
@@ -55,7 +63,7 @@
     <div class="section-title">
       <p class="mod-eyebrow">Module {mod.number}</p>
       <h2>{mod.title}</h2>
-      <p class="small muted">Minimum {mod.minHours} hours of study</p>
+      {#if mod.minHours}<p class="small muted">Minimum {mod.minHours} hours of study</p>{/if}
     </div>
 
     <div class="topics">

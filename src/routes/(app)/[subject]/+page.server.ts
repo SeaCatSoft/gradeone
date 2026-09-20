@@ -18,6 +18,7 @@ export const load: PageServerLoad = async ({ params }) => {
     name: subject.name,
     syllabusCode: subject.syllabusCode,
     effectiveFrom: subject.effectiveFrom,
+    moduleNote: subject.moduleNote,
     modules: subject.modules.map((m) => ({
       number: m.number,
       title: m.title,

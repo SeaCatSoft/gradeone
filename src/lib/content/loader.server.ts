@@ -86,6 +86,10 @@ export type Subject = {
   name: string;
   syllabusCode: string;
   effectiveFrom: string;
+  /** One clause about how this syllabus is organised, for the subject page. */
+  moduleNote: string | null;
+  /** Total Paper 01 items, used where a page quotes "x of y questions". */
+  p1Items: number;
   modules: Module[];
 };
 
@@ -189,6 +193,8 @@ export function loadSubject(code = 'math'): Subject {
     name: spec.name,
     syllabusCode: spec.syllabusCode,
     effectiveFrom: spec.effectiveFrom,
+    moduleNote: spec.moduleNote ?? null,
+    p1Items: spec.papers?.p1?.items ?? 0,
     modules: spec.modules.map((m: any) => ({
       number: m.number,
       title: m.title,

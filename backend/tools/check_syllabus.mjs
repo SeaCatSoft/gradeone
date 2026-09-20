@@ -97,8 +97,12 @@ let grand = 0;
 for (const mod of spec.modules) {
   const total = mod.topics.reduce((a, t) => a + t.mcqCount, 0);
   grand += total;
-  if (total !== spec.papers.p1.perModule) {
-    fail('Module ' + mod.number + ' MCQs total ' + total + ', expected ' + spec.papers.p1.perModule + '.');
+  // perModule is a single number when every module carries the same count
+  // (Mathematics), or a map keyed by module number when they differ (IT).
+  const pm = spec.papers.p1.perModule;
+  const expected = typeof pm === 'object' ? pm[String(mod.number)] : pm;
+  if (total !== expected) {
+    fail('Module ' + mod.number + ' MCQs total ' + total + ', expected ' + expected + '.');
   }
 }
 if (grand !== spec.papers.p1.items) {
@@ -106,7 +110,7 @@ if (grand !== spec.papers.p1.items) {
 }
 
 summaries.push('  ' + code + ': ' + jsonTopics.size + ' topics, ' + grand +
-               ' Paper 01 items, ' + spec.papers.p1.perModule + ' per module.');
+               ' Paper 01 items across ' + spec.modules.length + ' modules.');
 }
 
 if (problems.length) {

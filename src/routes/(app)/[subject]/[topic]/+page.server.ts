@@ -19,6 +19,7 @@ export const load: PageServerLoad = async ({ params }) => {
 
   return {
     subject: params.subject,
+    p1Items: subject.p1Items,
     module: { number: mod.number, title: mod.title },
     topic: {
       slug: topic.slug,

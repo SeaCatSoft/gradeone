@@ -43,6 +43,7 @@ for (const file of walk(ROOT, true)) {
     if (m[2]) flagged++;
   }
   topics.set(fm.topic, {
+    subject: String(fm.subject || 'MATH').toLowerCase(),
     module: fm.module, slug: fm.topic, objectives, flagged,
     covered: new Set(), cards: 0, questions: 0, lessons: 0
   });
@@ -64,7 +65,8 @@ for (const file of walk(ROOT, false)) {
 }
 
 const rows = [...topics.values()].sort(
-  (a, b) => a.module - b.module || a.slug.localeCompare(b.slug)
+  (a, b) => a.subject.localeCompare(b.subject) || a.module - b.module ||
+            a.slug.localeCompare(b.slug)
 );
 
 const bar = (done, total) => {
@@ -74,7 +76,7 @@ const bar = (done, total) => {
 };
 
 console.log('');
-console.log('  MOD  TOPIC                             OBJ  DONE  ' +
+console.log('  SUBJ  MOD  TOPIC                           OBJ  DONE  ' +
             '             LESSONS  CARDS  QNS  FLAGGED');
 console.log('  ' + '-'.repeat(94));
 
@@ -85,8 +87,8 @@ for (const r of rows) {
   tObj += total; tCov += done; tCards += r.cards;
   tQs += r.questions; tFlag += r.flagged; tLessons += r.lessons;
   console.log(
-    '  M' + r.module + '   ' +
-    r.slug.padEnd(32) + ' ' +
+    '  ' + r.subject.toUpperCase().padEnd(4) + '  M' + r.module + '   ' +
+    r.slug.padEnd(30) + ' ' +
     String(total).padStart(3) + '  ' +
     (done + '/' + total).padStart(5) + '  ' +
     bar(done, total) + '  ' +

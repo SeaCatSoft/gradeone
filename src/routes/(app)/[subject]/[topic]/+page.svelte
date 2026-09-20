@@ -38,7 +38,7 @@
       <p class="hero-eyebrow">Module {data.module.number}</p>
       <h1>{data.topic.title}</h1>
       <p class="facts">
-        {[`${data.objectives.length} objectives`, `${data.topic.mcqCount} of 60 Paper 01 questions`,
+        {[`${data.objectives.length} objectives`, `${data.topic.mcqCount} of ${data.p1Items} Paper 01 questions`,
           data.topic.p2Marks ? `${data.topic.p2Marks} Paper 02 marks` : ''].filter(Boolean).join(' · ')}
       </p>
     </div>

@@ -21,3 +21,6 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Syllabus PDFs: reference only, not ours to redistribute
+backend/syllabus/
