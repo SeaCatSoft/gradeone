@@ -103,7 +103,7 @@
 </svelte:head>
 
 <div class="narrow" style={themeVars(data.topic.module)}>
-  <a class="back-link" href="{base}/math/{data.topic.slug}"><Icon name="chevron-left" size={17} />{data.topic.title}</a>
+  <a class="back-link" href="{base}/{data.subject}/{data.topic.slug}"><Icon name="chevron-left" size={17} />{data.topic.title}</a>
 
   {#if !progress}
     <div class="panel"><p class="muted">Loading questions…</p></div>
@@ -124,7 +124,7 @@
       </p>
       <div class="row">
         <button class="primary" onclick={start}>Try again</button>
-        <a class="quiet" href="{base}/math/{data.topic.slug}">Back to {data.topic.title} ›</a>
+        <a class="quiet" href="{base}/{data.subject}/{data.topic.slug}">Back to {data.topic.title} ›</a>
       </div>
     </div>
 

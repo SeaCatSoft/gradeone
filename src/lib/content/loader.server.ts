@@ -92,7 +92,10 @@ export type Subject = {
 const FM = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?/;
 const OBJ_LINE = /^(\d{1,2}\.\d{1,2})\s+(\[\?\]\s*)?(\S.*)$/;
 
-let cache: Subject | null = null;
+// One entry per subject. A single shared slot used to ignore the code it was
+// asked for, so the second subject would have been served the first one's
+// content.
+const cache = new Map<string, Subject>();
 
 function readObjectives(
   dir: string, subject: string, moduleNo: number, slug: string
@@ -161,14 +164,27 @@ function readLessons(
   return lessons;
 }
 
+/** Subject codes that have content, in the order their folders are listed. */
+export function listSubjects(): string[] {
+  return fs
+    .readdirSync(ROOT, { withFileTypes: true })
+    .filter((e) => e.isDirectory() && fs.existsSync(path.join(ROOT, e.name, 'syllabus.json')))
+    .map((e) => e.name);
+}
+
+export function hasSubject(code: string): boolean {
+  return listSubjects().includes(code);
+}
+
 export function loadSubject(code = 'math'): Subject {
-  if (cache) return cache;
+  const hit = cache.get(code);
+  if (hit) return hit;
 
   const subjectDir = path.join(ROOT, code);
   const spec = JSON.parse(fs.readFileSync(path.join(subjectDir, 'syllabus.json'), 'utf8'));
   const objDir = path.join(subjectDir, 'objectives');
 
-  cache = {
+  const subject: Subject = {
     code: spec.subject,
     name: spec.name,
     syllabusCode: spec.syllabusCode,
@@ -190,7 +206,8 @@ export function loadSubject(code = 'math'): Subject {
       }))
     }))
   };
-  return cache;
+  cache.set(code, subject);
+  return subject;
 }
 
 export function allTopics(subject: Subject): Topic[] {

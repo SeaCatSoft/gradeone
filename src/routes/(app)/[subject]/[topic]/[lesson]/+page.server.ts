@@ -1,17 +1,20 @@
 import { error } from '@sveltejs/kit';
-import { loadSubject, findTopic, allTopics } from '$lib/content/loader.server';
+import { loadSubject, findTopic, allTopics, listSubjects, hasSubject } from '$lib/content/loader.server';
 import { renderMarkdown } from '$lib/content/render';
 import type { PageServerLoad, EntryGenerator } from './$types';
 
 export const prerender = true;
 
 export const entries: EntryGenerator = () =>
-  allTopics(loadSubject('math')).flatMap((t) =>
-    t.lessons.map((l) => ({ topic: t.slug, lesson: l.slug }))
+  listSubjects().flatMap((subject) =>
+    allTopics(loadSubject(subject)).flatMap((t) =>
+      t.lessons.map((l) => ({ subject, topic: t.slug, lesson: l.slug }))
+    )
   );
 
 export const load: PageServerLoad = async ({ params }) => {
-  const subject = loadSubject('math');
+  if (!hasSubject(params.subject)) throw error(404, 'No such subject');
+  const subject = loadSubject(params.subject);
   const topic = findTopic(subject, params.topic);
   if (!topic) throw error(404, 'No such topic');
 
@@ -26,6 +29,7 @@ export const load: PageServerLoad = async ({ params }) => {
   const byCode = new Map(topic.objectives.map((o) => [o.code, o]));
 
   return {
+    subject: params.subject,
     topic: { slug: topic.slug, title: topic.title },
     module: topic.module,
     lesson: {

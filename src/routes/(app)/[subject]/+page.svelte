@@ -62,7 +62,7 @@
       {#each mod.topics as topic}
         {@const pct = mastery(topic.objectiveKeys)}
         {@const ready = topic.lessonCount > 0}
-        <a class="topic" class:empty={!ready} href="{base}/math/{topic.slug}">
+        <a class="topic" class:empty={!ready} href="{base}/{data.subject}/{topic.slug}">
           <div class="topic-top">
             {#if ready}
               <Rings rings={[{ value: pct / 100, color: th.solid, track: th.soft, label: 'Mastery' }]}

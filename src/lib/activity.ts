@@ -49,7 +49,11 @@ export function ringProgress(counts: Record<Ring, number>): Record<Ring, number>
 
 const RECENT = 'gradeone.recent.v1';
 
-export type Recent = { topic: string; topicTitle: string; lesson: string; lessonTitle: string; at: string };
+export type Recent = {
+  /** Older entries predate multiple subjects and have no code; treat those as maths. */
+  subject?: string;
+  topic: string; topicTitle: string; lesson: string; lessonTitle: string; at: string;
+};
 
 /** Remembered per device on purpose: "where was I" means on this screen. */
 export function setRecent(r: Omit<Recent, 'at'>): void {

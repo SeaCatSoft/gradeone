@@ -1,14 +1,20 @@
-import { loadSubject } from '$lib/content/loader.server';
-import type { PageServerLoad } from './$types';
+import { error } from '@sveltejs/kit';
+import { loadSubject, listSubjects, hasSubject } from '$lib/content/loader.server';
+import type { PageServerLoad, EntryGenerator } from './$types';
 
 export const prerender = true;
 
-export const load: PageServerLoad = async () => {
-  const subject = loadSubject('math');
+export const entries: EntryGenerator = () =>
+  listSubjects().map((subject) => ({ subject }));
+
+export const load: PageServerLoad = async ({ params }) => {
+  if (!hasSubject(params.subject)) throw error(404, 'No such subject');
+  const subject = loadSubject(params.subject);
 
   // Send only what the overview draws. Shipping every lesson body to render a
   // list of topic cards would bloat the page for no gain.
   return {
+    subject: params.subject,
     name: subject.name,
     syllabusCode: subject.syllabusCode,
     effectiveFrom: subject.effectiveFrom,

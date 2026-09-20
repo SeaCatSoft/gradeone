@@ -28,6 +28,7 @@
     progress = 0;
 
     setRecent({
+      subject: data.subject,
       topic: topic.slug, topicTitle: topic.title,
       lesson: lesson.slug, lessonTitle: lesson.title
     });
@@ -53,7 +54,7 @@
       if (!entries.some((e) => e.isIntersecting) || finished) return;
       finished = true;
       const p = loadProgress();
-      earned = markLessonRead(p, `math/${topic.slug}/${lesson.slug}`);
+      earned = markLessonRead(p, `${data.subject}/${topic.slug}/${lesson.slug}`);
       saveAndSync(p, session.user?.id ?? null);
     }, { threshold: 1 });
     if (endMark) io.observe(endMark);
@@ -73,7 +74,7 @@
 <div class="reader" style={themeVars(data.module)}>
   <div class="progress" aria-hidden="true"><span style="transform:scaleX({progress})"></span></div>
 
-  <a class="back-link" href="{base}/math/{data.topic.slug}"><Icon name="chevron-left" size={17} />{data.topic.title}</a>
+  <a class="back-link" href="{base}/{data.subject}/{data.topic.slug}"><Icon name="chevron-left" size={17} />{data.topic.title}</a>
 
   <article bind:this={article}>
     <header class="head">
@@ -116,11 +117,11 @@
   </article>
 
   <section class="practise">
-    <a class="p-tile" href="{base}/math/{data.topic.slug}/flashcards">
+    <a class="p-tile" href="{base}/{data.subject}/{data.topic.slug}/flashcards">
       <span class="glyph review"><Icon name="cards" size={20} /></span>
       <span><strong>Flashcards</strong><span>{data.lesson.cardCount} from this lesson</span></span>
     </a>
-    <a class="p-tile" href="{base}/math/{data.topic.slug}/practice">
+    <a class="p-tile" href="{base}/{data.subject}/{data.topic.slug}/practice">
       <span class="glyph practice"><Icon name="check" size={20} /></span>
       <span><strong>Practice</strong><span>{data.lesson.questionCount} questions</span></span>
     </a>
@@ -128,13 +129,13 @@
 
   <nav class="pager">
     {#if data.prev}
-      <a href="{base}/math/{data.topic.slug}/{data.prev.slug}">
+      <a href="{base}/{data.subject}/{data.topic.slug}/{data.prev.slug}">
         <span class="dir"><Icon name="chevron-left" size={14} /> Previous</span>
         <strong>{data.prev.title}</strong>
       </a>
     {:else}<span></span>{/if}
     {#if data.next}
-      <a class="next" href="{base}/math/{data.topic.slug}/{data.next.slug}">
+      <a class="next" href="{base}/{data.subject}/{data.topic.slug}/{data.next.slug}">
         <span class="dir">Next <Icon name="chevron" size={14} /></span>
         <strong>{data.next.title}</strong>
       </a>

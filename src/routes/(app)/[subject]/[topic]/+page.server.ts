@@ -1,20 +1,24 @@
 import { error } from '@sveltejs/kit';
-import { loadSubject, findTopic, allTopics } from '$lib/content/loader.server';
+import { loadSubject, findTopic, allTopics, listSubjects, hasSubject } from '$lib/content/loader.server';
 import type { PageServerLoad, EntryGenerator } from './$types';
 
 export const prerender = true;
 
 export const entries: EntryGenerator = () =>
-  allTopics(loadSubject('math')).map((t) => ({ topic: t.slug }));
+  listSubjects().flatMap((subject) =>
+    allTopics(loadSubject(subject)).map((t) => ({ subject, topic: t.slug }))
+  );
 
 export const load: PageServerLoad = async ({ params }) => {
-  const subject = loadSubject('math');
+  if (!hasSubject(params.subject)) throw error(404, 'No such subject');
+  const subject = loadSubject(params.subject);
   const topic = findTopic(subject, params.topic);
   if (!topic) throw error(404, 'No such topic');
 
   const mod = subject.modules.find((m) => m.number === topic.module)!;
 
   return {
+    subject: params.subject,
     module: { number: mod.number, title: mod.title },
     topic: {
       slug: topic.slug,

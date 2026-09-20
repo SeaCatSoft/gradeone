@@ -18,7 +18,7 @@
   const mastery = $derived(progress ? topicMastery(progress, objectiveKeys) : 0);
   const due = $derived(progress ? dueCount(progress, allCardIds) : allCardIds.length);
   const hasContent = $derived(data.lessons.length > 0);
-  const read = (slug: string) => Boolean(progress?.lessons[`math/${data.topic.slug}/${slug}`]);
+  const read = (slug: string) => Boolean(progress?.lessons[`${data.subject}/${data.topic.slug}/${slug}`]);
   const readCount = $derived(data.lessons.filter((l) => read(l.slug)).length);
 </script>
 
@@ -31,7 +31,7 @@
 </svelte:head>
 
 <div style={themeVars(data.module.number)}>
-  <a class="back-link" href="{base}/math"><Icon name="chevron-left" size={17} />Mathematics</a>
+  <a class="back-link" href="{base}/{data.subject}"><Icon name="chevron-left" size={17} />Mathematics</a>
 
   <header class="hero">
     <div class="hero-text">
@@ -59,7 +59,7 @@
 
   {#if hasContent}
     <div class="modes">
-      <a class="mode" href="{base}/math/{data.topic.slug}/flashcards">
+      <a class="mode" href="{base}/{data.subject}/{data.topic.slug}/flashcards">
         <span class="glyph review"><Icon name="cards" size={22} /></span>
         <span class="mode-text">
           <strong>Flashcards</strong>
@@ -67,7 +67,7 @@
         </span>
         <Icon name="chevron" size={16} />
       </a>
-      <a class="mode" href="{base}/math/{data.topic.slug}/practice">
+      <a class="mode" href="{base}/{data.subject}/{data.topic.slug}/practice">
         <span class="glyph practice"><Icon name="check" size={22} /></span>
         <span class="mode-text">
           <strong>Practice</strong>
@@ -85,7 +85,7 @@
       {#each data.lessons as lesson, i}
         {@const done = read(lesson.slug)}
         <li>
-          <a href="{base}/math/{data.topic.slug}/{lesson.slug}">
+          <a href="{base}/{data.subject}/{data.topic.slug}/{lesson.slug}">
             <span class="num" class:done>
               {#if done}<Icon name="check" size={16} />{:else}{i + 1}{/if}
             </span>

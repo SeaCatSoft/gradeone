@@ -8,19 +8,37 @@
   import { theme } from '$lib/theme.svelte';
   import { RING_COLORS } from '$lib/modules';
 
-  let { children } = $props();
+  let { children, data } = $props();
+
+  // Colours for the subject dots, keyed by subject code. A subject with no
+  // entry here still shows, in the neutral brand colour.
+  const DOT: Record<string, string> = { math: '#30b862', it: '#0a84ff', edpm: '#ff8a00' };
+
+  // Subjects that exist but have no lessons yet are listed, not linked: a
+  // student should see the platform growing into their other subjects.
+  const SOON = ['Information Technology', 'EDPM'];
 
   type Item = { href: string; label: string; icon: IconName; match: (p: string) => boolean };
 
   const path = $derived(page.url.pathname.slice(base.length) || '/');
 
-  // Named for what is inside, not "Home": Today is today's work, Mathematics is
-  // the syllabus. Specific labels are predictable ones.
-  const items: Item[] = [
+  // Named for what is inside, not "Home": Today is today's work, and the first
+  // subject stands for the syllabus. Specific labels are predictable ones.
+  const ready = $derived(data.subjects.filter((s) => s.ready));
+  const first = $derived(ready[0]);
+
+  const items: Item[] = $derived([
     { href: '/today', label: 'Today', icon: 'today', match: (p) => p.startsWith('/today') },
-    { href: '/math', label: 'Mathematics', icon: 'book', match: (p) => p.startsWith('/math') },
+    ...(first
+      ? [{
+          href: `/${first.code}`,
+          label: first.name,
+          icon: 'book' as IconName,
+          match: (p: string) => p.startsWith(`/${first.code}`)
+        }]
+      : []),
     { href: '/account', label: 'Account', icon: 'person', match: (p) => p.startsWith('/account') }
-  ];
+  ]);
 
   const miniRings = $derived([
     { value: stats.rings.learn, ...RING_COLORS.learn, label: 'Learn' },
@@ -48,13 +66,16 @@
 
     <p class="side-label">Subjects</p>
     <nav class="side-nav subjects">
-      <a href="{base}/math" class:active={path.startsWith('/math')}>
-        <span class="dot" style="background:#30b862"></span><span>Mathematics</span>
-      </a>
-      <!-- Shown, not hidden: a student should see the platform is growing into
-           their other subjects. Disabled rather than linking to an empty page. -->
-      <span class="soon"><span class="dot" style="background:#0a84ff"></span>Information Technology<em>Soon</em></span>
-      <span class="soon"><span class="dot" style="background:#ff8a00"></span>EDPM<em>Soon</em></span>
+      {#each ready as s}
+        <a href="{base}/{s.code}" class:active={path.startsWith(`/${s.code}`)}>
+          <span class="dot" style="background:{DOT[s.code] ?? 'var(--brand)'}"></span><span>{s.name}</span>
+        </a>
+      {/each}
+      {#each SOON as name}
+        {#if !ready.some((s) => s.name === name)}
+          <span class="soon"><span class="dot" style="background:{name === 'EDPM' ? DOT.edpm : DOT.it}"></span>{name}<em>Soon</em></span>
+        {/if}
+      {/each}
     </nav>
 
     <div class="side-foot">

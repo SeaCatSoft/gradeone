@@ -210,7 +210,7 @@
 </svelte:head>
 
 <div class="page" style={themeVars(data.topic.module)}>
-  <a class="back-link" href="{base}/math/{data.topic.slug}"><Icon name="chevron-left" size={17} />{data.topic.title}</a>
+  <a class="back-link" href="{base}/{data.subject}/{data.topic.slug}"><Icon name="chevron-left" size={17} />{data.topic.title}</a>
 
   {#if !progress}
     <div class="panel"><p class="muted">Loading your cards…</p></div>
@@ -225,7 +225,7 @@
       </p>
       <div class="row">
         <button class="primary" onclick={() => progress && startSession(progress)}>Go again</button>
-        <a class="quiet" href="{base}/math/{data.topic.slug}/practice">Practice questions <Icon name="chevron" size={13} /></a>
+        <a class="quiet" href="{base}/{data.subject}/{data.topic.slug}/practice">Practice questions <Icon name="chevron" size={13} /></a>
       </div>
     </div>
 

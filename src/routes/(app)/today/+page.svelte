@@ -53,11 +53,14 @@
   // Continue where you left off; with no history, the first lesson there is.
   const cont = $derived(
     recent ?? (data.topics[0]
-      ? { topic: data.topics[0].slug, topicTitle: data.topics[0].title,
+      ? { subject: data.topics[0].subject,
+          topic: data.topics[0].slug, topicTitle: data.topics[0].title,
           lesson: data.topics[0].firstLesson.slug, lessonTitle: data.topics[0].firstLesson.title }
       : null)
   );
   const contModule = $derived(data.topics.find((t) => t.slug === cont?.topic)?.module ?? 1);
+  // Recent entries saved before the platform had a second subject have no code.
+  const contSubject = $derived(cont?.subject ?? 'math');
 </script>
 
 <svelte:head>
@@ -99,7 +102,7 @@
 
 <div class="grid">
   {#if cont}
-    <a class="tile continue" href="{base}/math/{cont.topic}/{cont.lesson}" style={themeVars(contModule)}>
+    <a class="tile continue" href="{base}/{contSubject}/{cont.topic}/{cont.lesson}" style={themeVars(contModule)}>
       <span class="tile-eyebrow">{recent ? 'Continue reading' : 'Start here'}</span>
       <strong>{cont.lessonTitle}</strong>
       <span class="tile-sub">{cont.topicTitle}</span>
@@ -108,7 +111,7 @@
   {/if}
 
   {#if mostDue}
-    <a class="tile review" href="{base}/math/{mostDue.slug}/flashcards">
+    <a class="tile review" href="{base}/{mostDue.subject}/{mostDue.slug}/flashcards">
       <span class="tile-eyebrow">Due for review</span>
       <strong class="big">{totalDue}<span class="unit-word">{totalDue === 1 ? 'card' : 'cards'}</span></strong>
       <span class="tile-sub">
@@ -128,7 +131,7 @@
   {#each due as t}
     {@const m = progress ? topicMastery(progress, t.objectiveKeys) : 0}
     {@const th = modTheme(t.module)}
-    <a class="topic" href="{base}/math/{t.slug}">
+    <a class="topic" href="{base}/{t.subject}/{t.slug}">
       <Rings rings={[{ value: m / 100, color: th.solid, track: th.soft, label: 'Mastery' }]} size={46} stroke={6} />
       <span class="topic-text">
         <strong>{t.title}</strong>
