@@ -146,7 +146,7 @@ Three towns form a triangle. $B$ is 40 km from $A$ on a bearing of 030°. $C$ is
 (1 mark). Angle $ABC = 210° - 150° = 60°$ (1 mark).
 
 (b) Cosine rule: $AC^2 = 40^2 + 55^2 - 2(40)(55)\cos 60° = 1600 + 3025 - 2200 = 2425$
-(1 mark), so $AC = 49.24 \approx 49.1$ km (1 mark; $\sqrt{2425} = 49.24$).
+(1 mark), so $AC = \sqrt{2425} = 49.24 \approx 49.2$ km (1 mark).
 
 (c) Sine rule: $\dfrac{\sin A}{55} = \dfrac{\sin 60°}{49.24}$, so
 $\sin A = 0.9672$ and $A = 75.4°$ (1 mark). The bearing of $C$ from $A$ is
