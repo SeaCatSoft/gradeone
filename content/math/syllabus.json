@@ -1,6 +1,7 @@
 {
   "subject": "MATH",
   "name": "Mathematics",
+  "order": 1,
   "syllabusCode": "CXC 05/G/SYLL 16",
   "effectiveFrom": "May-June 2027",
   "moduleNote": "each sat on its own and worth one credit",

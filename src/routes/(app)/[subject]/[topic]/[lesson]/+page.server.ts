@@ -30,6 +30,9 @@ export const load: PageServerLoad = async ({ params }) => {
 
   return {
     subject: params.subject,
+    // The page <title> and meta description name the subject, so it cannot be
+    // hardcoded now that there is more than one.
+    subjectName: subject.name,
     topic: { slug: topic.slug, title: topic.title },
     module: topic.module,
     lesson: {

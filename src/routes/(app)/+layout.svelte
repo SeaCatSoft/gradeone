@@ -18,25 +18,27 @@
   // student should see the platform growing into their other subjects.
   const SOON = ['Information Technology', 'EDPM'];
 
+  // The tab bar has room for a word, not a subject's full name.
+  const SHORT: Record<string, string> = { math: 'Maths', it: 'IT', edpm: 'EDPM' };
+
   type Item = { href: string; label: string; icon: IconName; match: (p: string) => boolean };
 
   const path = $derived(page.url.pathname.slice(base.length) || '/');
 
-  // Named for what is inside, not "Home": Today is today's work, and the first
-  // subject stands for the syllabus. Specific labels are predictable ones.
+  // Named for what is inside, not "Home": Today is today's work, and each
+  // subject stands for its syllabus. Specific labels are predictable ones.
   const ready = $derived(data.subjects.filter((s) => s.ready));
-  const first = $derived(ready[0]);
 
+  // Every ready subject gets a tab. The phone has no sidebar, so a subject
+  // left out here is reachable only through Today.
   const items: Item[] = $derived([
     { href: '/today', label: 'Today', icon: 'today', match: (p) => p.startsWith('/today') },
-    ...(first
-      ? [{
-          href: `/${first.code}`,
-          label: first.name,
-          icon: 'book' as IconName,
-          match: (p: string) => p.startsWith(`/${first.code}`)
-        }]
-      : []),
+    ...ready.map((s) => ({
+      href: `/${s.code}`,
+      label: s.name,
+      icon: 'book' as IconName,
+      match: (p: string) => p.startsWith(`/${s.code}`)
+    })),
     { href: '/account', label: 'Account', icon: 'person', match: (p) => p.startsWith('/account') }
   ]);
 
@@ -120,7 +122,7 @@
     {#each items as it}
       <a href="{base}{it.href}" class:active={it.match(path)} aria-current={it.match(path) ? 'page' : undefined}>
         <Icon name={it.icon} size={22} />
-        <span>{it.label === 'Mathematics' ? 'Maths' : it.label}</span>
+        <span>{SHORT[it.href.slice(1)] ?? it.label}</span>
       </a>
     {/each}
   </nav>

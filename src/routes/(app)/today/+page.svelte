@@ -61,6 +61,13 @@
   const contModule = $derived(data.topics.find((t) => t.slug === cont?.topic)?.module ?? 1);
   // Recent entries saved before the platform had a second subject have no code.
   const contSubject = $derived(cont?.subject ?? 'math');
+
+  // Today mixes every subject together, so the "see everything" link points at
+  // whichever one the student was last working in rather than a fixed subject.
+  const allOf = $derived(
+    data.subjects.find((s) => s.ready && s.code === contSubject) ??
+      data.subjects.find((s) => s.ready)
+  );
 </script>
 
 <svelte:head>
@@ -124,7 +131,9 @@
 
 <div class="section-head">
   <h2>Your topics</h2>
-  <a href="{base}/math">All of Mathematics <Icon name="chevron" size={13} /></a>
+  {#if allOf}
+    <a href="{base}/{allOf.code}">All of {allOf.name} <Icon name="chevron" size={13} /></a>
+  {/if}
 </div>
 
 <div class="topics">

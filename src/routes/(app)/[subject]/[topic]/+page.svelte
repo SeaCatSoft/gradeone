@@ -23,15 +23,15 @@
 </script>
 
 <svelte:head>
-  <title>{data.topic.title} — CSEC Mathematics — Grade One</title>
+  <title>{data.topic.title} — CSEC {data.subjectName} — Grade One</title>
   <meta
     name="description"
-    content="CSEC Mathematics: {data.topic.title}. {data.objectives.length} syllabus objectives with lessons, flashcards and practice questions."
+    content="CSEC {data.subjectName}: {data.topic.title}. {data.objectives.length} syllabus objectives with lessons, flashcards and practice questions."
   />
 </svelte:head>
 
 <div style={themeVars(data.module.number)}>
-  <a class="back-link" href="{base}/{data.subject}"><Icon name="chevron-left" size={17} />Mathematics</a>
+  <a class="back-link" href="{base}/{data.subject}"><Icon name="chevron-left" size={17} />{data.subjectName}</a>
 
   <header class="hero">
     <div class="hero-text">

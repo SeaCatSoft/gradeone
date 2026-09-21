@@ -1,6 +1,7 @@
 {
   "subject": "IT",
   "name": "Information Technology",
+  "order": 2,
   "syllabusCode": "CXC 30/G/SYLL 17",
   "effectiveFrom": "May-June 2020",
   "moduleNote": "grouped by profile dimension",

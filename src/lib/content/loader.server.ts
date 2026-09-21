@@ -168,12 +168,24 @@ function readLessons(
   return lessons;
 }
 
-/** Subject codes that have content, in the order their folders are listed. */
+/**
+ * Subject codes that have content, most prominent first.
+ *
+ * The order decides which subject leads the sidebar and the phone tab bar, so
+ * it is declared in each syllabus.json rather than left to the folder names --
+ * alphabetically "it" sorts above "math", which is not the billing we want.
+ * A subject with no "order" goes to the back, still without needing code.
+ */
 export function listSubjects(): string[] {
   return fs
     .readdirSync(ROOT, { withFileTypes: true })
     .filter((e) => e.isDirectory() && fs.existsSync(path.join(ROOT, e.name, 'syllabus.json')))
-    .map((e) => e.name);
+    .map((e) => {
+      const spec = JSON.parse(fs.readFileSync(path.join(ROOT, e.name, 'syllabus.json'), 'utf8'));
+      return { code: e.name, order: typeof spec.order === 'number' ? spec.order : 99 };
+    })
+    .sort((a, b) => a.order - b.order || a.code.localeCompare(b.code))
+    .map((s) => s.code);
 }
 
 export function hasSubject(code: string): boolean {

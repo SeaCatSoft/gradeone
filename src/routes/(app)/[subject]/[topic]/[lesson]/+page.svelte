@@ -64,10 +64,10 @@
 </script>
 
 <svelte:head>
-  <title>{data.lesson.title} — {data.topic.title} — CSEC Mathematics</title>
+  <title>{data.lesson.title} — {data.topic.title} — CSEC {data.subjectName}</title>
   <meta
     name="description"
-    content="CSEC Mathematics lesson on {data.lesson.title}, covering syllabus objectives {data.objectives.map((o) => o.code).join(', ')}."
+    content="CSEC {data.subjectName} lesson on {data.lesson.title}, covering syllabus objectives {data.objectives.map((o) => o.code).join(', ')}."
   />
 </svelte:head>
 
