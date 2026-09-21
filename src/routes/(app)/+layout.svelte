@@ -7,8 +7,24 @@
   import { stats } from '$lib/stats.svelte';
   import { theme } from '$lib/theme.svelte';
   import { RING_COLORS } from '$lib/modules';
+  import { myEnrolledSubjectCodes } from '$lib/classes';
 
   let { children, data } = $props();
+
+  // Subjects the signed-in student is registered for. Empty means "not
+  // registered for anything", which shows all of them: someone studying alone
+  // must still be able to reach the content, and the registration list only
+  // narrows the shell once it has something in it.
+  let enrolled = $state<string[]>([]);
+  let enrolledFor = $state<string | null>(null);
+
+  $effect(() => {
+    const id = session.user?.id ?? null;
+    if (!session.ready || id === enrolledFor) return;
+    enrolledFor = id;
+    if (!id) { enrolled = []; return; }
+    void myEnrolledSubjectCodes().then((codes) => { enrolled = codes; });
+  });
 
   // Colours for the subject dots, keyed by subject code. A subject with no
   // entry here still shows, in the neutral brand colour.
@@ -27,7 +43,15 @@
 
   // Named for what is inside, not "Home": Today is today's work, and each
   // subject stands for its syllabus. Specific labels are predictable ones.
-  const ready = $derived(data.subjects.filter((s) => s.ready));
+  const allReady = $derived(data.subjects.filter((s) => s.ready));
+
+  // What this account is registered for, or everything if it is registered for
+  // nothing. This is presentation only: lesson pages are prerendered static
+  // HTML and stay reachable by URL. What a class actually protects is the
+  // student's DATA, and that is enforced by RLS, not here.
+  const ready = $derived(
+    enrolled.length ? allReady.filter((s) => enrolled.includes(s.code)) : allReady
+  );
 
   // Every ready subject gets a tab. The phone has no sidebar, so a subject
   // left out here is reachable only through Today.
@@ -39,8 +63,16 @@
       icon: 'book' as IconName,
       match: (p: string) => p.startsWith(`/${s.code}`)
     })),
+    { href: '/classes', label: 'Classes', icon: 'grid', match: (p) => p.startsWith('/classes') },
     { href: '/account', label: 'Account', icon: 'person', match: (p) => p.startsWith('/account') }
   ]);
+
+  // The desktop sidebar lists subjects in their own section below, so its top
+  // nav carries only the destinations that are not a subject. Account lives in
+  // the sidebar foot, next to the avatar.
+  const sideItems: Item[] = $derived(
+    items.filter((i) => i.href === '/today' || i.href === '/classes')
+  );
 
   const miniRings = $derived([
     { value: stats.rings.learn, ...RING_COLORS.learn, label: 'Learn' },
@@ -58,7 +90,7 @@
     </a>
 
     <nav class="side-nav">
-      {#each items.slice(0, 2) as it}
+      {#each sideItems as it}
         <a href="{base}{it.href}" class:active={it.match(path)} aria-current={it.match(path) ? 'page' : undefined}>
           <Icon name={it.icon} size={19} />
           <span>{it.label}</span>

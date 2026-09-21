@@ -50,6 +50,11 @@ cp .env.example .env   # fill from Supabase → Project Settings → API
 npm run dev
 ```
 
-Then run `backend/migrations/001` … `007` **in order** in the Supabase SQL
+Then run `backend/migrations/001` … `009` **in order** in the Supabase SQL
 editor, and `backend/migrations/check_all.sql` afterwards to confirm what
 actually landed. Trust the audit over your memory of what you ran.
+
+The first admin account is made by hand with
+`backend/migrations/grant_admin.sql` — see
+[docs/supabase-setup.md](docs/supabase-setup.md#3a-make-yourself-an-admin) for
+why it cannot be done in the app.

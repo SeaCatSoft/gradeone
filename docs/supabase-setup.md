@@ -41,6 +41,8 @@ backend/migrations/004_progress.sql
 backend/migrations/005_gamification.sql
 backend/migrations/006_rls.sql
 backend/migrations/007_seed_math_structure.sql
+backend/migrations/008_seed_it_structure.sql
+backend/migrations/009_roles_and_classes.sql
 ```
 
 Then run `backend/migrations/check_all.sql` and read what it says. **Trust the
@@ -50,6 +52,51 @@ start-cycle for days.
 
 007 ends in a self-test. If the assessment grid does not total 60 questions
 split 20/20/20, it raises rather than seeding something wrong.
+
+## 3a. Make yourself an admin
+
+Migration 009 adds three roles — **student**, **teacher**, **admin** — and every
+new account starts as a student. Roles are changed from inside the app, at
+Classes → People, but that page is for admins only, so the first admin cannot be
+made there. That is deliberate: `set_user_role()` refuses to run unless an admin
+is already calling it, which means nobody can promote themselves.
+
+So the first one is made by hand. **Sign up in the app first** — there is no
+profile to promote until the account exists — then run
+`backend/migrations/grant_admin.sql` in the SQL editor, with your own email in
+place of the placeholder.
+
+It prints every teacher and admin afterwards. If your account is not in that
+list, the email did not match; check the address you actually signed up with.
+
+Everybody else is promoted from the app from then on.
+
+### What each role may do
+
+| | Student | Teacher | Admin |
+|---|---|---|---|
+| Study, track own progress | Yes | Yes | Yes |
+| Join a class with a code | Yes | Yes | Yes |
+| Create classes, set work | — | Yes | Yes |
+| See a student's progress | — | Own classes only | Everyone |
+| Change roles | — | — | Yes |
+| Author content | — | — | Yes |
+
+A teacher sees a student's progress **only** through `class_members`. There is
+no policy granting a teacher blanket access to student data, and none should be
+added — a teacher who does not teach you can see nothing about you.
+
+### What this does not do
+
+Lesson pages are prerendered static HTML on a static host, so they stay readable
+by anyone with the URL whether or not they are registered for that subject.
+Registration decides what the app *offers* — which subjects appear in the
+sidebar, which classes and work a student sees. What it genuinely protects is
+every piece of **student data**, and that is enforced by RLS in Postgres, which
+the browser cannot talk its way past.
+
+If lesson content itself ever has to be restricted, that needs a server or the
+lesson bodies moved into the database behind RLS. It is not a policy change.
 
 ## 4. Tell Supabase where the site lives
 

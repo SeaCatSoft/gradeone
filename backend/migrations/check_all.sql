@@ -12,7 +12,10 @@ with expected(n, name, probe_kind, probe) as (values
   (4, '004_progress',            'table', 'objective_mastery'),
   (5, '005_gamification',        'table', 'xp_events'),
   (6, '006_rls',                 'func',  'is_admin'),
-  (7, '007_seed_math_structure', 'rows',  'topics')
+  (7, '007_seed_math_structure', 'rows',  'topics'),
+  -- 008 adds no table of its own, so it is probed by the subject it seeds.
+  (8, '008_seed_it_structure',   'subj',  'IT'),
+  (9, '009_roles_and_classes',   'table', 'class_members')
 )
 select
   e.n,
@@ -27,6 +30,11 @@ select
         where ns.nspname = 'public' and p.proname = e.probe)
     when e.probe_kind = 'rows' then
       (select count(*) > 0 from topics)
+    when e.probe_kind = 'subj' then
+      (select count(*) > 0 from subjects s
+        join modules mo on mo.subject_id = s.id
+        join topics t on t.module_id = mo.id
+        where s.code = e.probe)
   end as applied
 from expected e
 order by e.n;
