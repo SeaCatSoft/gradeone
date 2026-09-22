@@ -369,9 +369,12 @@ create policy enroll_teacher_read   on enrollments        for select to authenti
 -- profiles, for the reason 006 gave about is_admin(): a policy on profiles that
 -- selects from profiles recurses.
 drop policy if exists profiles_update_own on profiles;
+-- `role` is qualified because ROLE is a keyword elsewhere in Postgres (SET
+-- ROLE), and leaving it bare in a policy expression invites a parse that is
+-- hard to debug from the SQL editor.
 create policy profiles_update_own on profiles for update to authenticated
   using (id = auth.uid())
-  with check (id = auth.uid() and role = current_role_of());
+  with check (id = auth.uid() and profiles.role = current_role_of());
 
 -- ---------------------------------------------------------------------- RPCs
 
