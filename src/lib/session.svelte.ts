@@ -8,10 +8,13 @@ import { supabase, isConfigured } from '$lib/supabase';
  * from storage, "no user" and "not checked yet" look identical, and rendering
  * the signed-out state during that gap makes the header flicker on every load.
  */
+export type Role = 'student' | 'teacher' | 'admin';
+
 export type Profile = {
   display_name: string;
   school: string | null;
   exam_sitting: string | null;
+  role: Role;
 };
 
 class SessionStore {
@@ -55,7 +58,7 @@ class SessionStore {
     if (!db || !this.user) return null;
     const { data, error } = await db
       .from('profiles')
-      .select('display_name, school, exam_sitting')
+      .select('display_name, school, exam_sitting, role')
       .eq('id', this.user.id)
       .maybeSingle();
     // A missing profile is not fatal: the signup trigger may not have fired
@@ -66,6 +69,31 @@ class SessionStore {
 
   get displayName(): string {
     return this.profile?.display_name || this.user?.email?.split('@')[0] || 'Student';
+  }
+
+  /**
+   * The signed-in user's role.
+   *
+   * Defaults to 'student' whenever it is not known — signed out, profile not
+   * loaded yet, or a profile row that predates the role column. Guessing the
+   * other way would flash teacher controls at a student while the profile
+   * loads, and every one of those controls would then fail against RLS.
+   *
+   * Nothing here is a security boundary. These getters decide what is worth
+   * SHOWING; what may actually be read or written is decided by the policies
+   * in 009_roles_and_classes.sql, which the browser cannot talk its way past.
+   */
+  get role(): Role {
+    return this.profile?.role ?? 'student';
+  }
+
+  get isAdmin(): boolean {
+    return this.role === 'admin';
+  }
+
+  /** Admins are teachers everywhere in the app, as they are in the policies. */
+  get isTeacher(): boolean {
+    return this.role === 'teacher' || this.role === 'admin';
   }
 
   async refreshProfile() {

@@ -1,8 +1,17 @@
 <script lang="ts">
   import { base } from '$app/paths';
+  import { browser } from '$app/environment';
+  import { page } from '$app/state';
   import Rings from '$lib/components/Rings.svelte';
   import Icon from '$lib/components/Icon.svelte';
+  import { session } from '$lib/session.svelte';
   import { RING_COLORS, MODULE_THEMES } from '$lib/modules';
+
+  // Set by the app shell when it turns a signed-out visitor away, so this page
+  // can explain why they are here rather than leaving it a mystery. Read in the
+  // browser only: prerendering will not touch searchParams, and rightly — one
+  // prerendered file cannot vary by query string.
+  const wanted = $derived(browser ? page.url.searchParams.get('next') : null);
 
   // Illustrative values for the product shot, not anyone's data.
   const demo = [
@@ -32,10 +41,27 @@
     Every lesson, flashcard and question is tied to a specific objective in the CXC syllabus.
     You always know what you've covered, what's left, and what can come up.
   </p>
+  <!-- "Start studying" went to /today, which a signed-out visitor cannot open;
+       sending them round that loop is worse than asking them to sign in.
+       Browsing Mathematics still works for everybody, because subject and topic
+       pages are public — it is the lessons themselves that need an account. -->
   <div class="ctas">
-    <a class="btn" href="{base}/today">Start studying</a>
-    <a class="link" href="{base}/math">Browse Mathematics <Icon name="chevron" size={14} /></a>
+    {#if session.user}
+      <a class="btn" href="{base}/today">Start studying</a>
+      <a class="link" href="{base}/math">Browse Mathematics <Icon name="chevron" size={14} /></a>
+    {:else}
+      {@const q = wanted ? `?next=${encodeURIComponent(wanted)}` : ''}
+      <a class="btn" href="{base}/signup{q}">Create a free account</a>
+      <a class="link" href="{base}/math">Browse Mathematics <Icon name="chevron" size={14} /></a>
+    {/if}
   </div>
+
+  {#if wanted}
+    <p class="gate-note">
+      That page needs an account. Sign up or <a href="{base}/login?next={encodeURIComponent(wanted)}">sign
+      in</a> and we'll take you straight there.
+    </p>
+  {/if}
 
   <!-- The product shot: the actual Today summary, not a mock-up of one. -->
   <div class="shot" aria-hidden="true">
@@ -113,11 +139,24 @@
 
 <section class="closer wrap">
   <h2>Start today. It's free.</h2>
-  <p>No account needed to begin. Sign up when you want your progress on every device.</p>
-  <div class="ctas">
-    <a class="btn" href="{base}/today">Start studying</a>
-    <a class="link" href="{base}/signup">Create an account <Icon name="chevron" size={14} /></a>
-  </div>
+  {#if session.user}
+    <p>Your progress follows you to every device you sign in on.</p>
+    <div class="ctas">
+      <a class="btn" href="{base}/today">Start studying</a>
+      <a class="link" href="{base}/math">Browse Mathematics <Icon name="chevron" size={14} /></a>
+    </div>
+  {:else}
+    <!-- This used to read "No account needed to begin", which stopped being
+         true the moment the lessons went behind sign-in. -->
+    <p>
+      Browse any syllabus for free. Create an account to open the lessons, and your
+      progress follows you to every device.
+    </p>
+    <div class="ctas">
+      <a class="btn" href="{base}/signup">Create a free account</a>
+      <a class="link" href="{base}/login">Sign in <Icon name="chevron" size={14} /></a>
+    </div>
+  {/if}
 </section>
 
 <style>
@@ -144,6 +183,12 @@
     text-wrap: pretty;
   }
   .ctas { display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+  .gate-note {
+    margin: 1.1rem auto 0;
+    max-width: 34ch;
+    font-size: .92rem;
+    color: var(--text-secondary);
+  }
   .btn {
     padding: .8rem 1.5rem;
     border-radius: var(--r-pill);

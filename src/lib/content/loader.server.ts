@@ -86,13 +86,20 @@ export type Subject = {
   name: string;
   syllabusCode: string;
   effectiveFrom: string;
+  /** One clause about how this syllabus is organised, for the subject page. */
+  moduleNote: string | null;
+  /** Total Paper 01 items, used where a page quotes "x of y questions". */
+  p1Items: number;
   modules: Module[];
 };
 
 const FM = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?/;
 const OBJ_LINE = /^(\d{1,2}\.\d{1,2})\s+(\[\?\]\s*)?(\S.*)$/;
 
-let cache: Subject | null = null;
+// One entry per subject. A single shared slot used to ignore the code it was
+// asked for, so the second subject would have been served the first one's
+// content.
+const cache = new Map<string, Subject>();
 
 function readObjectives(
   dir: string, subject: string, moduleNo: number, slug: string
@@ -161,18 +168,45 @@ function readLessons(
   return lessons;
 }
 
+/**
+ * Subject codes that have content, most prominent first.
+ *
+ * The order decides which subject leads the sidebar and the phone tab bar, so
+ * it is declared in each syllabus.json rather than left to the folder names --
+ * alphabetically "it" sorts above "math", which is not the billing we want.
+ * A subject with no "order" goes to the back, still without needing code.
+ */
+export function listSubjects(): string[] {
+  return fs
+    .readdirSync(ROOT, { withFileTypes: true })
+    .filter((e) => e.isDirectory() && fs.existsSync(path.join(ROOT, e.name, 'syllabus.json')))
+    .map((e) => {
+      const spec = JSON.parse(fs.readFileSync(path.join(ROOT, e.name, 'syllabus.json'), 'utf8'));
+      return { code: e.name, order: typeof spec.order === 'number' ? spec.order : 99 };
+    })
+    .sort((a, b) => a.order - b.order || a.code.localeCompare(b.code))
+    .map((s) => s.code);
+}
+
+export function hasSubject(code: string): boolean {
+  return listSubjects().includes(code);
+}
+
 export function loadSubject(code = 'math'): Subject {
-  if (cache) return cache;
+  const hit = cache.get(code);
+  if (hit) return hit;
 
   const subjectDir = path.join(ROOT, code);
   const spec = JSON.parse(fs.readFileSync(path.join(subjectDir, 'syllabus.json'), 'utf8'));
   const objDir = path.join(subjectDir, 'objectives');
 
-  cache = {
+  const subject: Subject = {
     code: spec.subject,
     name: spec.name,
     syllabusCode: spec.syllabusCode,
     effectiveFrom: spec.effectiveFrom,
+    moduleNote: spec.moduleNote ?? null,
+    p1Items: spec.papers?.p1?.items ?? 0,
     modules: spec.modules.map((m: any) => ({
       number: m.number,
       title: m.title,
@@ -190,7 +224,8 @@ export function loadSubject(code = 'math'): Subject {
       }))
     }))
   };
-  return cache;
+  cache.set(code, subject);
+  return subject;
 }
 
 export function allTopics(subject: Subject): Topic[] {

@@ -1,13 +1,26 @@
 {
   "subject": "MATH",
   "name": "Mathematics",
+  "order": 1,
   "syllabusCode": "CXC 05/G/SYLL 16",
   "effectiveFrom": "May-June 2027",
+  "moduleNote": "each sat on its own and worth one credit",
   "note": "Structure and weightings from the assessment grid of the October 2025 amendment. Migration 007_seed_math_structure.sql must agree with this file; backend/tools/check_syllabus.mjs asserts it.",
   "papers": {
-    "p1": { "items": 60, "perModule": 20, "minutes": 90 },
-    "p2": { "marks": 90, "perModule": 30, "minutes": 150 },
-    "sba": { "paper": "031", "percentOfTotal": 30 }
+    "p1": {
+      "items": 60,
+      "perModule": 20,
+      "minutes": 90
+    },
+    "p2": {
+      "marks": 90,
+      "perModule": 30,
+      "minutes": 150
+    },
+    "sba": {
+      "paper": "031",
+      "percentOfTotal": 30
+    }
   },
   "modules": [
     {
@@ -16,12 +29,54 @@
       "creditWeighting": 1,
       "minHours": 65,
       "topics": [
-        { "number": 1, "title": "Number Theory and Computation", "slug": "number-theory-computation", "mcqCount": 4, "p2Marks": null, "p2Group": "CA + NTC (9 marks)" },
-        { "number": 2, "title": "Consumer Arithmetic", "slug": "consumer-arithmetic", "mcqCount": 4, "p2Marks": null, "p2Group": "CA + NTC (9 marks)" },
-        { "number": 3, "title": "Sets", "slug": "sets", "mcqCount": 3, "p2Marks": null, "p2Group": "Graphs, Sets, Measurement, Algebra 1 (12 marks)" },
-        { "number": 4, "title": "Measurement", "slug": "measurement", "mcqCount": 4, "p2Marks": null, "p2Group": "Graphs, Sets, Measurement, Algebra 1 (12 marks)" },
-        { "number": 5, "title": "Algebra 1", "slug": "algebra-1", "mcqCount": 3, "p2Marks": null, "p2Group": "Graphs, Sets, Measurement, Algebra 1 (12 marks)" },
-        { "number": 6, "title": "Introduction to Graphs", "slug": "introduction-to-graphs", "mcqCount": 2, "p2Marks": null, "p2Group": "Graphs, Sets, Measurement, Algebra 1 (12 marks)" }
+        {
+          "number": 1,
+          "title": "Number Theory and Computation",
+          "slug": "number-theory-computation",
+          "mcqCount": 4,
+          "p2Marks": null,
+          "p2Group": "CA + NTC (9 marks)"
+        },
+        {
+          "number": 2,
+          "title": "Consumer Arithmetic",
+          "slug": "consumer-arithmetic",
+          "mcqCount": 4,
+          "p2Marks": null,
+          "p2Group": "CA + NTC (9 marks)"
+        },
+        {
+          "number": 3,
+          "title": "Sets",
+          "slug": "sets",
+          "mcqCount": 3,
+          "p2Marks": null,
+          "p2Group": "Graphs, Sets, Measurement, Algebra 1 (12 marks)"
+        },
+        {
+          "number": 4,
+          "title": "Measurement",
+          "slug": "measurement",
+          "mcqCount": 4,
+          "p2Marks": null,
+          "p2Group": "Graphs, Sets, Measurement, Algebra 1 (12 marks)"
+        },
+        {
+          "number": 5,
+          "title": "Algebra 1",
+          "slug": "algebra-1",
+          "mcqCount": 3,
+          "p2Marks": null,
+          "p2Group": "Graphs, Sets, Measurement, Algebra 1 (12 marks)"
+        },
+        {
+          "number": 6,
+          "title": "Introduction to Graphs",
+          "slug": "introduction-to-graphs",
+          "mcqCount": 2,
+          "p2Marks": null,
+          "p2Group": "Graphs, Sets, Measurement, Algebra 1 (12 marks)"
+        }
       ]
     },
     {
@@ -30,11 +85,46 @@
       "creditWeighting": 1,
       "minHours": 65,
       "topics": [
-        { "number": 1, "title": "Statistics 1", "slug": "statistics-1", "mcqCount": 4, "p2Marks": 6, "p2Group": null },
-        { "number": 2, "title": "Algebra 2", "slug": "algebra-2", "mcqCount": 4, "p2Marks": null, "p2Group": "Algebra 2 + RFG 1 (12 marks)" },
-        { "number": 3, "title": "Relations, Functions and Graphs 1", "slug": "relations-functions-graphs-1", "mcqCount": 4, "p2Marks": null, "p2Group": "Algebra 2 + RFG 1 (12 marks)" },
-        { "number": 4, "title": "Geometry and Trigonometry 1", "slug": "geometry-trigonometry-1", "mcqCount": 4, "p2Marks": 9, "p2Group": null },
-        { "number": 5, "title": "Vectors and Matrices 1", "slug": "vectors-matrices-1", "mcqCount": 4, "p2Marks": 3, "p2Group": null }
+        {
+          "number": 1,
+          "title": "Statistics 1",
+          "slug": "statistics-1",
+          "mcqCount": 4,
+          "p2Marks": 6,
+          "p2Group": null
+        },
+        {
+          "number": 2,
+          "title": "Algebra 2",
+          "slug": "algebra-2",
+          "mcqCount": 4,
+          "p2Marks": null,
+          "p2Group": "Algebra 2 + RFG 1 (12 marks)"
+        },
+        {
+          "number": 3,
+          "title": "Relations, Functions and Graphs 1",
+          "slug": "relations-functions-graphs-1",
+          "mcqCount": 4,
+          "p2Marks": null,
+          "p2Group": "Algebra 2 + RFG 1 (12 marks)"
+        },
+        {
+          "number": 4,
+          "title": "Geometry and Trigonometry 1",
+          "slug": "geometry-trigonometry-1",
+          "mcqCount": 4,
+          "p2Marks": 9,
+          "p2Group": null
+        },
+        {
+          "number": 5,
+          "title": "Vectors and Matrices 1",
+          "slug": "vectors-matrices-1",
+          "mcqCount": 4,
+          "p2Marks": 3,
+          "p2Group": null
+        }
       ]
     },
     {
@@ -43,10 +133,38 @@
       "creditWeighting": 1,
       "minHours": 65,
       "topics": [
-        { "number": 1, "title": "Statistics 2", "slug": "statistics-2", "mcqCount": 4, "p2Marks": 6, "p2Group": null },
-        { "number": 2, "title": "Relations, Functions and Graphs 2", "slug": "relations-functions-graphs-2", "mcqCount": 6, "p2Marks": 6, "p2Group": null },
-        { "number": 3, "title": "Geometry and Trigonometry 2", "slug": "geometry-trigonometry-2", "mcqCount": 6, "p2Marks": 9, "p2Group": null },
-        { "number": 4, "title": "Vectors and Matrices 2", "slug": "vectors-matrices-2", "mcqCount": 4, "p2Marks": 9, "p2Group": null }
+        {
+          "number": 1,
+          "title": "Statistics 2",
+          "slug": "statistics-2",
+          "mcqCount": 4,
+          "p2Marks": 6,
+          "p2Group": null
+        },
+        {
+          "number": 2,
+          "title": "Relations, Functions and Graphs 2",
+          "slug": "relations-functions-graphs-2",
+          "mcqCount": 6,
+          "p2Marks": 6,
+          "p2Group": null
+        },
+        {
+          "number": 3,
+          "title": "Geometry and Trigonometry 2",
+          "slug": "geometry-trigonometry-2",
+          "mcqCount": 6,
+          "p2Marks": 9,
+          "p2Group": null
+        },
+        {
+          "number": 4,
+          "title": "Vectors and Matrices 2",
+          "slug": "vectors-matrices-2",
+          "mcqCount": 4,
+          "p2Marks": 9,
+          "p2Group": null
+        }
       ]
     }
   ]

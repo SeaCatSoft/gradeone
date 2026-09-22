@@ -1,26 +1,136 @@
 <script lang="ts">
   import { base } from '$app/paths';
   import { page } from '$app/state';
+  import { goto } from '$app/navigation';
   import Icon, { type IconName } from '$lib/components/Icon.svelte';
   import Rings from '$lib/components/Rings.svelte';
   import { session } from '$lib/session.svelte';
   import { stats } from '$lib/stats.svelte';
   import { theme } from '$lib/theme.svelte';
   import { RING_COLORS } from '$lib/modules';
+  import { myEnrolledSubjectCodes } from '$lib/classes';
 
-  let { children } = $props();
+  let { children, data } = $props();
+
+  /**
+   * WHICH PAGES A VISITOR WITHOUT AN ACCOUNT MAY SEE.
+   *
+   * The shop window is open; the classroom is not. Subject and topic pages
+   * list what a syllabus covers — the objectives, the lesson titles — and that
+   * is exactly what somebody searching "CSEC sets objectives" should find.
+   * Reading an actual lesson, drilling flashcards, sitting practice, and
+   * anything to do with an account or a class, all need one.
+   *
+   * Matched on route id rather than URL, so it cannot be fooled by a path that
+   * happens to look like another, and so adding a route makes a deliberate
+   * decision rather than silently inheriting one. The default is closed.
+   */
+  const PUBLIC_ROUTES = new Set([
+    '/(app)/[subject]',
+    '/(app)/[subject]/[topic]'
+  ]);
+
+  const isPublic = $derived(PUBLIC_ROUTES.has(page.route.id ?? ''));
+
+  /**
+   * WHAT THIS GATE IS AND IS NOT
+   *
+   * It is a gate in the interface. It is NOT access control, and must not be
+   * sold as it. There is no server here to ask "who are you?" before sending
+   * bytes — the site is static files on a CDN. Holding the lesson back does
+   * keep its prose out of the prerendered HTML, but SvelteKit also writes each
+   * page's load data to a sibling __data.json, and that file still carries the
+   * lesson for anyone who knows the convention.
+   *
+   * Closing that needs the lesson bodies out of the static build altogether:
+   * into the database behind RLS, or onto a host that runs code per request.
+   * Neither is a setting, and neither is done here.
+   */
+  const gated = $derived(
+    session.available && session.ready && !session.user && !isPublic
+  );
+
+  $effect(() => {
+    if (!gated) return;
+    // Remember where they were headed, so signing in finishes the journey
+    // rather than dumping them on the dashboard.
+    const dest = page.url.pathname.slice(base.length) || '/today';
+    void goto(`${base}/?next=${encodeURIComponent(dest)}`, { replaceState: true });
+  });
+
+  /**
+   * Hold the chrome back until we know who this is — but only on a gated page.
+   *
+   * On a public page this must stay false, and that is the whole point of the
+   * selective gate: holding would leave the prerendered HTML saying "One
+   * moment" instead of listing the topic's objectives, and a search engine
+   * would index the holding state. The pages meant to be found have to render
+   * at build time, session or no session.
+   */
+  const checking = $derived(session.available && !session.ready && !isPublic);
+
+  // Subjects the signed-in student is registered for. Empty means "not
+  // registered for anything", which shows all of them: someone studying alone
+  // must still be able to reach the content, and the registration list only
+  // narrows the shell once it has something in it.
+  let enrolled = $state<string[]>([]);
+  let enrolledFor = $state<string | null>(null);
+
+  $effect(() => {
+    const id = session.user?.id ?? null;
+    if (!session.ready || id === enrolledFor) return;
+    enrolledFor = id;
+    if (!id) { enrolled = []; return; }
+    void myEnrolledSubjectCodes().then((codes) => { enrolled = codes; });
+  });
+
+  // Colours for the subject dots, keyed by subject code. A subject with no
+  // entry here still shows, in the neutral brand colour.
+  const DOT: Record<string, string> = { math: '#30b862', it: '#0a84ff', edpm: '#ff8a00' };
+
+  // Subjects that exist but have no lessons yet are listed, not linked: a
+  // student should see the platform growing into their other subjects.
+  const SOON = ['Information Technology', 'EDPM'];
+
+  // The tab bar has room for a word, not a subject's full name.
+  const SHORT: Record<string, string> = { math: 'Maths', it: 'IT', edpm: 'EDPM' };
 
   type Item = { href: string; label: string; icon: IconName; match: (p: string) => boolean };
 
   const path = $derived(page.url.pathname.slice(base.length) || '/');
 
-  // Named for what is inside, not "Home": Today is today's work, Mathematics is
-  // the syllabus. Specific labels are predictable ones.
-  const items: Item[] = [
+  // Named for what is inside, not "Home": Today is today's work, and each
+  // subject stands for its syllabus. Specific labels are predictable ones.
+  const allReady = $derived(data.subjects.filter((s) => s.ready));
+
+  // What this account is registered for, or everything if it is registered for
+  // nothing. This is presentation only: lesson pages are prerendered static
+  // HTML and stay reachable by URL. What a class actually protects is the
+  // student's DATA, and that is enforced by RLS, not here.
+  const ready = $derived(
+    enrolled.length ? allReady.filter((s) => enrolled.includes(s.code)) : allReady
+  );
+
+  // Every ready subject gets a tab. The phone has no sidebar, so a subject
+  // left out here is reachable only through Today.
+  const items: Item[] = $derived([
     { href: '/today', label: 'Today', icon: 'today', match: (p) => p.startsWith('/today') },
-    { href: '/math', label: 'Mathematics', icon: 'book', match: (p) => p.startsWith('/math') },
+    ...ready.map((s) => ({
+      href: `/${s.code}`,
+      label: s.name,
+      icon: 'book' as IconName,
+      match: (p: string) => p.startsWith(`/${s.code}`)
+    })),
+    { href: '/classes', label: 'Classes', icon: 'grid', match: (p) => p.startsWith('/classes') },
     { href: '/account', label: 'Account', icon: 'person', match: (p) => p.startsWith('/account') }
-  ];
+  ]);
+
+  // The desktop sidebar lists subjects in their own section below, so its top
+  // nav carries only the destinations that are not a subject. Account lives in
+  // the sidebar foot, next to the avatar.
+  const sideItems: Item[] = $derived(
+    items.filter((i) => i.href === '/today' || i.href === '/classes')
+  );
 
   const miniRings = $derived([
     { value: stats.rings.learn, ...RING_COLORS.learn, label: 'Learn' },
@@ -29,6 +139,13 @@
   ]);
 </script>
 
+{#if checking || gated}
+  <!-- Deliberately bare. Rendering the shell here would show the navigation,
+       the streak and the subject list to somebody on their way out. -->
+  <div class="holding">
+    <p class="muted">{gated ? 'Taking you to the sign-in page…' : 'One moment…'}</p>
+  </div>
+{:else}
 <div class="shell">
   <!-- Desktop: a floating glass sidebar, inset from the window edges. -->
   <aside class="sidebar glass" aria-label="Main">
@@ -38,7 +155,7 @@
     </a>
 
     <nav class="side-nav">
-      {#each items.slice(0, 2) as it}
+      {#each sideItems as it}
         <a href="{base}{it.href}" class:active={it.match(path)} aria-current={it.match(path) ? 'page' : undefined}>
           <Icon name={it.icon} size={19} />
           <span>{it.label}</span>
@@ -48,13 +165,16 @@
 
     <p class="side-label">Subjects</p>
     <nav class="side-nav subjects">
-      <a href="{base}/math" class:active={path.startsWith('/math')}>
-        <span class="dot" style="background:#30b862"></span><span>Mathematics</span>
-      </a>
-      <!-- Shown, not hidden: a student should see the platform is growing into
-           their other subjects. Disabled rather than linking to an empty page. -->
-      <span class="soon"><span class="dot" style="background:#0a84ff"></span>Information Technology<em>Soon</em></span>
-      <span class="soon"><span class="dot" style="background:#ff8a00"></span>EDPM<em>Soon</em></span>
+      {#each ready as s}
+        <a href="{base}/{s.code}" class:active={path.startsWith(`/${s.code}`)}>
+          <span class="dot" style="background:{DOT[s.code] ?? 'var(--brand)'}"></span><span>{s.name}</span>
+        </a>
+      {/each}
+      {#each SOON as name}
+        {#if !ready.some((s) => s.name === name)}
+          <span class="soon"><span class="dot" style="background:{name === 'EDPM' ? DOT.edpm : DOT.it}"></span>{name}<em>Soon</em></span>
+        {/if}
+      {/each}
     </nav>
 
     <div class="side-foot">
@@ -99,13 +219,21 @@
     {#each items as it}
       <a href="{base}{it.href}" class:active={it.match(path)} aria-current={it.match(path) ? 'page' : undefined}>
         <Icon name={it.icon} size={22} />
-        <span>{it.label === 'Mathematics' ? 'Maths' : it.label}</span>
+        <span>{SHORT[it.href.slice(1)] ?? it.label}</span>
       </a>
     {/each}
   </nav>
 </div>
+{/if}
 
 <style>
+  .holding {
+    min-height: 60vh;
+    display: grid;
+    place-items: center;
+    padding: 2rem;
+  }
+
   .content {
     max-width: 1040px;
     margin: 0 auto;

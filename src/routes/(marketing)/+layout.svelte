@@ -14,9 +14,12 @@
       <span class="mark"><Icon name="sparkle" size={13} /></span>
       Grade One
     </a>
+    <!-- Subject pages are public: they list what the syllabus covers, which is
+         what somebody searching for it should find. The lessons behind them
+         are not. -->
     <nav>
       <a href="{base}/math">Mathematics</a>
-      <span class="off">IT</span>
+      <a href="{base}/it">IT</a>
       <span class="off">EDPM</span>
     </nav>
     <div class="right">

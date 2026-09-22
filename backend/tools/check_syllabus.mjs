@@ -12,12 +12,32 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const SQL = 'backend/migrations/007_seed_math_structure.sql';
-const JSON_ = 'content/math/syllabus.json';
-const OBJ_DIR = 'content/math/objectives';
+const CONTENT = 'content';
+const MIGRATIONS = 'backend/migrations';
 
 const problems = [];
-const fail = (m) => problems.push(m);
+const summaries = [];
+
+// Every subject folder with a syllabus.json is checked against the migration
+// that seeds it, named <nnn>_seed_<code>_structure.sql.
+const subjects = fs
+  .readdirSync(CONTENT, { withFileTypes: true })
+  .filter((e) => e.isDirectory() && fs.existsSync(path.join(CONTENT, e.name, 'syllabus.json')))
+  .map((e) => e.name);
+
+for (const code of subjects) checkSubject(code);
+
+function checkSubject(code) {
+const fail = (m) => problems.push('[' + code + '] ' + m);
+
+const JSON_ = path.join(CONTENT, code, 'syllabus.json');
+const OBJ_DIR = path.join(CONTENT, code, 'objectives');
+const seed = fs.readdirSync(MIGRATIONS).find((f) => f.endsWith('_seed_' + code + '_structure.sql'));
+if (!seed) {
+  fail('No migration seeds this subject (expected ' + MIGRATIONS + '/<nnn>_seed_' + code + '_structure.sql).');
+  return;
+}
+const SQL = path.join(MIGRATIONS, seed);
 
 const spec = JSON.parse(fs.readFileSync(JSON_, 'utf8'));
 const sql = fs.readFileSync(SQL, 'utf8');
@@ -46,7 +66,7 @@ for (const [slug, t] of jsonTopics) {
   }
   if (s.mcq !== t.mcqCount) {
     fail('Topic "' + slug + '" has mcqCount ' + t.mcqCount +
-         ' in syllabus.json but ' + s.mcq + ' in 007.');
+         ' in syllabus.json but ' + s.mcq + ' in ' + seed + '.');
   }
   if (s.title !== t.title) {
     fail('Topic "' + slug + '" is titled "' + t.title + '" in syllabus.json but "' +
@@ -77,12 +97,20 @@ let grand = 0;
 for (const mod of spec.modules) {
   const total = mod.topics.reduce((a, t) => a + t.mcqCount, 0);
   grand += total;
-  if (total !== spec.papers.p1.perModule) {
-    fail('Module ' + mod.number + ' MCQs total ' + total + ', expected ' + spec.papers.p1.perModule + '.');
+  // perModule is a single number when every module carries the same count
+  // (Mathematics), or a map keyed by module number when they differ (IT).
+  const pm = spec.papers.p1.perModule;
+  const expected = typeof pm === 'object' ? pm[String(mod.number)] : pm;
+  if (total !== expected) {
+    fail('Module ' + mod.number + ' MCQs total ' + total + ', expected ' + expected + '.');
   }
 }
 if (grand !== spec.papers.p1.items) {
   fail('Paper 01 totals ' + grand + ' items, expected ' + spec.papers.p1.items + '.');
+}
+
+summaries.push('  ' + code + ': ' + jsonTopics.size + ' topics, ' + grand +
+               ' Paper 01 items across ' + spec.modules.length + ' modules.');
 }
 
 if (problems.length) {
@@ -92,6 +120,5 @@ if (problems.length) {
   process.exit(1);
 }
 
-console.log('Syllabus structure agrees across 007, syllabus.json and the objective files.');
-console.log('  ' + jsonTopics.size + ' topics, ' + grand + ' Paper 01 items, ' +
-            spec.papers.p1.perModule + ' per module.');
+console.log('Syllabus structure agrees for ' + subjects.length + ' subject(s).');
+for (const line of summaries) console.log(line);
