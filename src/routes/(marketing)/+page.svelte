@@ -41,9 +41,10 @@
     Every lesson, flashcard and question is tied to a specific objective in the CXC syllabus.
     You always know what you've covered, what's left, and what can come up.
   </p>
-  <!-- These pointed at /today and /math, which now bounce a signed-out visitor
-       straight back here. Sending someone round that loop is worse than asking
-       them to sign in. A signed-in visitor still goes where they expect. -->
+  <!-- "Start studying" went to /today, which a signed-out visitor cannot open;
+       sending them round that loop is worse than asking them to sign in.
+       Browsing Mathematics still works for everybody, because subject and topic
+       pages are public — it is the lessons themselves that need an account. -->
   <div class="ctas">
     {#if session.user}
       <a class="btn" href="{base}/today">Start studying</a>
@@ -51,14 +52,14 @@
     {:else}
       {@const q = wanted ? `?next=${encodeURIComponent(wanted)}` : ''}
       <a class="btn" href="{base}/signup{q}">Create a free account</a>
-      <a class="link" href="{base}/login{q}">Sign in <Icon name="chevron" size={14} /></a>
+      <a class="link" href="{base}/math">Browse Mathematics <Icon name="chevron" size={14} /></a>
     {/if}
   </div>
 
   {#if wanted}
     <p class="gate-note">
-      That page is for members. Create an account or sign in and we'll take you
-      straight there.
+      That page needs an account. Sign up or <a href="{base}/login?next={encodeURIComponent(wanted)}">sign
+      in</a> and we'll take you straight there.
     </p>
   {/if}
 
@@ -147,7 +148,10 @@
   {:else}
     <!-- This used to read "No account needed to begin", which stopped being
          true the moment the lessons went behind sign-in. -->
-    <p>Create an account to open the lessons, and your progress follows you to every device.</p>
+    <p>
+      Browse any syllabus for free. Create an account to open the lessons, and your
+      progress follows you to every device.
+    </p>
     <div class="ctas">
       <a class="btn" href="{base}/signup">Create a free account</a>
       <a class="link" href="{base}/login">Sign in <Icon name="chevron" size={14} /></a>

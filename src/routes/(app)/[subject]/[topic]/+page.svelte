@@ -5,6 +5,7 @@
   import Icon from '$lib/components/Icon.svelte';
   import { load as loadProgress, topicMastery, dueCount, type Progress } from '$lib/progress';
   import { themeVars } from '$lib/modules';
+  import { session } from '$lib/session.svelte';
 
   let { data } = $props();
 
@@ -81,6 +82,23 @@
       <h2>Lessons</h2>
       <span class="small muted">{readCount} of {data.lessons.length} read</span>
     </div>
+
+    <!-- This page is public so the syllabus can be found; the lessons are not.
+         Saying so here beats letting somebody click a lesson and get bounced to
+         the landing page wondering what they did wrong. Rendered only once the
+         session is known, so the prerendered HTML a crawler sees is the page
+         itself rather than a sign-in prompt. -->
+    {#if session.available && session.ready && !session.user}
+      <p class="locked">
+        <Icon name="lock" size={14} />
+        <span>
+          Reading a lesson needs a free account.
+          <a href="{base}/signup?next={encodeURIComponent(`/${data.subject}/${data.topic.slug}`)}">Create
+          one</a> or <a href="{base}/login?next={encodeURIComponent(`/${data.subject}/${data.topic.slug}`)}">sign
+          in</a> — the objectives above are free to browse.
+        </span>
+      </p>
+    {/if}
     <ol class="list">
       {#each data.lessons as lesson, i}
         {@const done = read(lesson.slug)}
@@ -130,6 +148,20 @@
 </div>
 
 <style>
+  .locked {
+    display: flex;
+    align-items: flex-start;
+    gap: .55rem;
+    margin: 0 0 .9rem;
+    padding: .75rem .9rem;
+    border-radius: 12px;
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    font-size: .92rem;
+    color: var(--text-secondary);
+  }
+  .locked :global(svg) { flex: none; margin-top: .15rem; }
+
   .back-link {
     display: inline-flex;
     align-items: center;

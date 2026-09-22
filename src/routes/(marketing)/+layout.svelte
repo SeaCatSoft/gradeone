@@ -14,18 +14,12 @@
       <span class="mark"><Icon name="sparkle" size={13} /></span>
       Grade One
     </a>
-    <!-- Mathematics is a link only for somebody who can actually open it.
-         Signed out it would bounce straight back here, and a nav item that
-         returns you to the page you are on reads as a broken site rather than
-         as a locked door. -->
+    <!-- Subject pages are public: they list what the syllabus covers, which is
+         what somebody searching for it should find. The lessons behind them
+         are not. -->
     <nav>
-      {#if session.ready && session.user}
-        <a href="{base}/math">Mathematics</a>
-        <a href="{base}/it">IT</a>
-      {:else}
-        <span class="off">Mathematics</span>
-        <span class="off">IT</span>
-      {/if}
+      <a href="{base}/math">Mathematics</a>
+      <a href="{base}/it">IT</a>
       <span class="off">EDPM</span>
     </nav>
     <div class="right">

@@ -13,27 +13,42 @@
   let { children, data } = $props();
 
   /**
-   * Everything under (app) is for people with an account. A visitor without one
-   * is sent to the landing page.
+   * WHICH PAGES A VISITOR WITHOUT AN ACCOUNT MAY SEE.
    *
-   * WHAT THIS IS AND IS NOT
+   * The shop window is open; the classroom is not. Subject and topic pages
+   * list what a syllabus covers — the objectives, the lesson titles — and that
+   * is exactly what somebody searching "CSEC sets objectives" should find.
+   * Reading an actual lesson, drilling flashcards, sitting practice, and
+   * anything to do with an account or a class, all need one.
    *
-   * It is a gate in the interface. It is NOT access control, and it must not be
-   * mistaken for it. Every lesson is prerendered to a static HTML file served by
-   * GitHub Pages, so the words are in the file before any JavaScript runs:
-   * `curl` the URL, or view source, or turn JavaScript off, and the lesson is
-   * right there. No amount of client-side code changes that, because there is no
-   * server in this architecture to ask "who are you?" before sending bytes.
-   *
-   * Genuinely restricting content needs one of two things: a host that can run
-   * code on request (an edge function), or the lesson bodies moved into the
-   * database behind RLS so they are fetched rather than baked in. Both are real
-   * pieces of work, and neither is a setting.
-   *
-   * What this DOES do is make the product's intent unambiguous to every ordinary
-   * visitor, which is what was asked for.
+   * Matched on route id rather than URL, so it cannot be fooled by a path that
+   * happens to look like another, and so adding a route makes a deliberate
+   * decision rather than silently inheriting one. The default is closed.
    */
-  const gated = $derived(session.available && session.ready && !session.user);
+  const PUBLIC_ROUTES = new Set([
+    '/(app)/[subject]',
+    '/(app)/[subject]/[topic]'
+  ]);
+
+  const isPublic = $derived(PUBLIC_ROUTES.has(page.route.id ?? ''));
+
+  /**
+   * WHAT THIS GATE IS AND IS NOT
+   *
+   * It is a gate in the interface. It is NOT access control, and must not be
+   * sold as it. There is no server here to ask "who are you?" before sending
+   * bytes — the site is static files on a CDN. Holding the lesson back does
+   * keep its prose out of the prerendered HTML, but SvelteKit also writes each
+   * page's load data to a sibling __data.json, and that file still carries the
+   * lesson for anyone who knows the convention.
+   *
+   * Closing that needs the lesson bodies out of the static build altogether:
+   * into the database behind RLS, or onto a host that runs code per request.
+   * Neither is a setting, and neither is done here.
+   */
+  const gated = $derived(
+    session.available && session.ready && !session.user && !isPublic
+  );
 
   $effect(() => {
     if (!gated) return;
@@ -44,13 +59,15 @@
   });
 
   /**
-   * Hold the chrome back until we know who this is.
+   * Hold the chrome back until we know who this is — but only on a gated page.
    *
-   * Without this the sidebar and the page render for a moment before the
-   * redirect fires, which both looks broken and shows a flash of the thing we
-   * were asked not to show.
+   * On a public page this must stay false, and that is the whole point of the
+   * selective gate: holding would leave the prerendered HTML saying "One
+   * moment" instead of listing the topic's objectives, and a search engine
+   * would index the holding state. The pages meant to be found have to render
+   * at build time, session or no session.
    */
-  const checking = $derived(session.available && !session.ready);
+  const checking = $derived(session.available && !session.ready && !isPublic);
 
   // Subjects the signed-in student is registered for. Empty means "not
   // registered for anything", which shows all of them: someone studying alone
