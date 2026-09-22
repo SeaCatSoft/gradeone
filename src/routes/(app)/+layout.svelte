@@ -1,6 +1,7 @@
 <script lang="ts">
   import { base } from '$app/paths';
   import { page } from '$app/state';
+  import { goto } from '$app/navigation';
   import Icon, { type IconName } from '$lib/components/Icon.svelte';
   import Rings from '$lib/components/Rings.svelte';
   import { session } from '$lib/session.svelte';
@@ -10,6 +11,46 @@
   import { myEnrolledSubjectCodes } from '$lib/classes';
 
   let { children, data } = $props();
+
+  /**
+   * Everything under (app) is for people with an account. A visitor without one
+   * is sent to the landing page.
+   *
+   * WHAT THIS IS AND IS NOT
+   *
+   * It is a gate in the interface. It is NOT access control, and it must not be
+   * mistaken for it. Every lesson is prerendered to a static HTML file served by
+   * GitHub Pages, so the words are in the file before any JavaScript runs:
+   * `curl` the URL, or view source, or turn JavaScript off, and the lesson is
+   * right there. No amount of client-side code changes that, because there is no
+   * server in this architecture to ask "who are you?" before sending bytes.
+   *
+   * Genuinely restricting content needs one of two things: a host that can run
+   * code on request (an edge function), or the lesson bodies moved into the
+   * database behind RLS so they are fetched rather than baked in. Both are real
+   * pieces of work, and neither is a setting.
+   *
+   * What this DOES do is make the product's intent unambiguous to every ordinary
+   * visitor, which is what was asked for.
+   */
+  const gated = $derived(session.available && session.ready && !session.user);
+
+  $effect(() => {
+    if (!gated) return;
+    // Remember where they were headed, so signing in finishes the journey
+    // rather than dumping them on the dashboard.
+    const dest = page.url.pathname.slice(base.length) || '/today';
+    void goto(`${base}/?next=${encodeURIComponent(dest)}`, { replaceState: true });
+  });
+
+  /**
+   * Hold the chrome back until we know who this is.
+   *
+   * Without this the sidebar and the page render for a moment before the
+   * redirect fires, which both looks broken and shows a flash of the thing we
+   * were asked not to show.
+   */
+  const checking = $derived(session.available && !session.ready);
 
   // Subjects the signed-in student is registered for. Empty means "not
   // registered for anything", which shows all of them: someone studying alone
@@ -81,6 +122,13 @@
   ]);
 </script>
 
+{#if checking || gated}
+  <!-- Deliberately bare. Rendering the shell here would show the navigation,
+       the streak and the subject list to somebody on their way out. -->
+  <div class="holding">
+    <p class="muted">{gated ? 'Taking you to the sign-in page…' : 'One moment…'}</p>
+  </div>
+{:else}
 <div class="shell">
   <!-- Desktop: a floating glass sidebar, inset from the window edges. -->
   <aside class="sidebar glass" aria-label="Main">
@@ -159,8 +207,16 @@
     {/each}
   </nav>
 </div>
+{/if}
 
 <style>
+  .holding {
+    min-height: 60vh;
+    display: grid;
+    place-items: center;
+    padding: 2rem;
+  }
+
   .content {
     max-width: 1040px;
     margin: 0 auto;

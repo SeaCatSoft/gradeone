@@ -14,9 +14,18 @@
       <span class="mark"><Icon name="sparkle" size={13} /></span>
       Grade One
     </a>
+    <!-- Mathematics is a link only for somebody who can actually open it.
+         Signed out it would bounce straight back here, and a nav item that
+         returns you to the page you are on reads as a broken site rather than
+         as a locked door. -->
     <nav>
-      <a href="{base}/math">Mathematics</a>
-      <span class="off">IT</span>
+      {#if session.ready && session.user}
+        <a href="{base}/math">Mathematics</a>
+        <a href="{base}/it">IT</a>
+      {:else}
+        <span class="off">Mathematics</span>
+        <span class="off">IT</span>
+      {/if}
       <span class="off">EDPM</span>
     </nav>
     <div class="right">

@@ -1,6 +1,8 @@
 <script lang="ts">
   import { base } from '$app/paths';
   import { goto } from '$app/navigation';
+  import { browser } from '$app/environment';
+  import { page } from '$app/state';
   import { supabase, isConfigured, friendlyError } from '$lib/supabase';
   import { syncOnSignIn } from '$lib/sync';
 
@@ -41,7 +43,7 @@
     // swapping it — this is the moment they are most likely to notice.
     const outcome = await syncOnSignIn(data.user.id);
     if (outcome === 'uploaded') notice = 'Your progress from this browser was saved to your account.';
-    await goto(`${base}/math`);
+    await goto(afterAuth());
   }
 
   async function resetPassword() {
@@ -58,6 +60,21 @@
     if (err) error = friendlyError(err.message);
     else { sentReset = true; error = null; }
   }
+  /**
+   * Where to go once signed in.
+   *
+   * The app shell puts ?next= on the landing page when it turns someone away,
+   * and that is carried through to here, so a visitor who asked for a lesson
+   * lands on that lesson rather than being dropped on a dashboard and left to
+   * find it again. Anything that is not a path on this site is ignored: an
+   * open redirect is a real vulnerability, not a tidiness point.
+   */
+  function afterAuth(): string {
+    const next = browser ? page.url.searchParams.get('next') : null;
+    if (next && next.startsWith('/') && !next.startsWith('//')) return `${base}${next}`;
+    return `${base}/today`;
+  }
+
 </script>
 
 <svelte:head>
