@@ -92,10 +92,10 @@
       <p class="locked">
         <Icon name="lock" size={14} />
         <span>
-          Reading a lesson needs a free account.
+          Lessons, flashcards and practice need a free account.
           <a href="{base}/signup?next={encodeURIComponent(`/${data.subject}/${data.topic.slug}`)}">Create
           one</a> or <a href="{base}/login?next={encodeURIComponent(`/${data.subject}/${data.topic.slug}`)}">sign
-          in</a> — the objectives above are free to browse.
+          in</a> — the syllabus and objectives on this page are free to browse.
         </span>
       </p>
     {/if}
