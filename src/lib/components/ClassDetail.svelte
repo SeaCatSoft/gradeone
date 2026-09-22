@@ -14,9 +14,13 @@
   import { base } from '$app/paths';
   import { session } from '$lib/session.svelte';
   import Icon from '$lib/components/Icon.svelte';
+  import AssignmentEditor from '$lib/components/AssignmentEditor.svelte';
+  import AssignmentPlayer from '$lib/components/AssignmentPlayer.svelte';
+  import AssignmentResults from '$lib/components/AssignmentResults.svelte';
   import {
     roster, removeStudent, renameClass, archiveClass,
-    type ClassRow, type RosterEntry
+    listAssignments, createAssignment, mySubmission,
+    type ClassRow, type RosterEntry, type Assignment, type Submission
   } from '$lib/classes';
 
   let { info, mine, onchanged }: {
@@ -32,15 +36,64 @@
   let draftName = $state('');
   let loadedFor = $state<number | null>(null);
 
+  // Which of the four screens this class shows. Kept in component state rather
+  // than the URL: it is a step inside one class, and a teacher who reloads
+  // mid-edit is better off back at the class than at a stale editor.
+  let view = $state<'class' | 'edit' | 'take' | 'results'>('class');
+  let active = $state<Assignment | null>(null);
+
+  let work = $state<Assignment[]>([]);
+  /** A student's own result per assignment, so the list can say "done". */
+  let done = $state<Record<number, Submission | null>>({});
+  let busy = $state(false);
+
   $effect(() => {
     const cid = info.id;
     if (cid === loadedFor) return;
     loadedFor = cid;
+    void load(cid);
+  });
+
+  async function load(cid: number) {
+    loaded = false;
     // Only a teacher gets a roster. For a student the policy returns their own
     // row at most, which would be a misleading thing to present as "the class".
-    if (!mine) { people = []; loaded = true; return; }
-    void roster(cid).then((r) => { people = r; loaded = true; });
-  });
+    const [r, a] = await Promise.all([
+      mine ? roster(cid) : Promise.resolve([]),
+      listAssignments(cid)
+    ]);
+    people = r;
+    work = a;
+    // A student's own results, one lookup per assignment. Small lists, and the
+    // alternative is a view the policies would have to be widened for.
+    if (!mine) {
+      const pairs = await Promise.all(a.map(async (x) => [x.id, await mySubmission(x.id)] as const));
+      done = Object.fromEntries(pairs);
+    }
+    loaded = true;
+  }
+
+  async function addAssignment() {
+    error = null; busy = true;
+    try {
+      const created = await createAssignment(info.id, { title: 'Untitled assignment', kind: 'practice' });
+      if (created) { active = created; view = 'edit'; }
+    } catch (e) { error = (e as Error).message; }
+    finally { busy = false; }
+  }
+
+  function backToClass(reload = true) {
+    view = 'class';
+    active = null;
+    if (reload) void load(info.id);
+  }
+
+  function dueLabel(a: Assignment): string {
+    if (!a.due_at) return '';
+    const d = new Date(a.due_at);
+    const late = d.getTime() < Date.now();
+    return `${late ? 'was due' : 'due'} ${d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`;
+  }
 
   async function remove(entry: RosterEntry) {
     if (!confirm(`Remove ${entry.display_name} from ${info.name}? Their own progress is untouched; you simply stop seeing it.`)) return;
@@ -84,6 +137,16 @@
   }
 </script>
 
+{#if view === 'edit' && active}
+  <AssignmentEditor assignment={active} klass={info} onclose={() => backToClass()} />
+
+{:else if view === 'take' && active}
+  <AssignmentPlayer assignment={active} onclose={() => backToClass()} />
+
+{:else if view === 'results' && active}
+  <AssignmentResults assignment={active} classId={info.id} onclose={() => backToClass(false)} />
+
+{:else}
 <header class="head">
   {#if renaming}
     <div class="rename-row">
@@ -167,15 +230,46 @@
     </p>
   {/if}
 
-  <h2 class="section">Coursework</h2>
-  <div class="panel">
-    <p class="muted small">
-      Setting tests and assignments is not built yet. The database is ready for it —
-      assignments, items, teacher-written questions and submissions all exist with
-      their policies — but there is no screen for it, so this space says so rather
-      than offering something half-working.
-    </p>
+  <div class="section-head">
+    <h2>Coursework</h2>
+    <button class="primary small-btn" type="button" onclick={addAssignment} disabled={busy}>
+      New assignment
+    </button>
   </div>
+
+  {#if work.length === 0}
+    <div class="panel">
+      <p class="muted small">
+        Nothing set yet. An assignment is a list of questions — chosen from the bank,
+        or written by you — that your students answer. They see it once you publish it.
+      </p>
+    </div>
+  {:else}
+    <ul class="work">
+      {#each work as a (a.id)}
+        <li>
+          <button class="grow" type="button" onclick={() => { active = a; view = 'edit'; }}>
+            <span class="title-row">
+              <strong>{a.title}</strong>
+              {#if a.published}
+                <span class="chip live">Published</span>
+              {:else}
+                <span class="chip">Draft</span>
+              {/if}
+            </span>
+            <span class="muted small">
+              {a.kind === 'test' ? 'Test' : 'Practice'} ·
+              {a.item_count} {a.item_count === 1 ? 'question' : 'questions'}
+              {#if a.due_at} · {dueLabel(a)}{/if}
+            </span>
+          </button>
+          <button class="quiet-btn" type="button" onclick={() => { active = a; view = 'results'; }}>
+            Results
+          </button>
+        </li>
+      {/each}
+    </ul>
+  {/if}
 
   <h2 class="section">Class settings</h2>
   <div class="panel row-panel">
@@ -186,15 +280,54 @@
   </div>
 
 {:else}
+  <div class="section-head">
+    <h2>Work set for you</h2>
+  </div>
+
+  {#if !loaded}
+    <p class="muted small">Loading…</p>
+  {:else if work.length === 0}
+    <div class="panel">
+      <p class="muted small">
+        Your teacher has not set anything yet. Anything they publish will appear here.
+      </p>
+    </div>
+  {:else}
+    <ul class="work">
+      {#each work as a (a.id)}
+        {@const sub = done[a.id]}
+        <li>
+          <button class="grow" type="button" onclick={() => { active = a; view = 'take'; }}>
+            <span class="title-row">
+              <strong>{a.title}</strong>
+              {#if sub?.submitted_at}
+                <span class="chip live">{sub.score}/{sub.total}</span>
+              {:else if a.due_at && new Date(a.due_at).getTime() < Date.now()}
+                <span class="chip late">Overdue</span>
+              {/if}
+            </span>
+            <span class="muted small">
+              {a.kind === 'test' ? 'Test' : 'Practice'} ·
+              {a.item_count} {a.item_count === 1 ? 'question' : 'questions'}
+              {#if a.due_at} · {dueLabel(a)}{/if}
+            </span>
+          </button>
+        </li>
+      {/each}
+    </ul>
+  {/if}
+
+  <h2 class="section">About this class</h2>
   <div class="panel">
     <p class="muted small">
-      You are a student in this class. Your teacher can see your progress and streak in
+      Your teacher can see your progress and streak in
       <strong>{info.subject_name}</strong> — and nothing outside it.
     </p>
     <a class="btn" href="{base}/{info.subject_code.toLowerCase()}">
       Go to {info.subject_name}
     </a>
   </div>
+{/if}
 {/if}
 
 <style>
@@ -236,6 +369,32 @@
   }
   .bar > span { display: block; width: var(--v); height: 100%; background: var(--brand); }
   .flame { color: var(--wrong); margin-right: .2rem; }
+
+  .section-head button.small-btn {
+    margin-left: auto; font-size: .88rem; padding: .4rem .85rem;
+  }
+
+  .work { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .5rem; }
+  .work li {
+    display: flex; align-items: center; gap: .6rem;
+    background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow-sm);
+    padding: .3rem .8rem .3rem .3rem;
+  }
+  .work .grow {
+    flex: 1; text-align: left; cursor: pointer; background: transparent;
+    display: flex; flex-direction: column; gap: .15rem; padding: .7rem;
+    border-radius: 12px; min-width: 0;
+  }
+  .work .grow:hover { background: var(--hairline, rgba(0,0,0,.04)); }
+  .title-row { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+
+  .chip {
+    font-size: .68rem; font-weight: 650; text-transform: uppercase; letter-spacing: .04em;
+    padding: .15rem .45rem; border-radius: 999px;
+    background: var(--hairline, rgba(0,0,0,.08)); color: var(--text-secondary);
+  }
+  .chip.live { background: var(--brand-soft, rgba(48,184,98,.14)); color: var(--brand); }
+  .chip.late { background: rgba(255,59,48,.14); color: var(--wrong); }
 
   .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .08em; }
   .quiet-btn { background: transparent; font-size: .9rem; cursor: pointer; }

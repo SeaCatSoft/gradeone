@@ -18,7 +18,8 @@
     "syllabus:check": "node backend/tools/check_syllabus.mjs",
     "links:check": "node backend/tools/check_links.mjs",
     "preview:pages": "node backend/tools/serve_pages.mjs",
-    "test:motion": "node backend/tools/test_spring.mjs"
+    "test:motion": "node backend/tools/test_spring.mjs",
+    "test:marking": "node backend/tools/test_marking.mjs"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^7.0.1",

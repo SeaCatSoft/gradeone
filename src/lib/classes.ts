@@ -50,6 +50,49 @@ export type Person = {
   role: Role;
 };
 
+export type AssignmentKind = 'practice' | 'test';
+
+export type Assignment = {
+  id: number;
+  class_id: number;
+  title: string;
+  instructions: string | null;
+  kind: AssignmentKind;
+  due_at: string | null;
+  published: boolean;
+  created_at: string;
+  item_count?: number;
+};
+
+export type AssignmentItem = {
+  position: number;
+  question_key: string | null;
+  teacher_question_id: number | null;
+  marks: number;
+};
+
+export type TeacherQuestion = {
+  id: number;
+  subject_id: number | null;
+  objective_key: string | null;
+  kind: 'mcq' | 'numeric' | 'structured';
+  stem_md: string;
+  options: { key: string; text: string }[] | null;
+  answer: string;
+  working_md: string | null;
+  marks: number;
+};
+
+export type Submission = {
+  assignment_id: number;
+  user_id: string;
+  started_at: string;
+  submitted_at: string | null;
+  score: number | null;
+  total: number | null;
+  display_name?: string;
+};
+
 /** Subjects that exist, for the class-creation form. */
 export async function listSubjects(): Promise<{ id: number; code: string; name: string }[]> {
   const db = supabase();
@@ -173,17 +216,25 @@ export async function roster(classId: number): Promise<RosterEntry[]> {
 
   const { data: members, error } = await db
     .from('class_members')
-    .select('user_id, joined_at, profiles(display_name)')
+    .select('user_id, joined_at')
     .eq('class_id', classId);
   if (error || !members?.length) return [];
 
   const ids = members.map((m: any) => m.user_id);
 
-  const [streaks, mastery, attempts] = await Promise.all([
+  // Names come from a separate query rather than an embedded `profiles(...)`.
+  // PostgREST resolves embeds through foreign keys, and class_members.user_id
+  // references auth.users, not profiles -- both point AT auth.users, which is
+  // not a relationship it can follow. The embed fails at runtime with
+  // "could not find a relationship", which no amount of type checking catches.
+  const [names, streaks, mastery, attempts] = await Promise.all([
+    db.from('profiles').select('id, display_name').in('id', ids),
     db.from('streaks').select('user_id, current_days, longest_days, last_active_date').in('user_id', ids),
     db.from('objective_mastery').select('user_id, mastery, attempts, correct').in('user_id', ids),
     db.from('question_attempts').select('user_id, correct').in('user_id', ids)
   ]);
+
+  const nameBy = new Map((names.data ?? []).map((p: any) => [p.id, p.display_name]));
 
   const streakBy = new Map((streaks.data ?? []).map((s: any) => [s.user_id, s]));
 
@@ -210,7 +261,7 @@ export async function roster(classId: number): Promise<RosterEntry[]> {
       const att = attemptsBy.get(m.user_id);
       return {
         user_id: m.user_id,
-        display_name: m.profiles?.display_name ?? 'Student',
+        display_name: nameBy.get(m.user_id) ?? 'Student',
         joined_at: m.joined_at,
         streak_days: s?.current_days ?? 0,
         longest_days: s?.longest_days ?? 0,
@@ -266,4 +317,226 @@ export async function setUserRole(userId: string, role: Role): Promise<void> {
   if (!db) return;
   const { error } = await db.rpc('set_user_role', { target: userId, new_role: role });
   if (error) throw new Error(error.message);
+}
+
+// ------------------------------------------------------------- assignments
+//
+// A teacher sees every assignment in their class; a student sees only the
+// published ones. That is one policy, not two queries — the same select
+// returns different rows to the two of them, so nothing here filters by role.
+
+export async function listAssignments(classId: number): Promise<Assignment[]> {
+  const db = supabase();
+  if (!db) return [];
+  const { data, error } = await db
+    .from('assignments')
+    .select('id, class_id, title, instructions, kind, due_at, published, created_at, assignment_items(count)')
+    .eq('class_id', classId)
+    .order('created_at', { ascending: false });
+  if (error || !data) return [];
+  return data.map((a: any) => ({ ...a, item_count: a.assignment_items?.[0]?.count ?? 0 }));
+}
+
+export async function getAssignment(id: number): Promise<Assignment | null> {
+  const db = supabase();
+  if (!db) return null;
+  const { data } = await db
+    .from('assignments')
+    .select('id, class_id, title, instructions, kind, due_at, published, created_at')
+    .eq('id', id)
+    .maybeSingle();
+  return (data as Assignment) ?? null;
+}
+
+export async function createAssignment(
+  classId: number,
+  fields: { title: string; kind: AssignmentKind; instructions?: string | null; due_at?: string | null }
+): Promise<Assignment | null> {
+  const db = supabase();
+  if (!db) return null;
+  const user = (await db.auth.getUser()).data.user;
+  if (!user) throw new Error('Not signed in');
+  const { data, error } = await db
+    .from('assignments')
+    .insert({
+      class_id: classId,
+      created_by: user.id,
+      title: fields.title,
+      kind: fields.kind,
+      instructions: fields.instructions ?? null,
+      due_at: fields.due_at || null
+    })
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return data as Assignment;
+}
+
+export async function updateAssignment(id: number, patch: Partial<Assignment>): Promise<void> {
+  const db = supabase();
+  if (!db) return;
+  const { error } = await db.from('assignments').update(patch).eq('id', id);
+  if (error) throw new Error(error.message);
+}
+
+export async function deleteAssignment(id: number): Promise<void> {
+  const db = supabase();
+  if (!db) return;
+  const { error } = await db.from('assignments').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+}
+
+export async function getItems(assignmentId: number): Promise<AssignmentItem[]> {
+  const db = supabase();
+  if (!db) return [];
+  const { data } = await db
+    .from('assignment_items')
+    .select('position, question_key, teacher_question_id, marks')
+    .eq('assignment_id', assignmentId)
+    .order('position');
+  return (data as AssignmentItem[]) ?? [];
+}
+
+/**
+ * Replace an assignment's questions wholesale.
+ *
+ * Delete-then-insert rather than working out a diff: positions are the primary
+ * key, so reordering makes almost every row change anyway, and an assignment is
+ * a handful of rows. It is not atomic — a failure between the two leaves the
+ * assignment empty — which is survivable because an unpublished assignment is
+ * invisible to students, and publishing is a separate act.
+ */
+export async function replaceItems(
+  assignmentId: number,
+  items: { question_key?: string | null; teacher_question_id?: number | null; marks: number }[]
+): Promise<void> {
+  const db = supabase();
+  if (!db) return;
+  const del = await db.from('assignment_items').delete().eq('assignment_id', assignmentId);
+  if (del.error) throw new Error(del.error.message);
+  if (!items.length) return;
+  const rows = items.map((it, i) => ({
+    assignment_id: assignmentId,
+    position: i + 1,
+    question_key: it.question_key ?? null,
+    teacher_question_id: it.teacher_question_id ?? null,
+    marks: it.marks
+  }));
+  const { error } = await db.from('assignment_items').insert(rows);
+  if (error) throw new Error(error.message);
+}
+
+// -------------------------------------------------- teacher-written questions
+
+export async function listTeacherQuestions(): Promise<TeacherQuestion[]> {
+  const db = supabase();
+  if (!db) return [];
+  const { data } = await db
+    .from('teacher_questions')
+    .select('id, subject_id, objective_key, kind, stem_md, options, answer, working_md, marks')
+    .order('created_at', { ascending: false });
+  return (data as TeacherQuestion[]) ?? [];
+}
+
+export async function getTeacherQuestions(ids: number[]): Promise<Map<number, TeacherQuestion>> {
+  const db = supabase();
+  if (!db || !ids.length) return new Map();
+  const { data } = await db
+    .from('teacher_questions')
+    .select('id, subject_id, objective_key, kind, stem_md, options, answer, working_md, marks')
+    .in('id', ids);
+  return new Map((data ?? []).map((q: any) => [q.id, q as TeacherQuestion]));
+}
+
+export async function createTeacherQuestion(
+  q: Omit<TeacherQuestion, 'id'>
+): Promise<TeacherQuestion | null> {
+  const db = supabase();
+  if (!db) return null;
+  const user = (await db.auth.getUser()).data.user;
+  if (!user) throw new Error('Not signed in');
+  const { data, error } = await db
+    .from('teacher_questions')
+    .insert({ ...q, author_id: user.id })
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return data as TeacherQuestion;
+}
+
+export async function deleteTeacherQuestion(id: number): Promise<void> {
+  const db = supabase();
+  if (!db) return;
+  const { error } = await db.from('teacher_questions').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+}
+
+// -------------------------------------------------------------- submissions
+
+export async function mySubmission(assignmentId: number): Promise<Submission | null> {
+  const db = supabase();
+  if (!db) return null;
+  const user = (await db.auth.getUser()).data.user;
+  if (!user) return null;
+  const { data } = await db
+    .from('assignment_submissions')
+    .select('*')
+    .eq('assignment_id', assignmentId)
+    .eq('user_id', user.id)
+    .maybeSingle();
+  return (data as Submission) ?? null;
+}
+
+/** Record a finished attempt, with one row per answer for the teacher to read. */
+export async function saveSubmission(
+  assignmentId: number,
+  answers: { position: number; given: string; correct: boolean | null; marks_awarded: number }[],
+  score: number,
+  total: number
+): Promise<void> {
+  const db = supabase();
+  if (!db) return;
+  const user = (await db.auth.getUser()).data.user;
+  if (!user) throw new Error('Not signed in');
+
+  const sub = await db.from('assignment_submissions').upsert({
+    assignment_id: assignmentId,
+    user_id: user.id,
+    submitted_at: new Date().toISOString(),
+    score,
+    total
+  });
+  if (sub.error) throw new Error(sub.error.message);
+
+  const rows = answers.map((a) => ({ assignment_id: assignmentId, user_id: user.id, ...a }));
+  if (rows.length) {
+    const { error } = await db.from('assignment_answers').upsert(rows);
+    if (error) throw new Error(error.message);
+  }
+}
+
+/**
+ * Every student's result for one assignment. Teachers only.
+ *
+ * Names are fetched separately for the same reason as in roster(): there is no
+ * foreign key from assignment_submissions to profiles for PostgREST to embed
+ * through.
+ */
+export async function submissionsFor(assignmentId: number): Promise<Submission[]> {
+  const db = supabase();
+  if (!db) return [];
+  const { data } = await db
+    .from('assignment_submissions')
+    .select('assignment_id, user_id, started_at, submitted_at, score, total')
+    .eq('assignment_id', assignmentId);
+  const rows = (data ?? []) as Submission[];
+  if (!rows.length) return [];
+
+  const { data: names } = await db
+    .from('profiles')
+    .select('id, display_name')
+    .in('id', rows.map((r) => r.user_id));
+  const nameBy = new Map((names ?? []).map((p: any) => [p.id, p.display_name]));
+
+  return rows.map((r) => ({ ...r, display_name: nameBy.get(r.user_id) ?? 'Student' }));
 }
