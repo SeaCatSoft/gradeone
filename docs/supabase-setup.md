@@ -86,6 +86,29 @@ A teacher sees a student's progress **only** through `class_members`. There is
 no policy granting a teacher blanket access to student data, and none should be
 added — a teacher who does not teach you can see nothing about you.
 
+### Setting work
+
+A teacher opens a class and creates an assignment: questions chosen from the
+markdown bank or written by hand, marks per question, an optional due date.
+Students see nothing until it is published, and publishing an empty assignment
+is not possible.
+
+Students answer it in the app and it is marked as they submit. The teacher's
+results table lists everyone in the class, including those who have not
+submitted — after setting work, "who has not done it" is usually the first
+question.
+
+**Marking happens in the student's browser.** The question bank prerenders to
+static pages that already contain the answers, so a determined student can look
+one up whatever the app does. Structured questions are not machine-marked at
+all: their answer is a mark scheme, so the student is shown it and awards
+themselves the marks. Both screens say so. Treat the scores as evidence of
+effort and understanding, not as a controlled assessment.
+
+Marking that could survive a motivated student needs the content in the
+database and an RPC to mark against it — that is a different piece of work, not
+a setting.
+
 ### What this does not do
 
 Lesson pages are prerendered static HTML on a static host, so they stay readable
